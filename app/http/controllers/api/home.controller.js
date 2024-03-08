@@ -5,5 +5,6 @@ class HomeController extends Controller {
         return res.status(200).send("Index Page Store")
     }
     
+    
 }
 module.exports = new HomeController()
