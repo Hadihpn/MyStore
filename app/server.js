@@ -1,6 +1,6 @@
 const express = require("express")
 require("dotenv").config();
-const { default: mongoos } = require("mongoose");
+const { default: mongoose } = require("mongoose");
 const path = require("path");
 module.exports = class Application {
     #app = express()
@@ -28,10 +28,12 @@ module.exports = class Application {
         })
     }
     connectToMongoDB() {
-        mongoos.connect(this.#DB_URI, (error) => {
-            if (!error) console.log("connected to Database");
-            return console.log("failed to connect to Database")
+        mongoose.connect(process.env.MONGODB_URL).then(() => {
+            console.log("connected to DB.");
+        }).catch(err => {
+            console.log(err?.message ?? "Failed DB connection");
         })
+        
     }
     createRoutes() {
 
