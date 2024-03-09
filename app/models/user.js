@@ -1,11 +1,14 @@
 const { Schema, model } = require("mongoose");
-
+// const OTPSchema = new Schema({
+//     code: { type: String, required: false, default: undefined },
+//     expiresIn: { type: Number, required: false, default: 0 }
+// })
 const UserSchema = new Schema({
-    firstName: { type: String },
+    firstName: { type: String, },
     lastName: { type: String },
-    userName: { type: String },
+    userName: { type: String, lowercase: true },
     phone: { type: String },
-    email: { type: String },
+    email: { type: String, lowercase: true },
     password: { type: String },
     otp: {
         type: String, default: {
@@ -13,11 +16,12 @@ const UserSchema = new Schema({
             expires: new Date().getDate() + 120
         }
     },
+    // otp:{type:OTPSchema},
     bills: { type: [], default: [] },
-    address: { type: [],default:[] },
+    address: { type: [], default: [] },
     discount: { type: Number, default: 0 },
-    birthday:{type:String},
-    roles:{type:[String],default:["USER"]}
+    birthday: { type: String },
+    roles: { type: [String], default: ["USER"] }
 })
 
 const UserModel = model("user", UserSchema);

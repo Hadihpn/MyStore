@@ -3,6 +3,8 @@ require("dotenv").config();
 const { default: mongoose } = require("mongoose");
 const path = require("path");
 const { AllRoutes } = require("./router/router");
+const morgan = require("morgan");
+const createError = require("http-errors");
 module.exports = class Application {
     #app = express()
     #DB_URI
@@ -18,6 +20,7 @@ module.exports = class Application {
 
     }
     configApplication() {
+        this.#app.use(morgan("dev"))
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({ extended: true }));
         this.#app.use(express.static(path.join(__dirname + "..", "public")));
@@ -29,30 +32,36 @@ module.exports = class Application {
         })
     }
     connectToMongoDB() {
-        mongoose.connect(process.env.MONGODB_URL).then(() => {
+        mongoose.connect(this.#DB_URI).then(() => {
             console.log("connected to DB.");
         }).catch(err => {
             console.log(err?.message ?? "Failed DB connection");
         })
-        
+        mongoose.connection.on("connected", () => {
+            console.log("mongoose connected")
+        })
+        mongoose.connection.on("disconnected", () => {
+            console.log("mongoose disconnected")
+        })
     }
     createRoutes() {
         this.#app.use(AllRoutes);
     }
     errorHandling() {
+
+
         this.#app.use((req, res, next) => {
-            return res.json({
-                statusCode: 404,
-                message: "Sorry, we did not find your page... is you write correct?!!! "
-            })
+            next(createError.NotFound("Sorry, we did not find your page... is you write correct?!!!"))
 
         })
         this.#app.use((error, req, res, next) => {
             const statusCode = error.status || 500;
-            const message = error.message || "InternalServerError";
+            const message = error.message || createError.InternalServerError();
             return res.status(statusCode).json({
-                statusCode,
-                message
+                errors: {
+                    statusCode,
+                    message
+                }
             })
         })
     }
