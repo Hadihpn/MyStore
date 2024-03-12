@@ -1,7 +1,6 @@
 const Joi = require("@hapi/joi");
 const authSchema = Joi.object({
-    email:Joi.lowercase().trim().string().email().required(),
-    password:Joi.min(6).max(16).trim().string().required()
+    mobile:Joi.string().pattern('^(\\+98|0)?9\\d{9}$').error(new Error("شماره موبایل وارد شده معتبر نمی باشد")),
 })
 module.exports = {
     authSchema
