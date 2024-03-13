@@ -20,7 +20,7 @@ const UserSchema = new Schema({
     bills: { type: [], default: [] },
     address: { type: [], default: [] },
     discount: { type: Number, default: 0 },
-    birthday: { type: String },
+    birthday: { type: String,default:"0" },
     roles: { type: [String], default: ["USER"] }
 })
 

@@ -11,7 +11,7 @@ function SwaggerConfig(app){
             },
 
         },
-        apis: [process.cwd() + "/router/**/*.swagger.js"]
+        apis: [process.cwd() + "/app/router/**/*.swagger.js"]
     });
     const swagger = swaggerUi.setup(swaggerDocument, {});
     app.use("/swagger", swaggerUi.serve, swagger);
