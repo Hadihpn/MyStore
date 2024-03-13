@@ -5,10 +5,9 @@ const createHttpError = require("http-errors");
 class HomeController extends Controller {
     async indexPage(req, res, next) {
         try {
-            const result = await authSchema.valid(req.body)
             return res.status(200).send("Index Page Store")
         } catch (error) {
-            next(createHttpError.BadRequest(error.message))
+            next(error)
         }
     }
 

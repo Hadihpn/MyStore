@@ -5,6 +5,7 @@ const path = require("path");
 const { AllRoutes } = require("./router/router");
 const morgan = require("morgan");
 const createError = require("http-errors");
+const SwaggerConfig = require("./utils/config/swagger.config");
 module.exports = class Application {
     #app = express()
     #DB_URI
@@ -24,6 +25,7 @@ module.exports = class Application {
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({ extended: true }));
         this.#app.use(express.static(path.join(__dirname + "..", "public")));
+        SwaggerConfig(this.#app);
     }
     createServer() {
         const http = require("http");
@@ -55,8 +57,9 @@ module.exports = class Application {
 
         })
         this.#app.use((error, req, res, next) => {
-            const statusCode = error.status || 500;
-            const message = error.message || createError.InternalServerError();
+            const serverError = createError.InternalServerError()
+            const statusCode = error.status || serverError.status;
+            const message = error.message || serverError.message;
             return res.status(statusCode).json({
                 errors: {
                     statusCode,
