@@ -2,10 +2,10 @@ const express = require("express")
 require("dotenv").config();
 const { default: mongoose } = require("mongoose");
 const path = require("path");
-const { AllRoutes } = require("./router/router");
 const morgan = require("morgan");
 const createError = require("http-errors");
 const SwaggerConfig = require("./utils/config/swagger.config");
+const { AllRoutes } = require("./router/router.routes");
 module.exports = class Application {
     #app = express()
     #DB_URI
