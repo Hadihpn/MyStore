@@ -6,6 +6,7 @@ const { AuthMessage } = require("../../Messages/user/auth.messages");
 const { unSupportedString } = require("../../../common/utils/function");
 const { expiresOTP } = require("../../../common/constant/constantVar");
 const jwt = require("jsonwebtoken");
+const { log } = require("console");
 class AuthService {
     #model
     constructor() {
@@ -38,14 +39,26 @@ class AuthService {
         return user
 
     }
-    async checkOtp(code, phone) {
+    async checkOtp(phone, code) {
         const user = await this.getUserByPhone(phone);
         const now = new Date().getTime();
         if (!user || !user.otp.code || now > user.otp.expiresIn) throw new createHttpError.BadRequest(AuthMessage.OtpCodeExpired);
-        const token = this.signToken({ phone, id: user._id })
+        if (user.otp.code != code) throw new createHttpError.BadRequest(AuthMessage.WrongOtpCode);
+        const token = await this.signToken({ phone });
+        console.log(token);
+        user.accessToken = token;
+        user.verifiedMobile = true;
+        await user.save();
+        return user;
+
     }
     async getUserByPhone(phone) {
-        return await this.#model.findOne({ phone })
+        const user = await this.#model.findOne({ phone })
+        return user
+    }
+    async getUserById(_id) {
+        const user = await this.#model.findOne({_id})
+        return user
     }
     async updateUser(phone, objectData = {}) {
         Object.keys(objectData).forEach(key => {

@@ -1,7 +1,11 @@
 const createHttpError = require("http-errors")
-const { authSchema } = require("../../../validators/user/auth.schema")
+const { checkOTPSchema, getOTPSchema } = require("../../../validators/user/auth.schema")
 const autoBind = require("auto-bind");
 const authServices = require("../../../services/user/auth.services");
+const { AuthMessage } = require("../../../Messages/user/auth.messages");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+
 class UserAuthController {
     #services
     constructor() {
@@ -10,11 +14,11 @@ class UserAuthController {
     }
     async login(req, res, next) {
         try {
-            const {phone} = req.body;
-            await authSchema.validateAsync(req.body)
+            const { phone } = req.body;
+            await getOTPSchema.validateAsync(req.body)
             const result = await this.#services.sendOtp(phone)
             // console.log(result);
-            return res.status(200).send("شما با موفقیت وارد شدید"+result)
+            return res.status(200).send(result)
         } catch (error) {
             next(createHttpError.BadRequest(error.message))
         }
@@ -25,6 +29,23 @@ class UserAuthController {
         } catch (error) {
             next(error)
         }
+    }
+    async checkOtp(req, res, next) {
+        try {
+            const { phone, code } = req.body;
+            await checkOTPSchema.validateAsync(req.body);
+            const user = await this.#services.checkOtp(phone, code);
+            return res.cookie("accessToken", user.accessToken, {
+                httpOnly: true,
+                path: "/"
+            }).status(200).json({
+                message: AuthMessage.LoginInSuccesfully,
+                token: user.accessToken
+            })
+        } catch (error) {
+            next(error)
+        }
+
     }
 }
 

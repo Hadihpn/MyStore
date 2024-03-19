@@ -21,8 +21,18 @@
  *          properties:
  *              phone:
  *                  type: string  
- *              
+ *        CheckOtp:
+ *          type: object  
+ *          required:
+ *              - phone
+ *              - code
+ *          properties:
+ *              phone:
+ *                  type: string  
+ *              code:
+ *                  type: string        
  */
+
 /**
  * @swagger
  * /user/login:
@@ -39,6 +49,33 @@
  *              application/json:
  *                  schema:
  *                      $ref: '#/components/schemas/LoginUser'
+ *      responses:
+ *          201: 
+ *              description: created
+ *          400: 
+ *              description: bad request
+ *          401: 
+ *              description: unAuthorize
+ *          500: 
+ *              description: InternalServer Error
+ */
+/**
+/**
+ * @swagger
+ * /user/checkOtp:
+ *  post:
+ *      summary: enter the otp code for login
+ *      description: enter the code that has been sent to user
+ *      tags:
+ *          -   User-Authentication
+ *      requestBody:
+ *          content:
+ *              application/x-www-form-urlencoded:
+ *                  schema:
+ *                      $ref: '#/components/schemas/CheckOtp'
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/CheckOtp'
  *      responses:
  *          201: 
  *              description: created

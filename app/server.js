@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const createError = require("http-errors");
 const SwaggerConfig = require("./utils/config/swagger.config");
 const { AllRoutes } = require("./router/router.routes");
+const cookieParser = require("cookie-parser");
 module.exports = class Application {
     #app = express()
     #DB_URI
@@ -25,10 +26,14 @@ module.exports = class Application {
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({ extended: true }));
         this.#app.use(express.static(path.join(__dirname + "..", "public")));
+        this.#app.use(cookieParser(process.env.COOKIE_SECRET_KEY))
         SwaggerConfig(this.#app);
     }
     createServer() {
         const http = require("http");
+        // const crypto = require("crypto");
+        // const key = crypto.randomBytes(32).toString("hex").toUpperCase();
+        // console.log(key);
         http.createServer(this.#app).listen(this.#PORT, () => {
             console.log(`server :http://127.0.0.1:${this.#PORT}`);
         })

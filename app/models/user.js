@@ -22,7 +22,7 @@ const UserSchema = new Schema({
     discount: { type: Number, default: 0 },
     birthday: { type: String, default: "0" },
     roles: { type: [String], default: ["USER"] },
-    accessToken: { type: string },
+    accessToken: { type: String },
     verifiedMobile: { type: Boolean, default: false, required: true },
 })
 
