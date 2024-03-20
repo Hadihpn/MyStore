@@ -47,6 +47,23 @@ class UserAuthController {
         }
 
     }
+    async refreshToken(req, res, next) {
+        try {
+            const { refreshToken } = req.body;
+            const phone = await this.#services.verifyRefreshToken(refreshToken)
+            const user = await this.#services.getUserByPhone(phone);
+            const accessToken = await this.#services.signToken(phone)
+            const newRefreshToken = await this.#services.signRefreshToken(phone)
+            return res.json({
+                data: {
+                    accessToken,
+                    refreshToken: newRefreshToken
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = new UserAuthController()

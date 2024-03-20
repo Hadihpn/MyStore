@@ -10,10 +10,11 @@ const Authorization = async (req, res, next) => {
         console.log("token is :", accessToken)
          if (!accessToken) throw new createHttpError.BadRequest(AuthorizationMessage.NotFoundAccount);
         const data = jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
-        console.log(data.id);
-        if(data && data.id){
-            const user = await authServices.getUserById(data.id)
-            console.log(user)
+        if(data && data.phone){
+            const user = await authServices.getUserByPhone(data.phone);
+            user.otp=0
+            user.accessToken=""
+            
             if (!user) throw new createHttpError.BadRequest(AuthorizationMessage.NotFoundAccount)
             req.user = user;
             return next()

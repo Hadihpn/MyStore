@@ -44,9 +44,10 @@ class AuthService {
         const now = new Date().getTime();
         if (!user || !user.otp.code || now > user.otp.expiresIn) throw new createHttpError.BadRequest(AuthMessage.OtpCodeExpired);
         if (user.otp.code != code) throw new createHttpError.BadRequest(AuthMessage.WrongOtpCode);
-        const token = await this.signToken({ phone });
-        console.log(token);
-        user.accessToken = token;
+        const accessToken = await this.signToken({ phone });
+        const refreshToken = await this.signRefreshToken({ phone });
+        console.log(refreshToken);
+        user.accessToken = accessToken;
         user.verifiedMobile = true;
         await user.save();
         return user;
@@ -57,7 +58,7 @@ class AuthService {
         return user
     }
     async getUserById(_id) {
-        const user = await this.#model.findOne({_id})
+        const user = await this.#model.findOne({ _id })
         return user
     }
     async updateUser(phone, objectData = {}) {
@@ -69,6 +70,20 @@ class AuthService {
     }
     async signToken(payload) {
         return await jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "1d" })
+    }
+    async signRefreshToken(payload) {
+        return await jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: "1y" })
+    }
+    async verifyRefreshToken(token) {
+        const data = jwt.verify(token, process.env.REFRESH_SECRET_KEY);
+        if (data && data.phone) {
+            const user = await this.getUserByPhone(data.phone);
+            if (!user) throw new createHttpError.BadRequest(AuthorizationMessage.NotFoundAccount)
+            return user.phone
+        }
+        else {
+            throw new createHttpError.Unauthorized(AuthorizationMessage.UnAuthorize);
+        }
     }
 }
 module.exports = new AuthService()

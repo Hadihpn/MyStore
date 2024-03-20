@@ -59,7 +59,7 @@
  *          500: 
  *              description: InternalServer Error
  */
-/**
+
 /**
  * @swagger
  * /user/checkOtp:
@@ -86,7 +86,27 @@
  *          500: 
  *              description: InternalServer Error
  */
+
 /**
+ * @swagger
+ * /user/checkOtp:
+ *  post:
+ *      summary: send refresh token to get new token and refresh token
+ *      description: refresh token
+ *      tags:
+ *          -   User-Authentication
+ *      parameters:
+ *          - in: body
+ *            required: true
+ *            type: string
+ *            name: refreshToken
+ *    
+ *      responses:
+ *          200: 
+ *              description: success
+ *         
+ */
+
 /**
  * @swagger
  * /:
