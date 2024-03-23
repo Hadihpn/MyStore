@@ -31,6 +31,13 @@
  *                  type: string  
  *              code:
  *                  type: string        
+ *        RefreshToken:
+ *          type: object  
+ *          required:
+ *              - refreshToken
+ *          properties:
+ *              refreshToken:
+ *                  type: string  
  */
 
 /**
@@ -67,7 +74,7 @@
  *      summary: enter the otp code for login
  *      description: enter the code that has been sent to user
  *      tags:
- *          -   User-Authentication
+ *          -   [User-Authentication]
  *      requestBody:
  *          content:
  *              application/x-www-form-urlencoded:
@@ -89,17 +96,20 @@
 
 /**
  * @swagger
- * /user/checkOtp:
+ * /user/refreshToken:
  *  post:
  *      summary: send refresh token to get new token and refresh token
  *      description: refresh token
  *      tags:
- *          -   User-Authentication
- *      parameters:
- *          - in: body
- *            required: true
- *            type: string
- *            name: refreshToken
+ *          -   [User-Authentication]
+ *      requestBody:
+ *          content:
+ *              application/x-www-form-urlencoded:
+ *                  schema:
+ *                      $ref: '#/components/schemas/RefreshToken'
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/RefreshToken'
  *    
  *      responses:
  *          200: 

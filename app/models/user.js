@@ -23,6 +23,7 @@ const UserSchema = new Schema({
     birthday: { type: String, default: "0" },
     roles: { type: [String], default: ["USER"] },
     accessToken: { type: String },
+    refreshToken: { type: String },
     verifiedMobile: { type: Boolean, default: false, required: true },
 })
 

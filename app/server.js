@@ -16,6 +16,7 @@ module.exports = class Application {
         this.#DB_URI = DB_URI;
         this.configApplication();
         this.connectToMongoDB();
+        this.initRedis();
         this.createServer();
         this.createRoutes();
         this.errorHandling();
@@ -28,6 +29,7 @@ module.exports = class Application {
         this.#app.use(express.static(path.join(__dirname + "..", "public")));
         this.#app.use(cookieParser(process.env.COOKIE_SECRET_KEY))
         SwaggerConfig(this.#app);
+        
     }
     createServer() {
         const http = require("http");
@@ -51,6 +53,9 @@ module.exports = class Application {
             console.log("mongoose disconnected")
         })
     }
+    initRedis(){
+        require("../app/common/utils/init_redis")
+    }
     createRoutes() {
         this.#app.use(AllRoutes);
     }
@@ -73,4 +78,5 @@ module.exports = class Application {
             })
         })
     }
+    
 }

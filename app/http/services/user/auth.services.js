@@ -4,9 +4,13 @@ const createHttpError = require("http-errors");
 const { randomInt } = require("crypto");
 const { AuthMessage } = require("../../Messages/user/auth.messages");
 const { unSupportedString } = require("../../../common/utils/function");
-const { expiresOTP } = require("../../../common/constant/constantVar");
+const { expiresOTP, yearPerSecond, ROLES } = require("../../../common/constant/constantVar");
 const jwt = require("jsonwebtoken");
 const { log } = require("console");
+const redisClient = require("../../../common/utils/init_redis");
+const { rejects } = require("assert");
+const { resolve } = require("path");
+
 class AuthService {
     #model
     constructor() {
@@ -29,7 +33,7 @@ class AuthService {
         };
         // sign up user
         if (!user) {
-            const newUser = await this.#model.create({ phone, otp })
+            const newUser = await this.#model.create({ phone, otp, Roles: [ROLES.USER] })
             return newUser;
         }
         //update otp 
@@ -72,18 +76,26 @@ class AuthService {
         return await jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "1d" })
     }
     async signRefreshToken(payload) {
-        return await jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: "1y" })
+        const newRefreshToken = await jwt.sign(payload, process.env.REFRESH_SECRET_KEY, { expiresIn: "1y" })
+        await this.saveOnRedis(payload.phone, newRefreshToken)
+        return newRefreshToken;
     }
     async verifyRefreshToken(token) {
         const data = jwt.verify(token, process.env.REFRESH_SECRET_KEY);
+        console.log(data);
         if (data && data.phone) {
             const user = await this.getUserByPhone(data.phone);
-            if (!user) throw new createHttpError.BadRequest(AuthorizationMessage.NotFoundAccount)
+            if (!user) throw new createHttpError.BadRequest(AuthMessage.NotFoundAccount)
+            const refreshToken = await redisClient.get(user.phone);
+            if (!refreshToken || refreshToken != token) throw new createHttpError.BadRequest(AuthMessage.NotFoundAccount)
             return user.phone
         }
         else {
-            throw new createHttpError.Unauthorized(AuthorizationMessage.UnAuthorize);
+            throw new createHttpError.Unauthorized(AuthMessage.UnAuthorize);
         }
+    }
+    async saveOnRedis(key, value) {
+        await redisClient.SETEX(key, yearPerSecond, value)
     }
 }
 module.exports = new AuthService()
