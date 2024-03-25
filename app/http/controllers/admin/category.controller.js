@@ -61,3 +61,4 @@ class CategoryController extends Controller {
         }
     }
 }
+module.exports = new CategoryController()
