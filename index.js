@@ -1,3 +1,3 @@
 require("dotenv").config();
-const Application = require("./app/server");
+const Application = require("./src/server");
 new Application(process.env.PORT,process.env.MONGODB_URI)
