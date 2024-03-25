@@ -3,7 +3,7 @@ const { UserModel } = require("../../../models/user");
 const createHttpError = require("http-errors");
 const { randomInt } = require("crypto");
 const { AuthMessage } = require("../../Messages/user/auth.messages");
-const { unSupportedString } = require("../../../common/utils/function");
+const { unSupportedString, RandomeNumberGenerator } = require("../../../common/utils/function");
 const { expiresOTP, yearPerSecond, ROLES } = require("../../../common/constant/constantVar");
 const jwt = require("jsonwebtoken");
 const { log } = require("console");
@@ -28,7 +28,7 @@ class AuthService {
         };
         //create otp code
         const otp = {
-            code: randomInt(10000, 99999),
+            code: await RandomeNumberGenerator(5),
             expiresIn: now + expiresOTP
         };
         // sign up user

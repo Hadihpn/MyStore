@@ -4,12 +4,7 @@
  *      name: Indexpage
  *      description: User routes
  */
-/**
- * @swagger
- *  tags:
- *      name: User-Authentication
- *      description: user-auth section
- */
+
 /**
  * @swagger
  *  components:
@@ -47,7 +42,7 @@
  *      summary: create new option for category
  *      description: one time password
  *      tags:
- *          -   User-Authentication
+ *          -   [User-Authentication]
  *      requestBody:
  *          content:
  *              application/x-www-form-urlencoded:
