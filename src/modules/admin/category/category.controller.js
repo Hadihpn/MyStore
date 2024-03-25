@@ -11,7 +11,7 @@ class CategoryController  {
     }
     async addCategory(req, res, next) {
         try {
-            await addCategorySchema.validateAsync(req.body)
+            await addCategorySchema.validateAsync(req.body);
             const { title, slug, icon, parent } = req.body;
             await this.#services.creatCategory({ title, slug, icon, parent })
             return res.status(200).json({
