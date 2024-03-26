@@ -6,6 +6,7 @@ router.post("/addCategory", categoryController.addCategory);
 router.get("/allCategory", categoryController.getCategories);
 router.get("/parents", categoryController.getParents);
 router.get("/children/:parent", categoryController.getChildrenOfParent);
+router.delete("/remove/:id", categoryController.removeCategory);
 
 module.exports = {
     CategoryRoutes: router

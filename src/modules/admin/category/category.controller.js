@@ -66,6 +66,18 @@ class CategoryController {
             next(error)
         }
     }
+    async removeCategory(req, res, next) {
+        try {
+            const { id } = req.params;
+            await this.#services.removeCategory(id);
+            const categories = await this.#services.getAllCategory();
+            return res.status(200).json({
+                data: categories
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
     getCategoryById(req, res, next) {
         try {
 

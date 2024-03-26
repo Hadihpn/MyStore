@@ -19,10 +19,11 @@ class CategoryService {
             categoryDto.parents = [
                 ... new Set(
                     ([existedCategory._id.toString()].concat(
-                        existedCategory.parents.map(id => id.toString)
+                        existedCategory.parents.map(id => id.toString())
                     )).map(id => new Types.ObjectId(id))
                 )
             ]
+            console.log(categoryDto.parents);
         }
         if (categoryDto.slug) {
             categoryDto.slug = slugify(categoryDto.slug.toString().toLowerCase());
@@ -34,31 +35,56 @@ class CategoryService {
         await this.#model.create(categoryDto);
     }
     async getAllCategory() {
-        return await this.#model.aggregate([
-            {$lookup:{
-                from:"categories",
-                localField:"_id",
-                foreignField:"parent",
-                as: "children"
-            }},
-            {
-                $project:{
-                    __v:0,
-                    "children.__v" :0,
-                    "children.parent" :0,
-                }
-            }
-        ])
-        
+        return await this.#model.find({ parent: { $exists: false } }).populate([{ path: "children" }])
+        // return await this.#model.aggregate([
+        //     {
+        //         $lookup: {
+        //             from: "categories",
+        //             localField: "_id",
+        //             foreignField: "parent",
+        //             as: "children"
+        //         }
+        //     },
+        //     {
+        //         $match: {
+        //             parent: { $exists: false }
+        //         }
+        //     },
+        //     {
+        //         $project: {
+        //             __v: 0,
+        //             "children.__v": 0,
+        //             "children.parent": 0,
+
+        //         }
+        //     }
+        // ])
+
     }
     async getParentsCategory() {
         return await this.#model.find({ parent: undefined })
     }
     async getChildrenOfParent(parent) {
-        return await this.#model.find({ parent }, { __v: 0, parent: 0,parents:0 })
+        return await this.#model.find({ parent }, { __v: 0, parent: 0, parents: 0 })
     }
-    async checkExistById(id) {
-        const category = this.#model.findById(id)
+    async removeCategory(_id) {
+        try {
+            await this.checkExistById(_id);
+            const children = await this.getChildrenOfParent(_id)
+            if(children){
+                for (const item of children) {
+                     this.removeCategory(children._id)
+                }
+            }
+            else{
+                await this.#model.deleteOne(children)
+            }
+        } catch (error) {
+            next(error)
+        }
+    }
+    async checkExistById(_id) {
+        const category = this.#model.findOne({ _id })
         if (!category) throw new createHttpError.NotFound(CategoryMessage.WrongParentId)
         return category;
     }
