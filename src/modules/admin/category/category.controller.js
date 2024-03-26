@@ -52,6 +52,17 @@ class CategoryController {
             next(error)
         }
     }
+    async getChildrenOfParent(req, res, next) {
+        try {
+            const { parent } = req.params;
+            const categories = await this.#services.getChildrenOfParent(parent);
+            return res.status(200).json({
+                data: categories
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
     getCategoryById(req, res, next) {
         try {
 
@@ -59,7 +70,7 @@ class CategoryController {
             next(error)
         }
     }
-    getChild(req, res, next) {
+    async getChild(req, res, next) {
         try {
 
         } catch (error) {

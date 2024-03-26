@@ -130,3 +130,23 @@
  *              description: Not Found
  *              
  */
+/**
+ * @swagger
+ * /admin/category/children/{parent}:
+ *  get:
+ *      summary: get the children of sub category
+ *      description: get all children of sub category
+ *      tags:
+ *          - [AdminPanel-Category]
+ *      parameters:
+ *          -   in: path
+ *              name: parent
+ *              type: string
+ *              required: true
+ *      responses:
+ *          200: 
+ *              description: successfully
+ *          404: 
+ *              description: Not Found
+ *              
+ */

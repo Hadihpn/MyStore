@@ -4,6 +4,7 @@ const router = require("express").Router();
 
 router.post("/addCategory", categoryController.addCategory);
 router.get("/parents", categoryController.getParents);
+router.get("/children/:parent", categoryController.getChildrenOfParent);
 
 module.exports = {
     CategoryRoutes: router

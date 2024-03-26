@@ -24,11 +24,6 @@ class CategoryService {
                 )
             ]
         }
-        // const zzz = slugify(categoryDto.slug.toString().toLowerCase ());
-        // console.log("zzz" + zzz);
-        // const category = await this.#model.findOne({zzz})
-        // console.log("category" + category);
-
         if (categoryDto.slug) {
             categoryDto.slug = slugify(categoryDto.slug.toString().toLowerCase());
         }
@@ -40,6 +35,9 @@ class CategoryService {
     }
     async getParentsCategory() {
         return await this.#model.find({ parent: undefined })
+    }
+    async getChildrenOfParent(id) {
+        return await this.#model.find({ parent: id })
     }
     async checkExistById(id) {
         const category = this.#model.findById(id)
