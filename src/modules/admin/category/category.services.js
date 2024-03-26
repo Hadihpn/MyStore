@@ -30,13 +30,16 @@ class CategoryService {
         // console.log("category" + category);
 
         if (categoryDto.slug) {
-            categoryDto.slug = slugify(categoryDto.slug.toString().toLowerCase ());
+            categoryDto.slug = slugify(categoryDto.slug.toString().toLowerCase());
         }
         else {
-            categoryDto.slug = slugify(categoryDto.name.toString().toLowerCase ())
+            categoryDto.slug = slugify(categoryDto.name.toString().toLowerCase())
         }
         await this.alreadyExistBySlug(categoryDto.slug)
         await this.#model.create(categoryDto);
+    }
+    async getParentsCategory() {
+        return await this.#model.find({ parent: undefined })
     }
     async checkExistById(id) {
         const category = this.#model.findById(id)
@@ -44,9 +47,7 @@ class CategoryService {
         return category;
     }
     async alreadyExistBySlug(slug) {
-        console.log(slug);
-        const category = await this.#model.findOne({ slug:"firstcategoryslug" });
-        console.log(category);
+        const category = await this.#model.findOne({ slug });
         if (category) throw new createHttpError.Conflict(CategoryMessage.alreadyExistedSlug)
         return false;
     }

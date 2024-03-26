@@ -45,7 +45,7 @@
  *      summary: create new category 
  *      description: here u can add new category
  *      tags:
- *          -   [Category]
+ *          -   [AdminPanel-Category]
  *      requestBody:
  *          content:
  *              application/x-www-form-urlencoded:
@@ -117,12 +117,12 @@
 
 /**
  * @swagger
- * /:
+ * /admin/category/parents:
  *  get:
- *      summary: Main routes
- *      description: get all need data for index page
+ *      summary: get the sub categories
+ *      description: get all categories that have any parent
  *      tags:
- *          - Indexpage
+ *          - [AdminPanel-Category]
  *      responses:
  *          200: 
  *              description: successfully

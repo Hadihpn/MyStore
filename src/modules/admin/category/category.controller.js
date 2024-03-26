@@ -3,11 +3,11 @@ const { CategoryMessage } = require("./category.messages");
 const categoryServices = require("./category.services");
 // const Controller = require("../../../../app/http/controllers/controller");
 const autoBind = require("auto-bind")
-class CategoryController  {
+class CategoryController {
     #services
     constructor() {
         autoBind(this);
-       this.#services = categoryServices
+        this.#services = categoryServices
     }
     async addCategory(req, res, next) {
         try {
@@ -15,7 +15,7 @@ class CategoryController  {
             const { title, slug, icon, parent } = req.body;
             await this.#services.creatCategory({ title, slug, icon, parent })
             return res.status(200).json({
-                message:CategoryMessage.Create
+                message: CategoryMessage.Create
             })
         } catch (error) {
             next(error)
@@ -42,9 +42,12 @@ class CategoryController  {
             next(error)
         }
     }
-    getHeadCategories(req, res, next) {
+    async getParents(req, res, next) {
         try {
-
+            const categories = await this.#services.getParentsCategory();
+            return res.status(200).json({
+                data: categories
+            })
         } catch (error) {
             next(error)
         }
