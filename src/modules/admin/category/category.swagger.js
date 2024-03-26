@@ -117,6 +117,21 @@
 
 /**
  * @swagger
+ * /admin/category/allCategory:
+ *  get:
+ *      summary: get the All categories
+ *      description: get all categories 
+ *      tags:
+ *          - [AdminPanel-Category]
+ *      responses:
+ *          200: 
+ *              description: successfully
+ *          404: 
+ *              description: Not Found
+ *              
+ */
+/**
+ * @swagger
  * /admin/category/parents:
  *  get:
  *      summary: get the sub categories

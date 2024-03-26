@@ -33,11 +33,29 @@ class CategoryService {
         await this.alreadyExistBySlug(categoryDto.slug)
         await this.#model.create(categoryDto);
     }
+    async getAllCategory() {
+        return await this.#model.aggregate([
+            {$lookup:{
+                from:"categories",
+                localField:"_id",
+                foreignField:"parent",
+                as: "children"
+            }},
+            {
+                $project:{
+                    __v:0,
+                    "children.__v" :0,
+                    "children.parent" :0,
+                }
+            }
+        ])
+        
+    }
     async getParentsCategory() {
         return await this.#model.find({ parent: undefined })
     }
-    async getChildrenOfParent(id) {
-        return await this.#model.find({ parent: id })
+    async getChildrenOfParent(parent) {
+        return await this.#model.find({ parent }, { __v: 0, parent: 0,parents:0 })
     }
     async checkExistById(id) {
         const category = this.#model.findById(id)
