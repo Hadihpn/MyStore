@@ -207,6 +207,30 @@
  */
 /**
  * @swagger
+ * /admin/category/edit/{id}:
+ *  patch:
+ *      summary: edit category
+ *      description: edit title of category by id
+ *      tags:
+ *          - [AdminPanel-Category]
+ *      parameters:
+ *          -   in: path
+ *              name: id
+ *              type: string
+ *              required: true
+ *          -   in: formData
+ *              name: title
+ *              type: string
+ *              required: true
+ *      responses:
+ *          200: 
+ *              description: successfully
+ *          404: 
+ *              description: Not Found
+ *              
+ */
+/**
+ * @swagger
  * /admin/category/remove/{id}:
  *  delete:
  *      summary: remove category

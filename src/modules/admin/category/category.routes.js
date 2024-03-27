@@ -8,6 +8,7 @@ router.get("/allCategory", categoryController.getCategories);
 router.get("/parents", categoryController.getParents);
 router.get("/child/:parent", categoryController.getChildOfParent);
 router.get("/children/:parent", categoryController.getChildrenOfParent);
+router.patch("/edit/:id", categoryController.editCategory);
 router.delete("/remove/:id", categoryController.removeCategory);
 
 module.exports = {

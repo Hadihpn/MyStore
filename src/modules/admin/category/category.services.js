@@ -97,12 +97,20 @@ class CategoryService {
     async getChildrenOfParent(parent) {
         return await this.#model.find({ parents: { $in: parent } }, { __v: 0, parent: 0, parents: 0 })
     }
+    async getChildrenOfParent(parent) {
+        return await this.#model.find({ parents: { $in: parent } }, { __v: 0, parent: 0, parents: 0 })
+    }
+    async editCategory(id, title) {
+        await this.checkExistById(id);
+        const resultOfUpdate = await this.#model.updateOne({ _id: id }, { $set: title })
+        return resultOfUpdate;
+    }
     async removeCategory(_id) {
         try {
             const category = await this.checkExistById(_id);
             await this.#model.deleteMany({
                 $or: [
-                    { _id:category._id },
+                    { _id: category._id },
                     { parents: { $in: category._id } }
                 ]
             })

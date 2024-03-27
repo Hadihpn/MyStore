@@ -1,4 +1,5 @@
-const { addCategorySchema } = require("../../../common/validators/admin/category.schema");
+const createHttpError = require("http-errors");
+const { addCategorySchema, updateCategorySchema } = require("../../../common/validators/admin/category.schema");
 const { CategoryMessage } = require("./category.messages");
 const categoryServices = require("./category.services");
 // const Controller = require("../../../../app/http/controllers/controller");
@@ -28,9 +29,17 @@ class CategoryController {
             next(error)
         }
     }
-    editCategory(req, res, next) {
+    async editCategory(req, res, next) {
         try {
-
+            const { id } = req.params;
+            const { title } = req.body;
+            await updateCategorySchema.validateAsync(req.body);
+            const resultOfUpdate = await this.#services.editCategory(id, title);
+            if (resultOfUpdate.modifiedCount == 0) throw createHttpError.InternalServerError("nothing been updated")
+            return res.status(200).json({
+                statusCode:200,
+                message:"the category update successfully"
+            })
         } catch (error) {
             next(error)
         }
@@ -89,23 +98,17 @@ class CategoryController {
             next(error)
         }
     }
-   async getCategoryById(req, res, next) {
+    async getCategoryById(req, res, next) {
         try {
             const { id } = req.params;
-           const category= await this.#services.getCategoryById(id);
-           return res.status(200).json({
-            data: category
-        })
+            const category = await this.#services.getCategoryById(id);
+            return res.status(200).json({
+                data: category
+            })
         } catch (error) {
             next(error)
         }
     }
-    async getChild(req, res, next) {
-        try {
 
-        } catch (error) {
-            next(error)
-        }
-    }
 }
 module.exports = new CategoryController()
