@@ -34,7 +34,7 @@ class CategoryService {
         await this.#model.create(categoryDto);
     }
     async getAllCategory() {
-        return await this.#model.find({ parent: { $exists: false } }).populate([{ path: "children" }])
+        // return await this.#model.find({ parent: { $exists: false } }).populate([{ path: "children" }])
         // return await this.#model.aggregate([
         //     {
         //         $lookup: {
@@ -46,7 +46,7 @@ class CategoryService {
         //     },
         //     {
         //         $match: {
-        //             parent: { $exists: false }
+        //             parent: undefined
         //         }
         //     },
         //     {
@@ -58,7 +58,35 @@ class CategoryService {
         //         }
         //     }
         // ])
+        return await this.#model.aggregate([
+            {
+                $graphLookup: {
+                    from: "categories",
+                    startWith: "$_id",
+                    connectFromField: "_id",
+                    connectToField: "parent",
+                    maxDepth: 5,
+                    depthField: "depth",
+                    as: "children"
+                }
+            },
+            {
+                $match: {
+                    parent: undefined
+                }
+            },
+            {
+                $project: {
+                    __v: 0,
+                    "children.__v": 0,
+                    "children.parent": 0,
 
+                }
+            }
+        ])
+    }
+    async getCategoryById(id) {
+        return await this.#model.findById(id).populate([{ path: "children" }])
     }
     async getParentsCategory() {
         return await this.#model.find({ parent: undefined })
@@ -67,21 +95,26 @@ class CategoryService {
         return await this.#model.find({ parent }, { __v: 0, parent: 0, parents: 0 })
     }
     async getChildrenOfParent(parent) {
-        return await this.#model.find({parents:{$in:parent}}, { __v: 0, parent: 0, parents: 0 })
+        return await this.#model.find({ parents: { $in: parent } }, { __v: 0, parent: 0, parents: 0 })
     }
     async removeCategory(_id) {
         try {
             const category = await this.checkExistById(_id);
-            const children = await this.getChildrenOfParent(_id)
-           
-            if (children) {
-                for (const item of children) {
-                    let _id = item._id;
-                    await this.#model.deleteOne({_id })
+            await this.#model.deleteMany({
+                $or: [
+                    { _id:category._id },
+                    { parents: { $in: category._id } }
+                ]
+            })
+            // const children = await this.getChildrenOfParent(_id)
+            // if (children) {
+            //     for (const item of children) {
+            //         let _id = item._id;
+            //         await this.#model.deleteOne({ _id })
 
-                }
-            }
-            await this.#model.deleteOne({ _id })
+            //     }
+            // }
+            // await this.#model.deleteOne({ _id })
         } catch (error) {
             next(error)
         }

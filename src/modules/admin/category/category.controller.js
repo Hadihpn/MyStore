@@ -89,9 +89,13 @@ class CategoryController {
             next(error)
         }
     }
-    getCategoryById(req, res, next) {
+   async getCategoryById(req, res, next) {
         try {
-
+            const { id } = req.params;
+           const category= await this.#services.getCategoryById(id);
+           return res.status(200).json({
+            data: category
+        })
         } catch (error) {
             next(error)
         }

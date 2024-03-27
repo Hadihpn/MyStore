@@ -147,6 +147,26 @@
  */
 /**
  * @swagger
+ * /admin/category/getCategory/{id}:
+ *  get:
+ *      summary: get  category by id
+ *      description: get any category just by id
+ *      tags:
+ *          - [AdminPanel-Category]
+ *      parameters:
+ *          -   in: path
+ *              name: id
+ *              type: string
+ *              required: true
+ *      responses:
+ *          200: 
+ *              description: successfully
+ *          404: 
+ *              description: Not Found
+ *              
+ */
+/**
+ * @swagger
  * /admin/category/child/{parent}:
  *  get:
  *      summary: get the child of sub category
