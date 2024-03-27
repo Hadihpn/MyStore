@@ -55,6 +55,17 @@ class CategoryController {
             next(error)
         }
     }
+    async getChildOfParent(req, res, next) {
+        try {
+            const { parent } = req.params;
+            const categories = await this.#services.getChildOfParent(parent);
+            return res.status(200).json({
+                data: categories
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
     async getChildrenOfParent(req, res, next) {
         try {
             const { parent } = req.params;

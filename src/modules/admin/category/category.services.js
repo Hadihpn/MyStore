@@ -23,7 +23,6 @@ class CategoryService {
                     )).map(id => new Types.ObjectId(id))
                 )
             ]
-            console.log(categoryDto.parents);
         }
         if (categoryDto.slug) {
             categoryDto.slug = slugify(categoryDto.slug.toString().toLowerCase());
@@ -64,21 +63,25 @@ class CategoryService {
     async getParentsCategory() {
         return await this.#model.find({ parent: undefined })
     }
-    async getChildrenOfParent(parent) {
+    async getChildOfParent(parent) {
         return await this.#model.find({ parent }, { __v: 0, parent: 0, parents: 0 })
+    }
+    async getChildrenOfParent(parent) {
+        return await this.#model.find({parents:{$in:parent}}, { __v: 0, parent: 0, parents: 0 })
     }
     async removeCategory(_id) {
         try {
-            await this.checkExistById(_id);
+            const category = await this.checkExistById(_id);
             const children = await this.getChildrenOfParent(_id)
-            if(children){
+           
+            if (children) {
                 for (const item of children) {
-                     this.removeCategory(children._id)
+                    let _id = item._id;
+                    await this.#model.deleteOne({_id })
+
                 }
             }
-            else{
-                await this.#model.deleteOne(children)
-            }
+            await this.#model.deleteOne({ _id })
         } catch (error) {
             next(error)
         }
