@@ -33,6 +33,7 @@ class CategoryController {
         try {
             const { id } = req.params;
             const { title } = req.body;
+            console.log(title);
             await updateCategorySchema.validateAsync(req.body);
             const resultOfUpdate = await this.#services.editCategory(id, title);
             if (resultOfUpdate.modifiedCount == 0) throw createHttpError.InternalServerError("nothing been updated")

@@ -102,7 +102,8 @@ class CategoryService {
     }
     async editCategory(id, title) {
         await this.checkExistById(id);
-        const resultOfUpdate = await this.#model.updateOne({ _id: id }, { $set: title })
+        console.log(title);
+        const resultOfUpdate = await this.#model.updateOne({ _id: id }, { $set: {title} })
         return resultOfUpdate;
     }
     async removeCategory(_id) {

@@ -19,6 +19,13 @@
  *                  type: string  
  *              parent:
  *                  type: string  
+ *        EditCategory:
+ *          type: object  
+ *          required:
+ *              - title
+ *          properties:
+ *              title:
+ *                  type: string  
  *        CheckOtp:
  *          type: object  
  *          required:
@@ -218,15 +225,19 @@
  *              name: id
  *              type: string
  *              required: true
- *          -   in: formData
- *              name: title
- *              type: string
- *              required: true
+ *      requestBody:
+ *          content:
+ *              application/x-www-form-urlencoded:
+ *                  schema:
+ *                      $ref: '#/components/schemas/EditCategory'
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/EditCategory'
  *      responses:
  *          200: 
  *              description: successfully
- *          404: 
- *              description: Not Found
+ *          500: 
+ *              description: Internal Server Error
  *              
  */
 /**
