@@ -7,5 +7,8 @@ class BlogServices {
         autoBind(this);
         this.#model = BlogModel;
     }
+    async createBlog(blogDto){
+        await this.#model.create(blogDto)
+    }
 }
 module.exports = new BlogServices()
