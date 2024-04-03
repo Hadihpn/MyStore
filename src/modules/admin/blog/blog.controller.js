@@ -1,6 +1,8 @@
 const autobind = require("auto-bind");
 const blogServices = require("./blog.services");
 const { createBlogSchema } = require("../../../common/validators/admin/blog.shema");
+const { deleteFileInPublic } = require("../../../common/utils/function");
+const path = require("path")
 class BlogController {
     #service
     constructor() {
@@ -11,10 +13,15 @@ class BlogController {
         try {
 
             const blogDataBody = await createBlogSchema.validateAsync(req.body);
-            req.body.image = path.join(blogDataBody.fileUploadPath, blogDataBody.filename).replace(/\\/g, "/")
-            const { title, text, short_text, category, tags, image } = req.body;
-            await this.#service.createBlog({ title, text, short_text, category, tags, image })
-            return res.json(blogDataBody)
+            const uploadPath = blogDataBody.fileUploadPath.toString().replace(/\\/g, "/")
+            req.body.image = path.join(uploadPath, blogDataBody.filename).toString()
+            const { author, title, text, short_text, category, tags, image } = req.body;
+            await this.#service.createBlog({ author, title, text, short_text, category, tags, image })
+            return res.status(201).json({
+                statusCode: 201,
+                message: "بلاگ با موفقیت ایجاد شد",
+                data: blogDataBody
+            })
         } catch (error) {
             deleteFileInPublic(req.body.image)
             next(error)
@@ -29,8 +36,9 @@ class BlogController {
     }
     async getListOfBlogs(req, res, next) {
         try {
+            const blogs = await this.#service.getListOfBlogs()
             return res.status(200).json({
-                blog: []
+                blog: blogs
             })
         } catch (error) {
             next(error)

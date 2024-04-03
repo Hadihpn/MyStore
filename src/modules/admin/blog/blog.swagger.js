@@ -5,6 +5,7 @@
  *          Blog:
  *              type: object
  *              required:
+ *                  -   author
  *                  -   title
  *                  -   short_text
  *                  -   text
@@ -12,6 +13,9 @@
  *                  -   category
  *                  -   image
  *              properties:
+ *                  author:
+ *                      type: string
+ *                      description: the id of author
  *                  title:
  *                      type: string
  *                      description: the title of category
@@ -56,7 +60,7 @@
 
 /**
  * @swagger
- *  /admin/blogs:
+ *  /admin/blog:
  *      get:
  *          tags: [ Blog(AdminPanel)]
  *          summary: get all blogs

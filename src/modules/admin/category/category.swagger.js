@@ -72,55 +72,6 @@
  *              description: InternalServer Error
  */
 
-/**
- * @swagger
- * /user/checkOtp:
- *  post:
- *      summary: enter the otp code for login
- *      description: enter the code that has been sent to user
- *      tags:
- *          -   [User-Authentication]
- *      requestBody:
- *          content:
- *              application/x-www-form-urlencoded:
- *                  schema:
- *                      $ref: '#/components/schemas/CheckOtp'
- *              application/json:
- *                  schema:
- *                      $ref: '#/components/schemas/CheckOtp'
- *      responses:
- *          201: 
- *              description: created
- *          400: 
- *              description: bad request
- *          401: 
- *              description: unAuthorize
- *          500: 
- *              description: InternalServer Error
- */
-
-/**
- * @swagger
- * /user/refreshToken:
- *  post:
- *      summary: send refresh token to get new token and refresh token
- *      description: refresh token
- *      tags:
- *          -   [User-Authentication]
- *      requestBody:
- *          content:
- *              application/x-www-form-urlencoded:
- *                  schema:
- *                      $ref: '#/components/schemas/RefreshToken'
- *              application/json:
- *                  schema:
- *                      $ref: '#/components/schemas/RefreshToken'
- *    
- *      responses:
- *          200: 
- *              description: success
- *         
- */
 
 /**
  * @swagger
