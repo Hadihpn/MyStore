@@ -22,16 +22,18 @@ class BlogServices {
                     localField: "author",
                     as: "author"
                 }
-            },{
-                $unwind:"$author"
+            }, {
+                $unwind: "$author"
             },
-            {$project:{
-                "author.accessToken":0,
-                "author.__v":0,
-                "author.verifiedMobile":0,
-                "author.roles":0,
-                "author.otp":0,
-            }},
+            {
+                $project: {
+                    "author.accessToken": 0,
+                    "author.__v": 0,
+                    "author.verifiedMobile": 0,
+                    "author.roles": 0,
+                    "author.otp": 0,
+                }
+            },
             {
                 $lookup: {
                     from: "categories",
@@ -39,17 +41,20 @@ class BlogServices {
                     localField: "category",
                     as: "category"
                 }
-            },{
-                $unwind:"$category"
+            }, {
+                $unwind: "$category"
             },
         ])
         return blogs
     }
-    async getBlogById(_id){
+    async getBlogById(_id) {
         return await this.#model.findById(_id);
     }
-    async deleteBlogById(_id){
-        return await this.#model.deleteOne({_id});
+
+    async deleteBlogById(_id) {
+        const blog = await this.getBlogById(_id)
+        await this.#model.deleteOne({ _id });
+        return blog.image;
     }
 
 }

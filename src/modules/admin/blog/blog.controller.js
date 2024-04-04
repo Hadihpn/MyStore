@@ -40,6 +40,7 @@ class BlogController {
             next(error)
         }
     }
+
     async getListOfBlogs(req, res, next) {
         try {
             const blogs = await this.#service.getListOfBlogs()
@@ -53,7 +54,8 @@ class BlogController {
     async deleteBlog(req, res, next) {
         try {
             const { id } = req.params;
-            await this.#service.deleteBlogById(id)
+            const imageAddress = await this.#service.deleteBlogById(id)
+            deleteFileInPublic(imageAddress);
             return res.status(200).json({
                 message: "بلاگ مربوطه با موفقیت حذف شد"
             })
