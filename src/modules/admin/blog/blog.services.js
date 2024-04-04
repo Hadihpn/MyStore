@@ -45,5 +45,10 @@ class BlogServices {
         ])
         return blogs
     }
+    async getBlogById(_id){
+        return await this.#model.findById(_id);
+    }
+    
+
 }
 module.exports = new BlogServices()

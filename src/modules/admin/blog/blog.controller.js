@@ -2,7 +2,8 @@ const autobind = require("auto-bind");
 const blogServices = require("./blog.services");
 const { createBlogSchema } = require("../../../common/validators/admin/blog.shema");
 const { deleteFileInPublic } = require("../../../common/utils/function");
-const path = require("path")
+const path = require("path");
+const createHttpError = require("http-errors");
 class BlogController {
     #service
     constructor() {
@@ -29,7 +30,12 @@ class BlogController {
     }
     async getBlogById(req, res, next) {
         try {
-
+            const { id } = req.params;
+            const blog = await this.#service.getBlogById(id);
+            if (!blog) throw new createHttpError.NotFound("بلاگ مربوطه یافت نشد");
+            return res.status(200).json({
+                blog: blog
+            })
         } catch (error) {
             next(error)
         }
@@ -44,13 +50,7 @@ class BlogController {
             next(error)
         }
     }
-    async deleteBlog(req, res, next) {
-        try {
-
-        } catch (error) {
-            next(error)
-        }
-    }
+    
     async updateBlog(req, res, next) {
         try {
 

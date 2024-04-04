@@ -86,7 +86,7 @@
  */
 /**
  * @swagger
- *  /admin/blogs/update/{id}:
+ *  /admin/blog/update/{id}:
  *      patch:
  *          tags: [ Blog(AdminPanel)]
  *          summary: update  Blog document by id 
@@ -110,7 +110,7 @@
 
 /**
  * @swagger
- *  /admin/blogs/{id}:
+ *  /admin/blog/{id}:
  *      get:
  *          summary: get blog by ID and populate this field 
  *          tags: [ Blog(AdminPanel) ]
@@ -123,18 +123,4 @@
  *              200:
  *                  description: success
  */
-/**
- * @swagger
- *  /admin/blogs/{id}:
- *      delete:
- *          summary: remove blog by ID 
- *          tags: [ Blog(AdminPanel) ]
- *          parameters:
- *              -   in: path
- *                  name: id
- *                  type: string
- *                  required: true
- *          responses:
- *              200:
- *                  description: success
- */
+
