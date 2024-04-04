@@ -47,10 +47,15 @@ class BlogServices {
         ])
         return blogs
     }
-    async getBlogById(_id) {
-        return await this.#model.findById(_id);
+    async editBlog(id,data){
+        return await this.#model.updateOne({_id:id},{$set:data});
     }
-
+    async getBlogById(_id) {
+        return await this.#model.findById(_id).populate([{ path: "category_detail", select: { title: 1 } }, { path: "author_detail" , select: { phone: 1 }}])
+    }
+    async getBlogByQurey(query = {}) {
+        return await this.#model.find(query).populate([{ path: "category_detail" }, { path: "author_detail" }]);
+    }
     async deleteBlogById(_id) {
         const blog = await this.getBlogById(_id)
         await this.#model.deleteOne({ _id });

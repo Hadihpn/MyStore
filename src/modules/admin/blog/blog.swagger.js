@@ -86,7 +86,7 @@
  */
 /**
  * @swagger
- *  /admin/blog/update/{id}:
+ *  /admin/blog/edit/{id}:
  *      patch:
  *          tags: [ Blog(AdminPanel)]
  *          summary: update  Blog document by id 
@@ -94,9 +94,9 @@
  *              -   multipart/form-data
  *          parameters:
  *              -   in: path
- *                  required: true
  *                  name: id
  *                  type: string
+ *                  required: true
  *          requestBody:
  *              required: true
  *              content:

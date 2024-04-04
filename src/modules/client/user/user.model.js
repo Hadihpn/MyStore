@@ -19,7 +19,7 @@ const UserSchema = new Schema({
     accessToken: { type: String },
     refreshToken: { type: String },
     verifiedMobile: { type: Boolean, default: false, required: true },
-})
+}, { timestamps: true, toJSON: { virtuals: true } })
 
 const UserModel = model("user", UserSchema);
 module.exports = { UserModel };
