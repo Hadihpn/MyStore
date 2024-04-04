@@ -124,3 +124,18 @@
  *                  description: success
  */
 
+/**
+ * @swagger
+ *  /admin/blog/delete/{id}:
+ *      delete:
+ *          summary: remove blog by ID 
+ *          tags: [ Blog(AdminPanel) ]
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: success
+ */

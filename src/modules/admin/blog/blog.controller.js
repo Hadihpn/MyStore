@@ -50,7 +50,17 @@ class BlogController {
             next(error)
         }
     }
-    
+    async deleteBlog(req, res, next) {
+        try {
+            const { id } = req.params;
+            await this.#service.deleteBlogById(id)
+            return res.status(200).json({
+                message: "بلاگ مربوطه با موفقیت حذف شد"
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
     async updateBlog(req, res, next) {
         try {
 

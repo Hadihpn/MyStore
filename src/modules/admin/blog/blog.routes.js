@@ -6,6 +6,7 @@ const router = require("express").Router();
 router.post("/createBlog",uploadFile.single("image"),stringToArray("tags"),blogController.createBlog)
 router.get("/",blogController.getListOfBlogs)
 router.get("/:id",blogController.getBlogById)
+router.delete("/delete/:id",blogController.deleteBlog)
 module.exports ={
     BlogRoutes:router
 }

@@ -48,7 +48,9 @@ class BlogServices {
     async getBlogById(_id){
         return await this.#model.findById(_id);
     }
-    
+    async deleteBlogById(_id){
+        return await this.#model.deleteOne({_id});
+    }
 
 }
 module.exports = new BlogServices()
