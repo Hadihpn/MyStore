@@ -29,7 +29,9 @@
  *                      type: string
  *                      description: the list of tags for example(tag1#tag2#tag_foo)
  *                  category:
- *                      type: string
+ *                      type: array
+ *                      items: 
+ *                          type: string
  *                      description: the id of category for foreinField in blog
  *                  image:
  *                      type: file
@@ -50,7 +52,9 @@
  *                      type: string
  *                      description: the list of tags for example(tag1#tag2#tag_foo)
  *                  category:
- *                      type: string
+ *                      type: array
+ *                      items: 
+ *                          type: string
  *                      description: the id of category for foreinField in blog
  *                  image:
  *                      type: file

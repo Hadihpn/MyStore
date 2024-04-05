@@ -3,7 +3,9 @@ const stringToArray = function (field) {
         if (req.body[field]) {
             if (typeof req.body[field] == "string") {
                 if (req.body[field].indexOf("#") >= 0) {
+                    let x =req.body[field].split("#");
                     req.body[field] = (req.body[field].split("#")).map(item => item.trim())
+                    req.body[field].shift()
                 }
             } else if ((req.body[field].constructor).toString().toLowerCase().indexOf("array") >= 0) {
                 req.body[field] = req.body[field].map(item => item.trim())

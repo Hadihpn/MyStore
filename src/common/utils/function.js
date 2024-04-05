@@ -2,7 +2,7 @@ const { randomInt } = require("crypto");
 const { randomNumberDigit } = require("../validators/developer/func.schema");
 const fs = require("fs");
 const path = require("path");
-async function RandomeNumberGenerator(digits){
+async function RandomeNumberGenerator(digits) {
     const start = 10 ** (digits - 1)
     const end = "9".repeat(digits)
     return randomInt(start, parseInt(end));
@@ -16,9 +16,11 @@ const removePropertyInObject = (target = {}, properties = []) => {
     }
     return target;
 }
-function deleteFileInPublic(fileAddress){
-    const pathFile = path.join(__dirname,"..","..","..","public",fileAddress)
-    fs.unlinkSync(pathFile)
+function deleteFileInPublic(fileAddress) {
+  if(fileAddress){
+    const pathFile = path.join(__dirname, "..", "..", "..", "public", fileAddress)
+    if (fs.existsSync(pathFile)) fs.unlinkSync(pathFile)
+  }
 }
 module.exports = {
     unSupportedString,

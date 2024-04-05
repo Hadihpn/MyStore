@@ -12,7 +12,7 @@ class BlogController {
     }
     async createBlog(req, res, next) {
         try {
-
+            if (req?.body?.category) req.body.category = req.body.category.split(",");
             const blogDataBody = await createBlogSchema.validateAsync(req.body);
             const uploadPath = blogDataBody.fileUploadPath.toString().replace(/\\/g, "/")
             req.body.image = path.join(uploadPath, blogDataBody.filename).toString()
@@ -21,8 +21,9 @@ class BlogController {
             return res.status(201).json({
                 statusCode: 201,
                 message: "بلاگ با موفقیت ایجاد شد",
-                data: blogDataBody
+                data: blogDataBody,
             })
+            console.log(req.body.tags);
         } catch (error) {
             deleteFileInPublic(req.body.image)
             next(error)
@@ -32,6 +33,7 @@ class BlogController {
         try {
             const { id } = req.params;
             const blog = await this.#service.getBlogById(id);
+            if (req?.body?.category) req.body.category = req.body.category.split(",");
             const data = req.body;
             if (req?.body?.fileUploadPath && req?.body?.filename) {
                 const uploadPath = req.body.fileUploadPath.toString().replace(/\\/g, "/")
@@ -48,50 +50,21 @@ class BlogController {
                 if (nullishData.includes(data[key])) delete data[key];
                 blog[key] = data[key]
             })
-            const updateResult = await this.#service.editBlog(id,data);
-            if(updateResult.modifiedCount ==0) throw createHttpError.InternalServerError("بروزرسانی انجام نشد")
-            // const blogDataBody = await editBlogSchema.validateAsync(blog);
-            // console.log(data);
-            // console.log(blog);
+            const blogDataBody = editBlogSchema.validate(blog)
+            console.log(blog);
+            const updateResult = await this.#service.editBlog(id, blog);
+            if (updateResult.modifiedCount == 0) throw createHttpError.InternalServerError("بروزرسانی انجام نشد")
+            return res.status(201).json({
+                statusCode: 201,
+                message: "بلاگ با موفقیت ایجاد شد",
+                data: blogDataBody,
+            })
         } catch (error) {
+            deleteFileInPublic(req.body.image)
             next(error)
         }
     }
-    // async editBlog(req, res, next) {
-    //     try {
-    //         const { id } = req.params;
-    //         const blog = await this.#service.getBlogById(id);
-    //         if (req?.body?.fileUploadPath && req?.body?.filename) {
-    //             const uploadPath = req.body.fileUploadPath.toString().replace(/\\/g, "/")
-    //             req.body.image = path.join(uploadPath, req.body.filename).toString();
-    //         }
-    //         const data = req.body;
-    //         let nullishData = ["", " ", "0", 0, null, undefined]
-    //         let blackListField = ["bookmarks", "likes", "dislikes", "comments", "author"]
-    //         Object.keys(data).forEach(key => {
-    //             if (blackListField.includes(key)) delete data[key];
-    //             if (typeof data[key] == "string") data[key] = data[key].trim();
-    //             if (Array.isArray(data[key]) && Array.length > 0) data[key] = data[key].map(item => item.trim())
-    //             if (nullishData.includes(data[key])) delete data[key];
-    //         })
-    //         console.log(blog);
-    //         console.log(req.body);
 
-    //         const blogDataBody = await createBlogSchema.validateAsync(req.body);
-    //         const updateResult = await this.#service.editBlog(id,data);
-    //         if(updateResult.modifiedCount ==0) throw createHttpError.InternalServerError("بروزرسانی انجام نشد")
-    //         const { author, title, text, short_text, category, tags, image } = req.body;
-    //         await this.#service.createBlog({ author, title, text, short_text, category, tags, image })
-    //         return res.status(200).json({
-    //             statusCode: 200,
-    //             message: "بروززسانی بلاگ با موفقیت ایجاد شد",
-    //             data: blogDataBody
-    //         })
-    //     } catch (error) {
-    //         deleteFileInPublic(req.body.image)
-    //         next(error)
-    //     }
-    // }
     async getBlogById(req, res, next) {
         try {
             const { id } = req.params;
