@@ -23,7 +23,6 @@ class BlogController {
                 message: "بلاگ با موفقیت ایجاد شد",
                 data: blogDataBody,
             })
-            console.log(req.body.tags);
         } catch (error) {
             deleteFileInPublic(req.body.image)
             next(error)

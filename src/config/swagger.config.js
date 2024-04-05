@@ -1,6 +1,6 @@
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
-function SwaggerConfig(app){
+function SwaggerConfig(app) {
     const swaggerDocument = swaggerJsDoc({
         swaggerDefinition: {
             openapi: "3.0.1",
@@ -11,9 +11,10 @@ function SwaggerConfig(app){
             },
 
         },
+       
         apis: [process.cwd() + "/src/modules/**/*.swagger.js"]
     });
-    const swagger = swaggerUi.setup(swaggerDocument, {});
+    const swagger = swaggerUi.setup(swaggerDocument, { explorer: true });
     app.use("/swagger", swaggerUi.serve, swagger);
 }
 
