@@ -1,22 +1,27 @@
 const autoBind = require("auto-bind");
-const ProductServices = require("./product.services");
 const { addProductSchema } = require("../../../common/validators/admin/product.schema");
-
+const { deleteFileInPublic, removePathBackSlash } = require("../../../common/utils/function");
+const path = require("path");
+const productServices = require("./product.services");
 class ProductController {
     #service;
     constructor() {
         autoBind(this);
-        this.#service = ProductServices
+        this.#service = productServices
     }
     async addProduct(req,res,next) {
         try {
             // console.log(req.body.tags);
-            const productBody = await addProductSchema.validateAsync(req.body);
-            return res.json({
-                data:productBody
-            })
+            const productDataBody = await addProductSchema.validateAsync(req.body);
+            const uploadPath = removePathBackSlash(productDataBody.fileUploadPath)
+            req.body.image = path.join(uploadPath, productDataBody.filename).toString()
             const {title,text,short_text,category,price,count,dicsount,type,format,supplier} = req.body
+            await this.#service.createProduct({title,text,short_text,category,price,count,dicsount,type,format,supplier})
+            return res.json({
+                data:productDataBody
+            })
         } catch (error) {
+            deleteFileInPublic(req.body.image)
             next(error)
         }
     }

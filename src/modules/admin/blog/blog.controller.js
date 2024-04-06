@@ -1,7 +1,7 @@
 const autobind = require("auto-bind");
 const blogServices = require("./blog.services");
 const { createBlogSchema, editBlogSchema } = require("../../../common/validators/admin/blog.shema");
-const { deleteFileInPublic } = require("../../../common/utils/function");
+const { deleteFileInPublic, removePathBackSlash } = require("../../../common/utils/function");
 const path = require("path");
 const createHttpError = require("http-errors");
 class BlogController {
@@ -14,7 +14,7 @@ class BlogController {
         try {
             if (req?.body?.category) req.body.category = req.body.category.split(",");
             const blogDataBody = await createBlogSchema.validateAsync(req.body);
-            const uploadPath = blogDataBody.fileUploadPath.toString().replace(/\\/g, "/")
+            const uploadPath = removePathBackSlash(blogDataBody.fileUploadPath)
             req.body.image = path.join(uploadPath, blogDataBody.filename).toString()
             const { author, title, text, short_text, category, tags, image } = req.body;
             await this.#service.createBlog({ author, title, text, short_text, category, tags, image })

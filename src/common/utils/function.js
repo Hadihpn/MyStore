@@ -22,9 +22,14 @@ function deleteFileInPublic(fileAddress) {
     if (fs.existsSync(pathFile)) fs.unlinkSync(pathFile)
   }
 }
+function removePathBackSlash(address){
+  address = address.toString().replace(/\\/g, "/")
+  return address
+}
 module.exports = {
     unSupportedString,
     removePropertyInObject,
     RandomeNumberGenerator,
-    deleteFileInPublic
+    deleteFileInPublic,
+    removePathBackSlash
 }

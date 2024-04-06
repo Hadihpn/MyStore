@@ -9,6 +9,10 @@ class ProductServices {
   async getProducts(){
     return this.#model.find()
   }
+  async createProduct(productDto){
+     await this.#model.create(productDto)
+  }
+ 
 }
 
 module.exports = new ProductServices();
