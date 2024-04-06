@@ -6,6 +6,9 @@ class ProductServices {
     autoBind(this);
     this.#model =  ProductModel
   }
+  async getProducts(){
+    return this.#model.find()
+  }
 }
 
 module.exports = new ProductServices();

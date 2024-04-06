@@ -1,4 +1,4 @@
-const { default: mongoose } = require("mongoose");
+const { default: mongoose, Types } = require("mongoose");
 const { CommentSchema } = require("../comment/comment.model");
 const Episode = new mongoose.Schema({
     title: { type: String, required: true },
@@ -28,6 +28,7 @@ const CourseSchema = new mongoose.Schema({
     time: { type: String, default: "00:00:00" },
     teacher: { type: mongoose.Types.ObjectId, required: true },
     chapter: { type: [Chapter], default: [] },
+    students: { type: [Types.ObjectId], default: [], ref: "user" }
 })
 const CourseModel = model("Course", CourseSchema);
 module.exports = { CourseModel };

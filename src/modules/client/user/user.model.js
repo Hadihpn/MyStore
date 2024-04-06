@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, Types } = require("mongoose");
 const OTPSchema = new Schema({
     code: { type: String, required: false, default: undefined },
     expiresIn: { type: Number, required: false, default: 0 }
@@ -19,6 +19,7 @@ const UserSchema = new Schema({
     accessToken: { type: String },
     refreshToken: { type: String },
     verifiedMobile: { type: Boolean, default: false, required: true },
+    Courses: { type: [Types.ObjectId], default: [], ref: "course" }
 }, { timestamps: true, toJSON: { virtuals: true } })
 
 const UserModel = model("user", UserSchema);
