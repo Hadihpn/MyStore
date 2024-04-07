@@ -39,8 +39,10 @@
  *                      type: string
  *                      description: the id of supplier for foreinField in product
  *                  image:
- *                      type: file
- *                      description: the index picture of product
+ *                      type: array
+ *                      items:
+ *                          type: string
+ *                          format: binary
  *          productUpdate:
  *              type: object
  *              properties:
