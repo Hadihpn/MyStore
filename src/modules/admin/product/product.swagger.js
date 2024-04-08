@@ -38,7 +38,7 @@
  *                  supplier:
  *                      type: string
  *                      description: the id of supplier for foreinField in product
- *                  image:
+ *                  images:
  *                      type: array
  *                      items:
  *                          type: string

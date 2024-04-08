@@ -4,7 +4,7 @@ const { uploadFile } = require("../../../common/utils/multer");
 const { setFolderPath } = require("../../../common/middleware/setMulterUploadpath");
 const router = require("express").Router();
 
-router.post("/addProduct", setFolderPath("product"), uploadFile.single("image"), stringToArray("tags"), productController.addProduct)
+router.post("/addProduct", setFolderPath("product"), uploadFile.array("images",10), stringToArray("tags"), productController.addProduct)
 router.get("/", productController.getListOfProduct)
 router.get("/:id", productController.getProductById)
 router.patch("/editProduct/:id", productController.editProduct)

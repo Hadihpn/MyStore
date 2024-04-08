@@ -11,19 +11,19 @@ class ProductController {
         this.#service = productServices
     }
     async addProduct(req, res, next) {
+        const uploadPath = req.body.fileUploadPath
+        const images = listOfImagesFormRequest(req?.files || [], uploadPath);
         try {
-            // console.log(req.body.tags);
-            const uploadPath = removePathBackSlash(req.body.fileUploadPath)
-            const images = listOfImagesFormRequest(req?.files || [], uploadPath);
             const productDataBody = await addProductSchema.validateAsync(req.body);
             req.body.image = images
             const { title, text, short_text, category, price, count, dicsount, type, format, supplier } = req.body;
             await this.#service.createProduct({ title, text, short_text, category, price, images, count, dicsount, type, format, supplier });
             return res.json({
-                data: productDataBody
+                data: productDataBody,
+                images: images.split(",")
             })
         } catch (error) {
-            deleteFileInPublic(req.body.image)
+            deleteFileInPublic(images.split(","))
             next(error)
         }
     }

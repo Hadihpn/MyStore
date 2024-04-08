@@ -16,11 +16,13 @@ const removePropertyInObject = (target = {}, properties = []) => {
   }
   return target;
 }
-function deleteFileInPublic(fileAddress) {
-  if (fileAddress) {
-    const pathFile = path.join(__dirname, "..", "..", "..", "public", fileAddress)
-    if (fs.existsSync(pathFile)) fs.unlinkSync(pathFile)
-  }
+function deleteFileInPublic(files) {
+  Object.keys(files).forEach(item => {
+    if (item) {
+      const pathFile = path.join(__dirname, "..", "..", "..", "public", files[item])
+      if (fs.existsSync(pathFile)) fs.unlinkSync(pathFile)
+    }
+  })
 }
 function removePathBackSlash(address) {
   address = address.toString().replace(/\\/g, "/")
@@ -28,7 +30,7 @@ function removePathBackSlash(address) {
 }
 function listOfImagesFormRequest(files, fileUploadPath) {
   if (files?.length > 0) {
-    return (files.map(file => path.join(fileUploadPath, file.filename)))
+    return (files.map(file => path.join(fileUploadPath, file.filename)).toString().replace(/\\/g, "/"))
   } else {
     return []
   }

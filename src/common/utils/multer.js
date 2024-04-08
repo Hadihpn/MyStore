@@ -2,6 +2,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const createError = require("http-errors");
+const { removePathBackSlash } = require("./function");
 function createRoute(req) {
   const date = new Date();
   const year = date.getFullYear().toString();
@@ -20,7 +21,7 @@ function createRoute(req) {
     month,
     day
   );
-  req.body.fileUploadPath = path.join("uploads", folder, year, month, day);
+  req.body.fileUploadPath = removePathBackSlash(path.join("uploads", folder, year, month, day));
   fs.mkdirSync(directory, { recursive: true });
   return directory;
 }
