@@ -21,7 +21,9 @@ class ProductServices {
     await this.#model.deleteOne({_id});
     return product.images;
   }
- 
+  async editProduct(id,data){
+    return await this.#model.updateOne({_id:id},{$set:data});
+}
 }
 
 module.exports = new ProductServices();

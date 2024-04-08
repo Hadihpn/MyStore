@@ -4,6 +4,7 @@ const { createBlogSchema, editBlogSchema } = require("../../../common/validators
 const { deleteFileInPublic, removePathBackSlash } = require("../../../common/utils/function");
 const path = require("path");
 const createHttpError = require("http-errors");
+const { ObjectIdSchema } = require("../../../common/validators/public.schema");
 class BlogController {
     #service
     constructor() {
@@ -30,12 +31,12 @@ class BlogController {
     }
     async editBlog(req, res, next) {
         try {
-            const { id } = req.params;
+            const { id } = await ObjectIdSchema.validateAsync(req.params);
             const blog = await this.#service.getBlogById(id);
             if (req?.body?.category) req.body.category = req.body.category.split(",");
             const data = req.body;
             if (req?.body?.fileUploadPath && req?.body?.filename) {
-                const uploadPath = req.body.fileUploadPath.toString().replace(/\\/g, "/")
+                const uploadPath = removePathBackSlash(req.body.fileUploadPath)
                 req.body.image = path.join(uploadPath, req.body.filename).toString();
                 deleteFileInPublic(blog.image)
             }
@@ -66,7 +67,7 @@ class BlogController {
 
     async getBlogById(req, res, next) {
         try {
-            const { id } = req.params;
+            const { id } = await ObjectIdSchema.validateAsync(req.params);
             const blog = await this.#service.getBlogById(id);
             if (!blog) throw new createHttpError.NotFound("بلاگ مربوطه یافت نشد");
             return res.status(200).json({
@@ -99,7 +100,7 @@ class BlogController {
     }
     async deleteBlog(req, res, next) {
         try {
-            const { id } = req.params;
+            const { id } = await ObjectIdSchema.validateAsync(req.params);
             const imageAddress = await this.#service.deleteBlogById(id)
             deleteFileInPublic(imageAddress);
             return res.status(200).json({
