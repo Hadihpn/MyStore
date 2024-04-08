@@ -8,7 +8,6 @@ const { AdminRoutes } = require("./modules/admin/admin.routes");
 (async () => {
     redisClient.set("key", "value")
     const value = await redisClient.get("key")
-    console.log("value");
 })()
 const router = require("express").Router();
 router.use("/", HomeRoutes);

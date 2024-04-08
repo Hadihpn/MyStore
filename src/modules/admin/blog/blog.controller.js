@@ -1,6 +1,6 @@
 const autobind = require("auto-bind");
 const blogServices = require("./blog.services");
-const { createBlogSchema, editBlogSchema } = require("../../../common/validators/admin/blog.shema");
+const { createBlogSchema, editBlogSchema } = require("../../../common/validators/admin/blog.schema");
 const { deleteFileInPublic, removePathBackSlash } = require("../../../common/utils/function");
 const path = require("path");
 const createHttpError = require("http-errors");

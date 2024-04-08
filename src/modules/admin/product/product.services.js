@@ -12,6 +12,10 @@ class ProductServices {
   async createProduct(productDto){
      await this.#model.create(productDto)
   }
+  async getProductById(id){
+    const product = await this.#model.findById(id)
+    return product;
+  }
  
 }
 

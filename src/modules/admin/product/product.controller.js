@@ -4,6 +4,8 @@ const { deleteFileInPublic, removePathBackSlash, listOfImagesFormRequest } = req
 const path = require("path");
 const productServices = require("./product.services");
 const { resourceLimits } = require("worker_threads");
+const { ObjectIdSchema } = require("../../../common/validators/public.schema");
+const createHttpError = require("http-errors");
 class ProductController {
     #service;
     constructor() {
@@ -40,7 +42,12 @@ class ProductController {
     }
     async getProductById(req, res, next) {
         try {
-
+            const {id} =await ObjectIdSchema.validateAsync(req.params)
+            const product =await this.#service.getProductById(id);
+            if(!product) throw createHttpError.NotFound("محصولی یافت نشد");
+            return res.status(200).json({
+                product:product
+            })
         } catch (error) {
             next(error)
         }
