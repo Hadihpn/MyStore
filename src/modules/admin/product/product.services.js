@@ -16,6 +16,11 @@ class ProductServices {
     const product = await this.#model.findById(id)
     return product;
   }
+  async deleteProduct(_id){
+    const product = await this.#model.findById(_id);
+    await this.#model.deleteOne({_id});
+    return product.images;
+  }
  
 }
 

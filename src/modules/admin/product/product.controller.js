@@ -61,7 +61,12 @@ class ProductController {
     }
     async deleteProduct(req, res, next) {
         try {
-
+            const {id} = await ObjectIdSchema.validateAsync(req.params);
+            const images = await this.#service.deleteProduct(id);
+            deleteFileInPublic(images.split(","))
+            return res.status(200).json({
+                message:"با موفقیت حذف شد"
+            })
         } catch (error) {
             next(error)
         }
