@@ -1,29 +1,38 @@
 const autoBind = require("auto-bind");
 const { ProductModel } = require("./product.model");
+const createHttpError = require("http-errors");
 class ProductServices {
   #model
   constructor() {
     autoBind(this);
-    this.#model =  ProductModel
+    this.#model = ProductModel
   }
-  async getProducts(){
-    return this.#model.find()
+  async getProducts(search) {
+    console.log(search);
+    if (!search || search == "") return await this.#model.find()
+    return await this.#model.find({
+      $text: {
+        $search: search
+      }
+    })
   }
-  async createProduct(productDto){
-     await this.#model.create(productDto)
+  async createProduct(productDto) {
+    await this.#model.create(productDto)
   }
-  async getProductById(id){
+  async getProductById(id) {
     const product = await this.#model.findById(id)
     return product;
   }
-  async deleteProduct(_id){
+  async deleteProduct(_id) {
     const product = await this.#model.findById(_id);
-    await this.#model.deleteOne({_id});
+    if (product.dislikes > 0 || product.comments.length > 0 || product.likes > 0 || product.bookmarks > 0) throw new createHttpError.BadRequest("محصول مورد نظر قابل حذف نمیباشد")
+    const deletedCount = await this.#model.deleteOne({ _id });
+    if (deletedCount == 0) throw new createHttpError.NotFound("محصول موردنظر یافت نشد")
     return product.images;
   }
-  async editProduct(id,data){
-    return await this.#model.updateOne({_id:id},{$set:data});
-}
+  async editProduct(id, data) {
+    return await this.#model.updateOne({ _id: id }, { $set: data });
+  }
 }
 
 module.exports = new ProductServices();

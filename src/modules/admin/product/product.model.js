@@ -7,7 +7,7 @@ const ProductSchema = new mongoose.Schema({
     text: { type: String, required: true },
     images: { type: [String], required: true },
     tags: { type: [String], required: true },
-    category: { type: mongoose.Types.ObjectId, reg: "category", required: true },
+    category: { type: mongoose.Types.ObjectId, ref: "category", required: true },
     comments: { type: [CommentSchema], default: [] },
     likes: { type: [mongoose.Types.ObjectId], default: [] },
     dislikes: { type: [mongoose.Types.ObjectId], default: [] },
@@ -27,5 +27,6 @@ const ProductSchema = new mongoose.Schema({
         }
     },
 })
+ProductSchema.index({text:"text",title:"text",short_text:"text"})
 const ProductModel = model("Product", ProductSchema);
 module.exports = { ProductModel };

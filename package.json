@@ -20,6 +20,7 @@
     "express-ejs-layouts": "^2.5.1",
     "http-codes": "^1.0.0",
     "http-errors": "^2.0.0",
+    "httpstatus": "^1.0.0",
     "jalali-moment": "^3.3.11",
     "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",

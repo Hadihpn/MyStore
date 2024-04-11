@@ -12,6 +12,7 @@ class ProductController {
         autoBind(this);
         this.#service = productServices
     }
+    
     async addProduct(req, res, next) {
         const uploadPath = req.body.fileUploadPath
         const images = listOfImagesFormRequest(req?.files || [], uploadPath);
@@ -31,7 +32,13 @@ class ProductController {
     }
     async getListOfProduct(req, res, next) {
         try {
-            const products = await this.#service.getProducts()
+             const search = req?.query?.search || "";
+             console.log("searchQurery " + search);
+            //     $text: {
+            //         $search: new RegExp(searchq,"ig")
+            //     }
+            // })
+             const products = await this.#service.getProducts(search)
             return res.status(200).json({
                 statusCode: 200,
                 data: products
@@ -60,13 +67,13 @@ class ProductController {
             if (req?.body?.fileUploadPath && req?.body?.filename) {
                 const uploadPath = req.body.fileUploadPath
                 const images = listOfImagesFormRequest(req?.files || [], uploadPath);
-                if(product.images != images){
+                if (product.images != images) {
                     deleteFileInPublic(product.images.split(","))
                     req.body.images = images;
-                }else{
+                } else {
                     deleteFileInPublic(images.split(","))
                 }
-                
+
             }
             let nullishData = ["", " ", "0", 0, null, undefined]
             let blackListField = ["bookmarks", "likes", "dislikes", "comments"]
