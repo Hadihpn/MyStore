@@ -1,11 +1,13 @@
 const courseController = require("./course.controller");
-
+const { stringToArray } = require("../../../common/middleware/stringToArray");
+const { uploadFile } = require("../../../common/utils/multer");
+const { setFolderPath } = require("../../../common/middleware/setMulterUploadpath");
 const router = require("express").Router();
 
 //#Course Routes
-router.post("/addCourse", courseController.addCourse)
+router.post("/addCourse", setFolderPath("course"), uploadFile.array("images", 10), stringToArray("tags"), courseController.addCourse)
 router.get("/", courseController.getListOfCourse) //get list of courses
-router.get("/:id",courseController.getCourseById) // get course by id
+router.get("/:id", courseController.getCourseById) // get course by id
 //router.get("/:id",courseController.) // get students of course
 // router.patch("/:id",courseController.) // edit course
 // router.delete("/:id",courseController.) // delete course

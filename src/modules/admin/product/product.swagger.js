@@ -23,6 +23,7 @@
  *                  -   images
  *                  -   price
  *                  -   supplier
+ *                  -   type
  *              properties:
  *                  title:
  *                      type: string
