@@ -50,7 +50,10 @@
  *                      type: string
  *                      description: the id of supplier 
  *                  images:
- *                      type: file
+ *                      type: array
+ *                      items:
+ *                          type: string
+ *                          format: binary
  *                      description: the index picture of product
   *          productUpdate:
  *              type: object
@@ -75,7 +78,7 @@
  *                  type:
  *                      $ref: '#/components/schemas/ProductType'
  *                      description: the type
- *                  image:
+ *                  images:
  *                      type: file
  *                      description: the index picture of product
  */

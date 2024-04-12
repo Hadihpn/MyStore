@@ -5,7 +5,7 @@ const { setFolderPath } = require("../../../common/middleware/setMulterUploadpat
 const router = require("express").Router();
 
 //#Course Routes
-router.post("/addCourse", setFolderPath("course"), uploadFile.array("images", 10), stringToArray("tags"), courseController.addCourse)
+router.post("/addCourse", setFolderPath("course"), uploadFile.single("image"), stringToArray("tags"), courseController.addCourse)
 router.get("/", courseController.getListOfCourse) //get list of courses
 router.get("/:id", courseController.getCourseById) // get course by id
 //router.get("/:id",courseController.) // get students of course

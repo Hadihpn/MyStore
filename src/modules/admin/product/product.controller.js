@@ -34,6 +34,7 @@ class ProductController {
     async getListOfProduct(req, res, next) {
         try {
              const search = req?.query?.search || "";
+             console.log(typeof(search));
             //     $text: {
             //         $search: new RegExp(searchq,"ig")
             //     }

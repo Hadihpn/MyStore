@@ -2,6 +2,7 @@ const { randomInt } = require("crypto");
 const { randomNumberDigit } = require("../validators/developer/func.schema");
 const fs = require("fs");
 const path = require("path");
+const { isArray } = require("util");
 async function RandomeNumberGenerator(digits) {
   const start = 10 ** (digits - 1)
   const end = "9".repeat(digits)
@@ -29,14 +30,17 @@ function removePathBackSlash(address) {
   return address
 }
 function listOfImagesFormRequest(files, fileUploadPath) {
-  if (files?.length > 0) {
+  if (!files) {
+    return ""
+  } else if (Array.isArray(files) && files?.length > 0) {
     return (files.map(file => path.join(fileUploadPath, file.filename)).toString().replace(/\\/g, "/"))
   } else {
-    return []
+    return path.join(fileUploadPath, files.filename).toString().replace(/\\/g, "/")
   }
+
 }
-function copyObject(object){
-    return JSON.parse(JSON.stringify(object))
+function copyObject(object) {
+  return JSON.parse(JSON.stringify(object))
 }
 module.exports = {
   unSupportedString,

@@ -7,7 +7,7 @@ class CourseServices {
     this.#model = CourseModel
   }
   async createCourse(courseDto) {
-
+    await this.#model.create(courseDto) 
   }
   async findCourse(query) {
     if (!query || query == "") return await this.#model.find()
