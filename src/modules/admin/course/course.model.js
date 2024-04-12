@@ -1,4 +1,4 @@
-const { default: mongoose, Types } = require("mongoose");
+const { default: mongoose, Types, model } = require("mongoose");
 const { CommentSchema } = require("../comment/comment.model");
 const Episode = new mongoose.Schema({
     title: { type: String, required: true },
@@ -27,8 +27,9 @@ const CourseSchema = new mongoose.Schema({
     type: { type: String, default: "free", required: true },//رایگان یا پولی
     time: { type: String, default: "00:00:00" },
     teacher: { type: mongoose.Types.ObjectId, required: true },
-    chapter: { type: [Chapter], default: [] },
+    chapters: { type: [Chapter], default: [] },
     students: { type: [Types.ObjectId], default: [], ref: "user" }
 })
+CourseSchema.index({ title: "text", short_text: "text" })
 const CourseModel = model("Course", CourseSchema);
 module.exports = { CourseModel };

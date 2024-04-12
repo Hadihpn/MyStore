@@ -8,7 +8,7 @@ const addProductSchema = Joi.object({
     tags: Joi.array().items(Joi.string().error(createHttpError.BadRequest(" برچسب وارد شده صحیح نمیباشد"))),
     type: Joi.string().min(0).max(20).error(createHttpError.BadRequest("تایپ نمیتواند بیش از 20 ایتم باشد")),
     category: Joi.string().pattern(MongoIDPattern).pattern(MongoIDPattern).error(createHttpError.BadRequest(" دسته بندی وارد شده صحیح نمیباشد")),
-    supplier: Joi.string().pattern(MongoIDPattern).pattern(MongoIDPattern).error(createHttpError.BadRequest(" دسته بندی وارد شده صحیح نمیباشد")),
+    teacher: Joi.string().pattern(MongoIDPattern).pattern(MongoIDPattern).error(createHttpError.BadRequest(" دسته بندی وارد شده صحیح نمیباشد")),
     price: Joi.number().error(createHttpError.BadRequest(" قیمت وارد شده صحیح نمیباشد")),
     count: Joi.number().error(createHttpError.BadRequest(" تعداد وارد شده صحیح نمیباشد")),
     discount: Joi.number().error(createHttpError.BadRequest(" تخفیف وارد شده صحیح نمیباشد")),

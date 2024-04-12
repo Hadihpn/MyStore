@@ -9,6 +9,7 @@ router.post("/createBlog", setFolderPath("blog"), uploadFile.single("image"), st
 router.patch("/edit/:id", setFolderPath("blog"), uploadFile.single("image"), stringToArray("tags"), BlogController.editBlog)
 router.get("/", BlogController.getListOfBlogs)
 router.get("/:id", BlogController.getBlogById)
+router.get("/:id", BlogController.getBlogById)
 router.get("/:id", BlogController.getBlogByQurey)
 router.delete("/delete/:id", BlogController.deleteBlog)
 module.exports = {

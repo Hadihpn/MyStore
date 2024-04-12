@@ -2,6 +2,16 @@
  * @swagger
  *  components:
  *      schemas:
+ *          ProductType:
+ *              type: string
+ *              enum:
+ *                  -   virtual 
+ *                  -   physical 
+ */ 
+/**
+ * @swagger
+ *  components:
+ *      schemas:
  *          addProduct:
  *              type: object
  *              required:
@@ -30,7 +40,7 @@
  *                      type: string
  *                      description: the price
  *                  type:
- *                      type: string
+ *                      $ref: '#/components/schemas/ProductType'
  *                      description: the type
  *                  category:
  *                      type: string
@@ -61,6 +71,9 @@
  *                      items: 
  *                          type: string
  *                      description: the id of category for foreinField in product
+ *                  type:
+ *                      $ref: '#/components/schemas/ProductType'
+ *                      description: the type
  *                  image:
  *                      type: file
  *                      description: the index picture of product

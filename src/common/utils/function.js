@@ -35,11 +35,15 @@ function listOfImagesFormRequest(files, fileUploadPath) {
     return []
   }
 }
+function copyObject(object){
+    return JSON.parse(JSON.stringify(object))
+}
 module.exports = {
   unSupportedString,
   removePropertyInObject,
   RandomeNumberGenerator,
   deleteFileInPublic,
   removePathBackSlash,
-  listOfImagesFormRequest
+  listOfImagesFormRequest,
+  copyObject
 }

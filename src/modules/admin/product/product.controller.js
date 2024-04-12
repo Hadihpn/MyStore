@@ -1,11 +1,12 @@
 const autoBind = require("auto-bind");
 const { addProductSchema, editProductSchema } = require("../../../common/validators/admin/product.schema");
-const { deleteFileInPublic, removePathBackSlash, listOfImagesFormRequest } = require("../../../common/utils/function");
+const { deleteFileInPublic, removePathBackSlash, listOfImagesFormRequest, copyObject } = require("../../../common/utils/function");
 const path = require("path");
 const productServices = require("./product.services");
 const { resourceLimits } = require("worker_threads");
 const { ObjectIdSchema } = require("../../../common/validators/public.schema");
 const createHttpError = require("http-errors");
+const { MongoIDPattern } = require("../../../common/constant/constantVar");
 class ProductController {
     #service;
     constructor() {
@@ -33,7 +34,6 @@ class ProductController {
     async getListOfProduct(req, res, next) {
         try {
              const search = req?.query?.search || "";
-             console.log("searchQurery " + search);
             //     $text: {
             //         $search: new RegExp(searchq,"ig")
             //     }
@@ -62,6 +62,7 @@ class ProductController {
     async editProduct(req, res, next) {
         try {
             const { id } = await ObjectIdSchema.validateAsync(req.params);
+            const datas = copyObject(req.body);
             const product = await this.#service.getProductById(id);
             const data = req.body;
             if (req?.body?.fileUploadPath && req?.body?.filename) {
