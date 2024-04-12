@@ -29,7 +29,14 @@ const editCourseSchema = Joi.object({
     filename: Joi.string().pattern(/(\.png|\.jpg|\.webp|\.gif)/).error(createHttpError.BadRequest(" فرمت تصویر وارد شده صحیح نمیباشد")),
     fileUploadPath: Joi.allow()
 })
+const addChapterSchema = Joi.object({
+    id: Joi.string().pattern(MongoIDPattern).error(createHttpError.BadRequest(" کد دوره وارد شده صحیح نمیباشد")),
+    title:Joi.string().min(3).max(100).error(createHttpError.BadRequest("عنوان  وارد شده معتبر نمی باشد")),
+    text: Joi.string().error(createHttpError.BadRequest("متن وارد شده صحیح نمیباشد")),
+
+})
 module.exports = {
     addCourseSchema,
-    editCourseSchema
+    editCourseSchema,
+    addChapterSchema
 }

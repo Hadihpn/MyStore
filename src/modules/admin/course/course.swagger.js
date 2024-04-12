@@ -10,6 +10,52 @@
  */ 
 /**
  * @swagger
+ *  definitions:
+ *      ListOfCourses:
+ *          type: object
+ *          properties:
+ *              statusCode: 
+ *                  type: integer
+ *                  example: 200
+ *              data:
+ *                  type: object
+ *                  properties:
+ *                      courses:
+ *                          type: array
+ *                          items:
+ *                              type: object
+ *                              properties:
+ *                                  _id:
+ *                                      type: string
+ *                                      example: "62822e4sv68cdded54sw928d"
+ *                                  title:
+ *                                      type: string
+ *                                      example: "title of course"
+ *                                  short_text:
+ *                                      type: string
+ *                                      example: "summary text of course"
+ *                                  text:
+ *                                      type: string
+ *                                      example: "text and describe of course"
+ *                                  time:
+ *                                      type: string
+ *                                      example: "01:22:34"
+ *                                  price:
+ *                                      type: integer
+ *                                      example: 250,000
+ *                                  discount:
+ *                                      type: interger
+ *                                      example: 20
+ *                                  studendtCount:
+ *                                      type: integer
+ *                                      example: 340
+ *                                  teacher:
+ *                                      type: string
+ *                                      example: "hadihpn"
+ */
+
+/**
+ * @swagger
  *  components:
  *      schemas:
  *          addCourse:
@@ -54,7 +100,27 @@
  *                      format: binary
  *                      description: the index picture of course
  */
-
+/**
+ * @swagger
+ *  components:
+ *      schemas:
+ *          addChapter:
+ *              type: object
+ *              required:
+ *                  -   id
+ *                  -   title
+ *                  -   text
+ *              properties:
+ *                  id:
+ *                      type: string
+ *                      description: the title of category
+ *                  title:
+ *                      type: string
+ *                      description: the title of category
+ *                  text:
+ *                      type: string
+ *                      description: the text of course
+ */
 
 /**
  * @swagger
@@ -67,9 +133,13 @@
  *                  name: search 
  *                  type: string 
  *                  description: text for search in title 
- *          responses:
+ *          responses :
  *              200:
- *                  description: success - get array of courses
+ *                  description: success
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/definitions/ListOfCourses'
  */
 
 /**
@@ -142,3 +212,26 @@
  *              200:
  *                  description: success
  */
+
+
+//#region chapter
+/**
+ * @swagger
+ *  /admin/course/addChapter:
+ *      put:
+ *          tags: [ course(AdminPanel)]
+ *          summary: create chapter document
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/addChapter'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/addChapter'
+ *          responses:
+ *              200:
+ *                  description: created
+ */
+//#endregion

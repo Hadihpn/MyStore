@@ -16,7 +16,9 @@ class CategoryController {
             const { title, slug, icon, parent } = req.body;
             await this.#services.creatCategory({ title, slug, icon, parent })
             return res.status(200).json({
-                message: CategoryMessage.Create
+                data: {
+                    message: CategoryMessage.Create
+                }
             })
         } catch (error) {
             next(error)
@@ -38,8 +40,10 @@ class CategoryController {
             const resultOfUpdate = await this.#services.editCategory(id, title);
             if (resultOfUpdate.modifiedCount == 0) throw createHttpError.InternalServerError("nothing been updated")
             return res.status(200).json({
-                statusCode:200,
-                message:"the category update successfully"
+                statusCode: 200,
+                data: {
+                    message: "the category update successfully"
+                }
             })
         } catch (error) {
             next(error)
@@ -49,7 +53,7 @@ class CategoryController {
         try {
             const categories = await this.#services.getAllCategory();
             return res.status(200).json({
-                data: categories
+                data: { categories }
             })
         } catch (error) {
             next(error)
@@ -59,7 +63,7 @@ class CategoryController {
         try {
             const categories = await this.#services.getParentsCategory();
             return res.status(200).json({
-                data: categories
+                data: { categories }
             })
         } catch (error) {
             next(error)
@@ -70,7 +74,7 @@ class CategoryController {
             const { parent } = req.params;
             const categories = await this.#services.getChildOfParent(parent);
             return res.status(200).json({
-                data: categories
+                data: { categories }
             })
         } catch (error) {
             next(error)
@@ -81,7 +85,7 @@ class CategoryController {
             const { parent } = req.params;
             const categories = await this.#services.getChildrenOfParent(parent);
             return res.status(200).json({
-                data: categories
+                data: { categories }
             })
         } catch (error) {
             next(error)
@@ -93,7 +97,7 @@ class CategoryController {
             await this.#services.removeCategory(id);
             const categories = await this.#services.getAllCategory();
             return res.status(200).json({
-                data: categories
+                data: { categories }
             })
         } catch (error) {
             next(error)
@@ -104,7 +108,7 @@ class CategoryController {
             const { id } = req.params;
             const category = await this.#services.getCategoryById(id);
             return res.status(200).json({
-                data: category
+                data: { category }
             })
         } catch (error) {
             next(error)

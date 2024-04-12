@@ -13,7 +13,7 @@ class ProductController {
         autoBind(this);
         this.#service = productServices
     }
-    
+
     async addProduct(req, res, next) {
         const uploadPath = req.body.fileUploadPath
         const images = listOfImagesFormRequest(req?.files || [], uploadPath);
@@ -33,16 +33,12 @@ class ProductController {
     }
     async getListOfProduct(req, res, next) {
         try {
-             const search = req?.query?.search || "";
-             console.log(typeof(search));
-            //     $text: {
-            //         $search: new RegExp(searchq,"ig")
-            //     }
-            // })
-             const products = await this.#service.getProducts(search)
+            const search = req?.query?.search || "";
+            console.log(typeof (search));
+            const products = await this.#service.getProducts(search)
             return res.status(200).json({
                 statusCode: 200,
-                data: products
+                data: { products }
             })
         } catch (error) {
             next(error)
@@ -54,7 +50,7 @@ class ProductController {
             const product = await this.#service.getProductById(id);
             if (!product) throw createHttpError.NotFound("محصولی یافت نشد");
             return res.status(200).json({
-                product: product
+                data: { product }
             })
         } catch (error) {
             next(error)
@@ -92,8 +88,11 @@ class ProductController {
             if (updateResult.modifiedCount == 0) throw createHttpError.InternalServerError("بروزرسانی انجام نشد")
             return res.status(201).json({
                 statusCode: 201,
-                message: "بلاگ با موفقیت ایجاد شد",
-                data: productDataBody,
+
+                data: {
+                    message: "بلاگ با موفقیت ایجاد شد",
+                    product: productDataBody
+                },
             })
         } catch (error) {
             deleteFileInPublic((req.body.images).split(","))
@@ -106,7 +105,9 @@ class ProductController {
             const images = await this.#service.deleteProduct(id);
             deleteFileInPublic(images.split(","))
             return res.status(200).json({
-                message: "با موفقیت حذف شد"
+                data: {
+                    message: "با موفقیت حذف شد"
+                }
             })
         } catch (error) {
             next(error)
