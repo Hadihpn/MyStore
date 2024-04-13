@@ -35,6 +35,12 @@ class CourseServices {
           { chapters: { title: chapterDto.title, text: chapterDto.text, episodes: [] } }
       })
   }
+  async getChapterById(id) {
+    const chapter =await this.#model.findOne({ "chapters._id":id },{"chapters.$":1})
+    // const chapter =await this.#model.findOne({ "chapters._id":id },{"chapters.$":1})
+    if(!chapter) throw createHttpError.NotFound("cannot find any chapter")
+    return chapter;
+  }
   async getChaptersOfCourse(_id) {
     
     const course =await this.#model.findOne({ _id },{chapters:1})

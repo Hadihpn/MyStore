@@ -236,6 +236,21 @@
  */
 /**
  * @swagger
+ *  /admin/course/chapter/{id}:
+ *      get:
+ *          summary: get chpater by ID 
+ *          tags: [ course(AdminPanel) ]
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: success
+ */
+/**
+ * @swagger
  *  /admin/course/chaptersOfCourse/{id}:
  *      get:
  *          summary: get chpaters of course by ID and populate this field 

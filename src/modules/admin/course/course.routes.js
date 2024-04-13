@@ -15,7 +15,7 @@ router.get("/:id", courseController.getCourseById) // get course by id
 //#region Chapter Routes
 router.put("/addChapter", courseController.addChapter) // add new chapter
 router.get("/chaptersOfCourse/:id", courseController.getChapterOfCourse) // get list of chapter of course ,id=courseId
-// router.get("/:chpaterId", courseController.) // get a chpater by id
+ router.get("/chapter/:id", courseController.getChapterById) // get a chpater by id
 // router.patch("/:id",courseController.) //edit chapter
 // router.delete("/:id",courseController.) //delete chapter
 //#endregion
