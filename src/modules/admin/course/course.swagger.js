@@ -234,4 +234,19 @@
  *              200:
  *                  description: created
  */
+/**
+ * @swagger
+ *  /admin/course/chaptersOfCourse/{id}:
+ *      get:
+ *          summary: get chpaters of course by ID and populate this field 
+ *          tags: [ course(AdminPanel) ]
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: success
+ */
 //#endregion

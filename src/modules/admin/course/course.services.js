@@ -19,7 +19,8 @@ class CourseServices {
     }).sort({ _id: -1 })
   }
   async findCourseById(_id) {
-    return await this.#model.findById({ _id })
+    const course = await this.#model.findById({ _id })
+    return 
   }
   //#endregion
 
@@ -31,10 +32,14 @@ class CourseServices {
       { _id: chapterDto.id },
       {
         $push:
-          { chapters: { title:chapterDto.title, text:chapterDto.text, episodes: [] } }
+          { chapters: { title: chapterDto.title, text: chapterDto.text, episodes: [] } }
       })
-    // const chapter = await this.#model.create(chapterDto)
-    // course.chapters.push(chapter)
+  }
+  async getChaptersOfCourse(_id) {
+    
+    const course =await this.#model.findOne({ _id },{chapters:1})
+    if(!course) throw createHttpError.NotFound("cannot find any course")
+    return (course.chapters) ? course.chapters : [];
   }
   //#endregion
 }

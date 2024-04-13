@@ -89,6 +89,21 @@ class CourseController {
             next(error)
         }
     }
+    async getChapterOfCourse(req,res,next){
+        try {
+            const {id} = await ObjectIdSchema.validateAsync(req.params);
+            const chapters = await this.#service.getChaptersOfCourse(id);
+            return res.status(httpstatus.OK).json({
+                statusCode: httpstatus.OK,
+                data: {
+                    chapters
+                }
+            })
+            
+        } catch (error) {
+            next(error)
+        }
+    }
     //#endregion
     //#region Episode
     //#endregion
