@@ -1,7 +1,7 @@
 const autobind = require("auto-bind");
 const blogServices = require("./blog.services");
 const { createBlogSchema, editBlogSchema } = require("../../../common/validators/admin/blog.schema");
-const { deleteFileInPublic, removePathBackSlash } = require("../../../common/utils/function");
+const { deleteFileInPublic, removePathBackSlash, deleteInvalidPropertyInObject } = require("../../../common/utils/function");
 const path = require("path");
 const createHttpError = require("http-errors");
 const { ObjectIdSchema } = require("../../../common/validators/public.schema");
@@ -40,16 +40,17 @@ class BlogController {
                 req.body.image = path.join(uploadPath, req.body.filename).toString();
                 deleteFileInPublic(blog.image)
             }
-            let nullishData = ["", " ", "0", 0, null, undefined]
+            // let nullishData = ["", " ", "0", 0, null, undefined]
             let blackListField = ["bookmarks", "likes", "dislikes", "comments", "author"]
-            Object.keys(data).forEach(key => {
-                if (blackListField.includes(key)) delete data[key];
-                if (typeof data[key] == "string") data[key] = data[key].trim();
-                if (Array.isArray(data[key]) && data[key].length > 0) { data[key] = data[key].map(item => item.trim()) }
-                else if (Array.isArray(data[key]) && data[key].length == 0) { delete data[key] }
-                if (nullishData.includes(data[key])) delete data[key];
-                blog[key] = data[key]
-            })
+            deleteInvalidPropertyInObject(data,blackListField);
+            // Object.keys(data).forEach(key => {
+            //     if (blackListField.includes(key)) delete data[key];
+            //     if (typeof data[key] == "string") data[key] = data[key].trim();
+            //     if (Array.isArray(data[key]) && data[key].length > 0) { data[key] = data[key].map(item => item.trim()) }
+            //     else if (Array.isArray(data[key]) && data[key].length == 0) { delete data[key] }
+            //     if (nullishData.includes(data[key])) delete data[key];
+            //     blog[key] = data[key]
+            // })
             const blogDataBody = editBlogSchema.validate(blog)
             console.log(blog);
             const updateResult = await this.#service.editBlog(id, blog);

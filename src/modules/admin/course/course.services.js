@@ -47,6 +47,16 @@ class CourseServices {
     if (!course) throw createHttpError.NotFound("cannot find any course")
     return (course.chapters) ? course.chapters : [];
   }
+  async updateChapter(chapterDto) {
+    const chapter = await this.getChapterById(chpaterDto.id)
+    if (!chapter) throw new createHttpError.NotFound();
+    const updateChapterResult = await this.#model.updateOne({ "chapters._id": id }, {
+      $set: {
+        "chapters.$": chapterDto.data
+      }
+    })
+    return updateChapterResult
+  }
   async deleteChapter(id) {
     const chapter = await this.#model.findOne({ "chapters._id": id }, { "chapters.$": 1 })
     const episodes = chapter.chapters[0].episodes;
@@ -59,7 +69,7 @@ class CourseServices {
         }
       }
     })
-     return result;
+    return result;
   }
   //#endregion
 }

@@ -1,6 +1,6 @@
 const autoBind = require("auto-bind");
 const { addProductSchema, editProductSchema } = require("../../../common/validators/admin/product.schema");
-const { deleteFileInPublic, removePathBackSlash, listOfImagesFormRequest, copyObject } = require("../../../common/utils/function");
+const { deleteFileInPublic, removePathBackSlash, listOfImagesFormRequest, copyObject, deleteInvalidPropertyInObject } = require("../../../common/utils/function");
 const path = require("path");
 const productServices = require("./product.services");
 const { resourceLimits } = require("worker_threads");
@@ -71,18 +71,18 @@ class ProductController {
                 } else {
                     deleteFileInPublic(images.split(","))
                 }
-
             }
-            let nullishData = ["", " ", "0", 0, null, undefined]
+            // let nullishData = ["", " ", "0", 0, null, undefined]
             let blackListField = ["bookmarks", "likes", "dislikes", "comments"]
-            Object.keys(data).forEach(key => {
-                if (blackListField.includes(key)) delete data[key];
-                if (typeof data[key] == "string") data[key] = data[key].trim();
-                if (Array.isArray(data[key]) && data[key].length > 0) { data[key] = data[key].map(item => item.trim()) }
-                else if (Array.isArray(data[key]) && data[key].length == 0) { delete data[key] }
-                if (nullishData.includes(data[key])) delete data[key];
-                product[key] = data[key]
-            })
+            // Object.keys(data).forEach(key => {
+            //     if (blackListField.includes(key)) delete data[key];
+            //     if (typeof data[key] == "string") data[key] = data[key].trim();
+            //     if (Array.isArray(data[key]) && data[key].length > 0) { data[key] = data[key].map(item => item.trim()) }
+            //     else if (Array.isArray(data[key]) && data[key].length == 0) { delete data[key] }
+            //     if (nullishData.includes(data[key])) delete data[key];
+            //     product[key] = data[key]
+            // })
+            deleteInvalidPropertyInObject(data, blackListField);
             const productDataBody = editProductSchema.validate(product)
             const updateResult = await this.#service.editProduct(id, product);
             if (updateResult.modifiedCount == 0) throw createHttpError.InternalServerError("بروزرسانی انجام نشد")

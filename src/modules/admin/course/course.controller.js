@@ -2,7 +2,7 @@ const autoBind = require("auto-bind");
 const CourseServices = require("./course.services");
 const { ObjectIdSchema } = require("../../../common/validators/public.schema");
 const { StatusCodes: httpstatus } = require("http-status-codes");
-const { listOfImagesFormRequest, deleteFileInPublic } = require("../../../common/utils/function");
+const { listOfImagesFormRequest, deleteFileInPublic, deleteInvalidPropertyInObject } = require("../../../common/utils/function");
 const { addCourseSchema, addChapterSchema } = require("../../../common/validators/admin/course.schema");
 const createHttpError = require("http-errors");
 const { CourseMessage } = require("./course.messages");
@@ -114,10 +114,23 @@ class CourseController {
             }
         });
     }
+    async updateChapter(req, res, next) {
+        const { id } = await ObjectIdSchema.validateAsync(req.params);
+        const data = req.body;
+        deleteInvalidPropertyInObject(data,["_id"])
+        const updateChapterResult = await this.#service.updateChapter({id,data})
+         if(updateChapterResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulChapterChange);
+        return res.status(httpstatus.OK).json({
+            statusCode: httpstatus.OK,
+            data: {
+                message: CourseMessage.deleditChaptereteChapter
+            }
+        });
+    }
     async deleteChapter(req, res, next) {
         const { id } = await ObjectIdSchema.validateAsync(req.params);
         const removedChpaterResult = await this.#service.deleteChapter(id)
-        if(removedChpaterResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulChpaterDelete);
+        if(removedChpaterResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulChapterChange);
         return res.status(httpstatus.OK).json({
             statusCode: httpstatus.OK,
             data: {

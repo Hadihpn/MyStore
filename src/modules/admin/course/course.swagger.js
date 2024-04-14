@@ -120,6 +120,18 @@
  *                  text:
  *                      type: string
  *                      description: the text of course
+ *          editChapter:
+ *              type: object
+ *              required:
+ *                  -   title
+ *                  -   text
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      description: the title of category
+ *                  text:
+ *                      type: string
+ *                      description: the text of course
  */
 
 /**
@@ -260,6 +272,29 @@
  *                  name: id
  *                  type: string
  *                  required: true
+ *          responses:
+ *              200:
+ *                  description: success
+ */
+/**
+ * @swagger
+ *  /admin/course/editChapter/{id}:
+ *      patch:
+ *          tags: [ course(AdminPanel)]
+ *          summary: update  chapter document by id 
+ *          consumes: 
+ *              -   multipart/form-data
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  multipart/form-data:
+ *                      schema:
+ *                          $ref: '#/components/schemas/editChapter'
  *          responses:
  *              200:
  *                  description: success
