@@ -1,6 +1,7 @@
 const autoBind = require("auto-bind");
 const { CourseModel } = require("./course.model");
 const createHttpError = require("http-errors");
+const { CourseMessage } = require("./course.messages");
 class CourseServices {
   #model
   constructor() {
@@ -20,7 +21,7 @@ class CourseServices {
   }
   async findCourseById(_id) {
     const course = await this.#model.findById({ _id })
-    return 
+    return
   }
   //#endregion
 
@@ -36,16 +37,29 @@ class CourseServices {
       })
   }
   async getChapterById(id) {
-    const chapter =await this.#model.findOne({ "chapters._id":id },{"chapters.$":1})
-    // const chapter =await this.#model.findOne({ "chapters._id":id },{"chapters.$":1})
-    if(!chapter) throw createHttpError.NotFound("cannot find any chapter")
+    const chapter = await this.#model.findOne({ "chapters._id": id }, { "chapters.$": 1 })
+    if (!chapter) throw createHttpError.NotFound("cannot find any chapter")
     return chapter;
   }
   async getChaptersOfCourse(_id) {
-    
-    const course =await this.#model.findOne({ _id },{chapters:1})
-    if(!course) throw createHttpError.NotFound("cannot find any course")
+
+    const course = await this.#model.findOne({ _id }, { chapters: 1 })
+    if (!course) throw createHttpError.NotFound("cannot find any course")
     return (course.chapters) ? course.chapters : [];
+  }
+  async deleteChapter(id) {
+    const chapter = await this.#model.findOne({ "chapters._id": id }, { "chapters.$": 1 })
+    const episodes = chapter.chapters[0].episodes;
+    console.log(episodes);
+    if (!Array.isArray(episodes) && episodes.length > 0) throw createHttpError.NotFound(CourseMessage.notEmtpyChapter);
+    const result = await this.#model.updateOne({ "chapters._id": id }, {
+      $pull: {
+        chapters: {
+          _id: id
+        }
+      }
+    })
+     return result;
   }
   //#endregion
 }

@@ -78,7 +78,7 @@ class CourseController {
             const { id, title, text } = req.body;
             console.log({ id, title, text });
             const saveChapterResult = await this.#service.addChapter({ id, title, text })
-             if (saveChapterResult.modifiedCount == 0) throw createHttpError.InternalServerError("new chapter does not save")
+            if (saveChapterResult.modifiedCount == 0) throw createHttpError.InternalServerError("new chapter does not save")
             return res.status(httpstatus.CREATED).json({
                 statusCode: httpstatus.CREATED,
                 data: {
@@ -89,9 +89,9 @@ class CourseController {
             next(error)
         }
     }
-    async getChapterOfCourse(req,res,next){
+    async getChapterOfCourse(req, res, next) {
         try {
-            const {id} = await ObjectIdSchema.validateAsync(req.params);
+            const { id } = await ObjectIdSchema.validateAsync(req.params);
             const chapters = await this.#service.getChaptersOfCourse(id);
             return res.status(httpstatus.OK).json({
                 statusCode: httpstatus.OK,
@@ -99,18 +99,29 @@ class CourseController {
                     chapters
                 }
             })
-            
+
         } catch (error) {
             next(error)
         }
     }
-    async getChapterById(req,res,next){
-        const {id} = await ObjectIdSchema.validateAsync(req.params);
+    async getChapterById(req, res, next) {
+        const { id } = await ObjectIdSchema.validateAsync(req.params);
         const chapter = await this.#service.getChapterById(id)
         return res.status(httpstatus.OK).json({
             statusCode: httpstatus.OK,
             data: {
                 chapter
+            }
+        });
+    }
+    async deleteChapter(req, res, next) {
+        const { id } = await ObjectIdSchema.validateAsync(req.params);
+        const removedChpaterResult = await this.#service.deleteChapter(id)
+        if(removedChpaterResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulChpaterDelete);
+        return res.status(httpstatus.OK).json({
+            statusCode: httpstatus.OK,
+            data: {
+                message: CourseMessage.deleteChapter
             }
         });
     }

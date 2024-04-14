@@ -264,4 +264,19 @@
  *              200:
  *                  description: success
  */
+/**
+ * @swagger
+ *  /admin/course/deleteChapter/{id}:
+ *      patch:
+ *          tags: [ course(AdminPanel)]
+ *          summary: delete chpater by chapterId 
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: success
+ */
 //#endregion
