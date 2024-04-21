@@ -123,7 +123,7 @@ class CourseController {
         return res.status(httpstatus.OK).json({
             statusCode: httpstatus.OK,
             data: {
-                message: CourseMessage.deleditChaptereteChapter
+                message: CourseMessage.editChapter
             }
         });
     }
@@ -140,6 +140,73 @@ class CourseController {
     }
     //#endregion
     //#region Episode
+    async addEpisode(req, res, next) {
+        try {
+            await addEpisodeSchema.validateAsync(req.body);
+            const { id, title, text } = req.body;
+            console.log({ id, title, text });
+            const saveEpisodeResult = await this.#service.addEpisode({ id, title, text })
+            if (saveEpisodeResult.modifiedCount == 0) throw createHttpError.InternalServerError("new Episode does not save")
+            return res.status(httpstatus.CREATED).json({
+                statusCode: httpstatus.CREATED,
+                data: {
+                    message: "new Episode added successfully"
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    async getEpisodeOfCourse(req, res, next) {
+        try {
+            const { id } = await ObjectIdSchema.validateAsync(req.params);
+            const Episodes = await this.#service.getEpisodesOfCourse(id);
+            return res.status(httpstatus.OK).json({
+                statusCode: httpstatus.OK,
+                data: {
+                    Episodes
+                }
+            })
+
+        } catch (error) {
+            next(error)
+        }
+    }
+    async getEpisodeById(req, res, next) {
+        const { id } = await ObjectIdSchema.validateAsync(req.params);
+        const Episode = await this.#service.getEpisodeById(id)
+        return res.status(httpstatus.OK).json({
+            statusCode: httpstatus.OK,
+            data: {
+                Episode
+            }
+        });
+    }
+    async updateEpisode(req, res, next) {
+        const { id } = await ObjectIdSchema.validateAsync(req.params);
+        const data = req.body;
+        deleteInvalidPropertyInObject(data,["_id"])
+        const updateEpisodeResult = await this.#service.updateEpisode({id,data})
+         if(updateEpisodeResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
+        return res.status(httpstatus.OK).json({
+            statusCode: httpstatus.OK,
+            data: {
+                message: CourseMessage.deleditEpisodeeteEpisode
+            }
+        });
+    }
+    async deleteEpisode(req, res, next) {
+        const { id } = await ObjectIdSchema.validateAsync(req.params);
+        const removedChpaterResult = await this.#service.deleteEpisode(id)
+        if(removedChpaterResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
+        return res.status(httpstatus.OK).json({
+            statusCode: httpstatus.OK,
+            data: {
+                message: CourseMessage.deleteEpisode
+            }
+        });
+    }
+    
     //#endregion
 }
 module.exports = new CourseController()

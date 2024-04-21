@@ -51,8 +51,7 @@
  *  post:
  *      summary: create new category 
  *      description: here u can add new category
- *      tags:
- *          -   [AdminPanel-Category]
+ *      tags:  [AdminPanel-Category]
  *      requestBody:
  *          content:
  *              application/x-www-form-urlencoded:
@@ -79,8 +78,7 @@
  *  get:
  *      summary: get the All categories
  *      description: get all categories 
- *      tags:
- *          - [AdminPanel-Category]
+ *      tags: [AdminPanel-Category]
  *      responses:
  *          200: 
  *              description: successfully
@@ -94,8 +92,7 @@
  *  get:
  *      summary: get the sub categories
  *      description: get all categories that have any parent
- *      tags:
- *          - [AdminPanel-Category]
+ *      tags: [AdminPanel-Category]
  *      responses:
  *          200: 
  *              description: successfully
@@ -109,8 +106,7 @@
  *  get:
  *      summary: get  category by id
  *      description: get any category just by id
- *      tags:
- *          - [AdminPanel-Category]
+ *      tags: [AdminPanel-Category]
  *      parameters:
  *          -   in: path
  *              name: id
@@ -129,8 +125,7 @@
  *  get:
  *      summary: get the child of sub category
  *      description: get all child of sub category
- *      tags:
- *          - [AdminPanel-Category]
+ *      tags: [AdminPanel-Category]
  *      parameters:
  *          -   in: path
  *              name: parent
@@ -149,8 +144,7 @@
  *  get:
  *      summary: get the children of sub category
  *      description: get all children of sub category
- *      tags:
- *          - [AdminPanel-Category]
+ *      tags: [AdminPanel-Category]
  *      parameters:
  *          -   in: path
  *              name: parent
@@ -169,8 +163,7 @@
  *  patch:
  *      summary: edit category
  *      description: edit title of category by id
- *      tags:
- *          - [AdminPanel-Category]
+ *      tags: [AdminPanel-Category]
  *      parameters:
  *          -   in: path
  *              name: id
@@ -197,8 +190,7 @@
  *  delete:
  *      summary: remove category
  *      description: remove category by id
- *      tags:
- *          - [AdminPanel-Category]
+ *      tags:  [AdminPanel-Category]
  *      parameters:
  *          -   in: path
  *              name: id
