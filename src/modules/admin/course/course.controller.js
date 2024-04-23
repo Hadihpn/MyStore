@@ -2,10 +2,14 @@ const autoBind = require("auto-bind");
 const CourseServices = require("./course.services");
 const { ObjectIdSchema } = require("../../../common/validators/public.schema");
 const { StatusCodes: httpstatus } = require("http-status-codes");
-const { listOfImagesFormRequest, deleteFileInPublic, deleteInvalidPropertyInObject } = require("../../../common/utils/function");
-const { addCourseSchema, addChapterSchema } = require("../../../common/validators/admin/course.schema");
+const { listOfImagesFormRequest, deleteFileInPublic, deleteInvalidPropertyInObject, removePathBackSlash, convertToNormalTime } = require("../../../common/utils/function");
+const { addCourseSchema, addChapterSchema, addEpisodeSchema } = require("../../../common/validators/admin/course.schema");
 const createHttpError = require("http-errors");
 const { CourseMessage } = require("./course.messages");
+const { default: getVideoDurationInSeconds } = require("get-video-duration")
+const path = require("path");
+const { log } = require("console");
+
 class CourseController {
     #service;
     constructor() {
@@ -76,7 +80,6 @@ class CourseController {
         try {
             await addChapterSchema.validateAsync(req.body);
             const { id, title, text } = req.body;
-            console.log({ id, title, text });
             const saveChapterResult = await this.#service.addChapter({ id, title, text })
             if (saveChapterResult.modifiedCount == 0) throw createHttpError.InternalServerError("new chapter does not save")
             return res.status(httpstatus.CREATED).json({
@@ -117,9 +120,9 @@ class CourseController {
     async updateChapter(req, res, next) {
         const { id } = await ObjectIdSchema.validateAsync(req.params);
         const data = req.body;
-        deleteInvalidPropertyInObject(data,["_id"])
-        const updateChapterResult = await this.#service.updateChapter({id,data})
-         if(updateChapterResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulChapterChange);
+        deleteInvalidPropertyInObject(data, ["_id"])
+        const updateChapterResult = await this.#service.updateChapter({ id, data })
+        if (updateChapterResult.modifiedCount == 0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulChapterChange);
         return res.status(httpstatus.OK).json({
             statusCode: httpstatus.OK,
             data: {
@@ -130,7 +133,7 @@ class CourseController {
     async deleteChapter(req, res, next) {
         const { id } = await ObjectIdSchema.validateAsync(req.params);
         const removedChpaterResult = await this.#service.deleteChapter(id)
-        if(removedChpaterResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulChapterChange);
+        if (removedChpaterResult.modifiedCount == 0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulChapterChange);
         return res.status(httpstatus.OK).json({
             statusCode: httpstatus.OK,
             data: {
@@ -143,70 +146,108 @@ class CourseController {
     async addEpisode(req, res, next) {
         try {
             await addEpisodeSchema.validateAsync(req.body);
-            const { id, title, text } = req.body;
-            console.log({ id, title, text });
-            const saveEpisodeResult = await this.#service.addEpisode({ id, title, text })
+            const { courseId, chapterId, title, text, filename, fileUploadPath } = req.body;
+            const address = path.join(fileUploadPath, filename)
+            const videoAddress = removePathBackSlash(address.toString());
+            // const videoUrl = `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}:${__dirname}/${videoAddress}`
+            const videoUrl = path.join(
+                __dirname,
+                "..",
+                "..",
+                "..",
+                "..",
+                "public/",
+                videoAddress
+            )
+            req.body.videoAddress = videoUrl;
+            // const videoUrl = `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${videoAddress}`
+            // const videoUrl = `${directory}/${videoAddress}`
+            const seconds = await getVideoDurationInSeconds(videoUrl)
+            // const time = convertToNormalTime(seconds)
+            // i prefer store time of video per second . it can be convert to commen format in frontEnd
+            const time = seconds
+            const saveEpisodeResult = await this.#service.addEpisode({ courseId, chapterId, title, text, time, videoUrl })
             if (saveEpisodeResult.modifiedCount == 0) throw createHttpError.InternalServerError("new Episode does not save")
             return res.status(httpstatus.CREATED).json({
                 statusCode: httpstatus.CREATED,
                 data: {
-                    message: "new Episode added successfully"
+                    message: "new Episode added successfully",
+                    data: { courseId, chapterId, title, text, filename, fileUploadPath, time },
                 }
             })
         } catch (error) {
+            deleteFileInPublic(req.body.videoAddress)
             next(error)
         }
     }
-    async getEpisodeOfCourse(req, res, next) {
-        try {
-            const { id } = await ObjectIdSchema.validateAsync(req.params);
-            const Episodes = await this.#service.getEpisodesOfCourse(id);
-            return res.status(httpstatus.OK).json({
-                statusCode: httpstatus.OK,
-                data: {
-                    Episodes
-                }
-            })
+    // async getEpisodesOfCourse(req, res, next) {
+    //     try {
+    //         const { id } = await ObjectIdSchema.validateAsync(req.params);
+    //         const Episodes = await this.#service.getEpisodesOfCourse(id);
+    //         return res.status(httpstatus.OK).json({
+    //             statusCode: httpstatus.OK,
+    //             data: {
+    //                 Episodes
+    //             }
+    //         })
 
-        } catch (error) {
-            next(error)
-        }
-    }
-    async getEpisodeById(req, res, next) {
-        const { id } = await ObjectIdSchema.validateAsync(req.params);
-        const Episode = await this.#service.getEpisodeById(id)
-        return res.status(httpstatus.OK).json({
-            statusCode: httpstatus.OK,
-            data: {
-                Episode
-            }
-        });
-    }
-    async updateEpisode(req, res, next) {
-        const { id } = await ObjectIdSchema.validateAsync(req.params);
-        const data = req.body;
-        deleteInvalidPropertyInObject(data,["_id"])
-        const updateEpisodeResult = await this.#service.updateEpisode({id,data})
-         if(updateEpisodeResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
-        return res.status(httpstatus.OK).json({
-            statusCode: httpstatus.OK,
-            data: {
-                message: CourseMessage.deleditEpisodeeteEpisode
-            }
-        });
-    }
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
+    // async getEpisodesOfChapter(req, res, next) {
+    //     try {
+    //         const { id } = await ObjectIdSchema.validateAsync(req.params);
+    //         const Episodes = await this.#service.getEpisodesOfCourse(id);
+    //         return res.status(httpstatus.OK).json({
+    //             statusCode: httpstatus.OK,
+    //             data: {
+    //                 Episodes
+    //             }
+    //         })
+
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
+    // async getEpisodeById(req, res, next) {
+    //     const { id } = await ObjectIdSchema.validateAsync(req.params);
+    //     const Episode = await this.#service.getEpisodeById(id)
+    //     return res.status(httpstatus.OK).json({
+    //         statusCode: httpstatus.OK,
+    //         data: {
+    //             Episode
+    //         }
+    //     });
+    // }
+    // async updateEpisode(req, res, next) {
+    //     const { id } = await ObjectIdSchema.validateAsync(req.params);
+    //     const data = req.body;
+    //     deleteInvalidPropertyInObject(data,["_id"])
+    //     const updateEpisodeResult = await this.#service.updateEpisode({id,data})
+    //      if(updateEpisodeResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
+    //     return res.status(httpstatus.OK).json({
+    //         statusCode: httpstatus.OK,
+    //         data: {
+    //             message: CourseMessage.deleditEpisodeeteEpisode
+    //         }
+    //     });
+    // }
     async deleteEpisode(req, res, next) {
         const { id } = await ObjectIdSchema.validateAsync(req.params);
-        const removedChpaterResult = await this.#service.deleteEpisode(id)
-        if(removedChpaterResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
-        return res.status(httpstatus.OK).json({
-            statusCode: httpstatus.OK,
-            data: {
-                message: CourseMessage.deleteEpisode
-            }
-        });
+        await this.#service.deleteEpisode(id)
+        // const { result, address } = await this.#service.deleteEpisode(id)
+        // console.log("controller  "+ address);
+        // if(result.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
+        // deleteFileInPublic(address)
+        // return res.status(httpstatus.OK).json({
+        //     statusCode: httpstatus.OK,
+        //     data: {
+        //         message: CourseMessage.deleteEpisode
+        //     }
+        // });
     }
-    
+
     //#endregion
 }
 module.exports = new CourseController()

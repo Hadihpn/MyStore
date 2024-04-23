@@ -1,10 +1,12 @@
 const { default: mongoose, Types, model } = require("mongoose");
 const { CommentSchema } = require("../comment/comment.model");
+const { required } = require("@hapi/joi");
 const Episode = new mongoose.Schema({
     title: { type: String, required: true },
     text: { type: String, required: true },
-    time: { type: String },
-    type: { type: Boolean, default: false },
+    time: { type: String, default: "unlock" },
+    type: { type: String, default: false },
+    videoAddress: { type: String, required:true },
 })
 const Chapter = new mongoose.Schema({
     title: { type: String, required: true },
@@ -33,7 +35,7 @@ const CourseSchema = new mongoose.Schema({
 
 function autoPopulate(next) {
     this.populate([{ path: "teacher", select: { phone: 1 } }
-    , { path: "category",select:{ title:1} }])
+        , { path: "category", select: { title: 1 } }])
     next()
 }
 CourseSchema.pre("find", autoPopulate).pre("findOne", autoPopulate)

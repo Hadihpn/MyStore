@@ -2,6 +2,7 @@ const autoBind = require("auto-bind");
 const { CourseModel } = require("./course.model");
 const createHttpError = require("http-errors");
 const { CourseMessage } = require("./course.messages");
+const { deleteFileInPublic } = require("../../../common/utils/function");
 class CourseServices {
   #model
   constructor() {
@@ -20,15 +21,17 @@ class CourseServices {
     }).sort({ _id: -1 })
   }
   async findCourseById(_id) {
-    const course = await this.#model.findById({ _id })
-    return
+    const course = await this.#model.findById({ _id})
+    return course
   }
   //#endregion
 
   //#region  Chapter
   async addChapter(chapterDto) {
+    console.log(chapterDto.id)
     const course = await this.findCourseById(chapterDto?.id)
     if (!course) throw new createHttpError.NotFound("the course does not found")
+    //**** chapterDto.id == courseId
     return await this.#model.updateOne(
       { _id: chapterDto.id },
       {
@@ -59,8 +62,8 @@ class CourseServices {
   }
   async deleteChapter(id) {
     const chapter = await this.#model.findOne({ "chapters._id": id }, { "chapters.$": 1 })
+    
     const episodes = chapter.chapters[0].episodes;
-    console.log(episodes);
     if (!Array.isArray(episodes) && episodes.length > 0) throw createHttpError.NotFound(CourseMessage.notEmtpyChapter);
     const result = await this.#model.updateOne({ "chapters._id": id }, {
       $pull: {
@@ -70,6 +73,38 @@ class CourseServices {
       }
     })
     return result;
+  }
+  //#endregion
+
+  //#region Episode
+  async addEpisode(episodeDto) {
+    const course = await this.findCourseById(episodeDto?.courseId)
+    if (!course) throw new createHttpError.NotFound("the course does not found")
+    //**** chapterDto.id == courseId
+    return await this.#model.updateOne(
+      { _id: episodeDto.courseId, "chapters._id": episodeDto.chapterId },
+      {
+        $push:
+          { "chapters.$.episodes": { title: episodeDto.title, text: episodeDto.text, time: episodeDto.time, videoAddress: episodeDto.videoUrl } }
+      })
+  }
+  async deleteEpisode(id) {
+    // const episode = await this.#model.findOne({ "chapters.episodes._id": id })
+    const episode = await this.#model.findOne({ "chapters.episodes._id": id }, { "chapters.episodes.$": 1 })
+
+    console.log(episode);
+    // const address = episode.videoAddress
+    // const result = await this.#model.updateOne({ "chapters.episodes._id": id }, {
+    //   $pull: {
+    //     "chapters.$.episodes": {
+    //       _id: id
+    //     }
+    //   }
+    // })
+    // deleteFileInPublic(episode.videoAddress)
+   
+    // console.log("service "+address);
+    // return {result,address};
   }
   //#endregion
 }

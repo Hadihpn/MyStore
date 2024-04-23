@@ -1,6 +1,12 @@
 /** 
  * @swagger
  *  tags:
+ *      -   name: course(AdminPanel)
+ *          description: User routes
+ *      -   name: Indexpage
+ *          description: User routes
+ *      -   name: Indexpage
+ *          description: User routes
  *      -   name: Indexpage
  *          description: User routes
  *      -   name: Blog(AdminPanel)

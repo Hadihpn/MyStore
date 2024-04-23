@@ -9,7 +9,7 @@ const router = require("express").Router();
 
 router.use("/developer", DeveloperRoutes)
 router.use("/category", CategoryRoutes)
-router.use("/blog",Authorization,checkRole("blogcreator"), BlogRoutes)
+router.use("/blog", BlogRoutes)
 router.use("/product", ProductRoutes)
 router.use("/course", CourseRoutes)
 // router.use("/user", userController)

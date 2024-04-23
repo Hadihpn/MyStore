@@ -53,6 +53,19 @@ function listOfImagesFormRequest(files, fileUploadPath) {
 function copyObject(object) {
   return JSON.parse(JSON.stringify(object))
 }
+function convertToNormalTime(seconds) {
+  let total = Math.round(seconds) / 60;
+  let [minutes, percent] = String(total).split(".");
+  let second = Math.round((percent * 60) / 100).toString().substring(0, 2)
+  let houre = 0;
+  if (minutes > 60) {
+    total = minutes / 60;
+    let [hour, percent] = String(total).split(".");
+    let minutes = Math.round((percent * 60) / 100).toString().substring(0, 2)
+
+  }
+  return (houre + ":" + minutes + ":" + second)
+}
 module.exports = {
   unSupportedString,
   removePropertyInObject,
@@ -61,5 +74,6 @@ module.exports = {
   removePathBackSlash,
   listOfImagesFormRequest,
   copyObject,
-  deleteInvalidPropertyInObject
+  deleteInvalidPropertyInObject,
+  convertToNormalTime
 }

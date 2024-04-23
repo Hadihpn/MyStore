@@ -1,6 +1,6 @@
 const courseController = require("./course.controller");
 const { stringToArray } = require("../../../common/middleware/stringToArray");
-const { uploadFile } = require("../../../common/utils/multer");
+const { uploadFile, uploadVideo } = require("../../../common/utils/multer");
 const { setFolderPath } = require("../../../common/middleware/setMulterUploadpath");
 const router = require("express").Router();
 
@@ -21,11 +21,11 @@ router.patch("/deleteChapter/:id", courseController.deleteChapter) //delete chap
 //#endregion
 
 //#region Episode Routes
-// router.put("/addEpisode",courseController) // add new chapter
+router.post("/addEpisode",setFolderPath("course"), uploadVideo.single("video"),courseController.addEpisode) // add new episode
 // router.get("/:chpaterId", courseController) // get list of Episode of chapter
 // router.get("/:episodeId", courseController.) // get a Episode by id
 // router.patch("/:id",courseController.) //edit chapter
-// router.delete("/:id",courseController.) //delete chapter
+ router.delete("/deleteEpisode/:id",courseController.deleteEpisode) //delete chapter
 //#endregion
 
 
