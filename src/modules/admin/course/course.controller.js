@@ -166,7 +166,7 @@ class CourseController {
             // const time = convertToNormalTime(seconds)
             // i prefer store time of video per second . it can be convert to commen format in frontEnd
             const time = seconds
-            const saveEpisodeResult = await this.#service.addEpisode({ courseId, chapterId, title, text, time, videoUrl })
+            const saveEpisodeResult = await this.#service.addEpisode({ courseId, chapterId, title, text, time, videoAddress })
             if (saveEpisodeResult.modifiedCount == 0) throw createHttpError.InternalServerError("new Episode does not save")
             return res.status(httpstatus.CREATED).json({
                 statusCode: httpstatus.CREATED,
@@ -235,17 +235,16 @@ class CourseController {
     // }
     async deleteEpisode(req, res, next) {
         const { id } = await ObjectIdSchema.validateAsync(req.params);
-        await this.#service.deleteEpisode(id)
-        // const { result, address } = await this.#service.deleteEpisode(id)
-        // console.log("controller  "+ address);
-        // if(result.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
-        // deleteFileInPublic(address)
-        // return res.status(httpstatus.OK).json({
-        //     statusCode: httpstatus.OK,
-        //     data: {
-        //         message: CourseMessage.deleteEpisode
-        //     }
-        // });
+        const { result, address } = await this.#service.deleteEpisode(id)
+        if(result.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
+        console.log(address.split(","));
+        deleteFileInPublic(address.split(","))
+        return res.status(httpstatus.OK).json({
+            statusCode: httpstatus.OK,
+            data: {
+                message: CourseMessage.deleteEpisode
+            }
+        });
     }
 
     //#endregion

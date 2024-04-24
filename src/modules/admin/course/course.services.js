@@ -21,7 +21,7 @@ class CourseServices {
     }).sort({ _id: -1 })
   }
   async findCourseById(_id) {
-    const course = await this.#model.findById({ _id})
+    const course = await this.#model.findById({ _id })
     return course
   }
   //#endregion
@@ -62,7 +62,7 @@ class CourseServices {
   }
   async deleteChapter(id) {
     const chapter = await this.#model.findOne({ "chapters._id": id }, { "chapters.$": 1 })
-    
+
     const episodes = chapter.chapters[0].episodes;
     if (!Array.isArray(episodes) && episodes.length > 0) throw createHttpError.NotFound(CourseMessage.notEmtpyChapter);
     const result = await this.#model.updateOne({ "chapters._id": id }, {
@@ -85,26 +85,49 @@ class CourseServices {
       { _id: episodeDto.courseId, "chapters._id": episodeDto.chapterId },
       {
         $push:
-          { "chapters.$.episodes": { title: episodeDto.title, text: episodeDto.text, time: episodeDto.time, videoAddress: episodeDto.videoUrl } }
+          { "chapters.$.episodes": { title: episodeDto.title, text: episodeDto.text, time: episodeDto.time, videoAddress: episodeDto.videoAddress } }
       })
   }
-  async deleteEpisode(id) {
-    // const episode = await this.#model.findOne({ "chapters.episodes._id": id })
-    const episode = await this.#model.findOne({ "chapters.episodes._id": id }, { "chapters.episodes.$": 1 })
-
-    console.log(episode);
-    // const address = episode.videoAddress
-    // const result = await this.#model.updateOne({ "chapters.episodes._id": id }, {
-    //   $pull: {
-    //     "chapters.$.episodes": {
-    //       _id: id
-    //     }
-    //   }
-    // })
+  async deleteEpisode(episodeId) {
+    //get the episode to return videoAddress for deleting
+    const episode = await this.#model.findOne({ "chapters.episodes._id": episodeId })
+    .populate("chapters.episodes") // Populate the nested episodes within chapters
+    .then((course) => {
+  
+      // Find the chapter containing the episode
+      const chapter = course.chapters.find((chap) =>
+        chap.episodes.some((ep) => ep._id.toString() === episodeId)
+      );
+      // Find the episode within the chapter
+      const episode = chapter.episodes.find(
+        (ep) => ep._id.toString() === episodeId
+      );
+  
+      if (!episode) {
+        console.log("Episode not found");
+        // Handle the case where the episode is not found
+        return;
+      }
+  
+      return episode
+      // Use the retrieved episode (e.g., return it in your API response)
+    })
+    .catch((err) => {
+      console.error("Error fetching course:", err);
+      // Handle any errors (e.g., return an error response)
+    });
+    const address = episode.videoAddress
+    const result = await this.#model.updateOne({ "chapters.episodes._id": episodeId }, {
+      $pull: {
+        "chapters.$.episodes": {
+          _id: episodeId
+        }
+      }
+    })
     // deleteFileInPublic(episode.videoAddress)
-   
+
     // console.log("service "+address);
-    // return {result,address};
+    return {result,address};
   }
   //#endregion
 }
