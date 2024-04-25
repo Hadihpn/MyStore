@@ -24,7 +24,7 @@ router.patch("/deleteChapter/:id", courseController.deleteChapter) //delete chap
 router.post("/addEpisode",setFolderPath("course"), uploadVideo.single("video"),courseController.addEpisode) // add new episode
 // router.get("/:chpaterId", courseController) // get list of Episode of chapter
 // router.get("/:episodeId", courseController.) // get a Episode by id
-// router.patch("/:id",courseController.) //edit chapter
+ router.patch("/editEpisode/:id",courseController.updateEpisode) //edit chapter
  router.delete("/deleteEpisode/:id",courseController.deleteEpisode) //delete chapter
 //#endregion
 

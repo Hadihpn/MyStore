@@ -172,6 +172,7 @@
  *              required:
  *                  -   title
  *                  -   text
+ *                  -   type
  *              properties:
  *                  title:
  *                      type: string
@@ -179,6 +180,9 @@
  *                  text:
  *                      type: string
  *                      description: the text of course
+ *                  type:
+ *                      $ref: '#/components/schemas/EpisodeType'
+ *                      description: the type of episode lock or unlock
  */
 /**
  * @swagger
@@ -231,29 +235,7 @@
  *              201:
  *                  description: created
  */
-/**
- * @swagger
- *  /admin/course/edit/{id}:
- *      patch:
- *          tags: [ course(AdminPanel)]
- *          summary: update  course document by id 
- *          consumes: 
- *              -   multipart/form-data
- *          parameters:
- *              -   in: path
- *                  name: id
- *                  type: string
- *                  required: true
- *          requestBody:
- *              required: true
- *              content:
- *                  multipart/form-data:
- *                      schema:
- *                          $ref: '#/components/schemas/courseUpdate'
- *          responses:
- *              200:
- *                  description: success
- */
+
 
 /**
  * @swagger
@@ -381,9 +363,9 @@
  */
 /**
  * @swagger
- *  /admin/course/chapter/{id}:
+ *  /admin/course/episode/{id}:
  *      get:
- *          summary: get chpater by ID 
+ *          summary: get episode by ID 
  *          tags: [ course(AdminPanel) ]
  *          parameters:
  *              -   in: path
@@ -396,9 +378,9 @@
  */
 /**
  * @swagger
- *  /admin/course/chaptersOfCourse/{id}:
+ *  /admin/course/episodesOfChapter/{id}:
  *      get:
- *          summary: get chpaters of course by ID and populate this field 
+ *          summary: get episodes of chapter by ID and populate this field 
  *          tags: [ course(AdminPanel) ]
  *          parameters:
  *              -   in: path
@@ -411,27 +393,44 @@
  */
 /**
  * @swagger
- *  /admin/course/editChapter/{id}:
+ *  /admin/course/editEpisode/{id}:
  *      patch:
  *          tags: [ course(AdminPanel)]
- *          summary: update  chapter document by id 
- *          consumes: 
- *              -   multipart/form-data
+ *          summary: create new episode document
  *          parameters:
  *              -   in: path
  *                  name: id
  *                  type: string
- *                  required: true
+ *                  required: true 
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/editEpisode'
+ *          responses:
+ *              200:
+ *                  description: created
+ */
+/**
+ * @swagger
+ *  /admin/course/editEpisodes/{id}:
+ *      patch:
+ *          tags: [ course(AdminPanel)]
+ *          summary: update  episode  by id 
+ *          consumes: 
+ *              -   multipart/form-data
  *          requestBody:
  *              required: true
  *              content:
  *                  multipart/form-data:
  *                      schema:
- *                          $ref: '#/components/schemas/editChapter'
+ *                          $ref: '#/components/schemas/addEpisode'
  *          responses:
  *              200:
  *                  description: success
  */
+
 /**
  * @swagger
  *  /admin/course/deleteEpisode/{id}:

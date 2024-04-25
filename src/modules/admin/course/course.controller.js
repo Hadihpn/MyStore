@@ -3,7 +3,7 @@ const CourseServices = require("./course.services");
 const { ObjectIdSchema } = require("../../../common/validators/public.schema");
 const { StatusCodes: httpstatus } = require("http-status-codes");
 const { listOfImagesFormRequest, deleteFileInPublic, deleteInvalidPropertyInObject, removePathBackSlash, convertToNormalTime } = require("../../../common/utils/function");
-const { addCourseSchema, addChapterSchema, addEpisodeSchema } = require("../../../common/validators/admin/course.schema");
+const { addCourseSchema, addChapterSchema, addEpisodeSchema, editEpisodeSchema } = require("../../../common/validators/admin/course.schema");
 const createHttpError = require("http-errors");
 const { CourseMessage } = require("./course.messages");
 const { default: getVideoDurationInSeconds } = require("get-video-duration")
@@ -220,19 +220,24 @@ class CourseController {
     //         }
     //     });
     // }
-    // async updateEpisode(req, res, next) {
-    //     const { id } = await ObjectIdSchema.validateAsync(req.params);
-    //     const data = req.body;
-    //     deleteInvalidPropertyInObject(data,["_id"])
-    //     const updateEpisodeResult = await this.#service.updateEpisode({id,data})
-    //      if(updateEpisodeResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
-    //     return res.status(httpstatus.OK).json({
-    //         statusCode: httpstatus.OK,
-    //         data: {
-    //             message: CourseMessage.deleditEpisodeeteEpisode
-    //         }
-    //     });
-    // }
+    async updateEpisode(req, res, next) {
+        const { id } = await ObjectIdSchema.validateAsync(req.params);
+        const data = await editEpisodeSchema.validateAsync(req.body)
+        // data.videoAddress = "uploads/course/2024/3/25/1714051884541.mp4"
+        // data.time="2296.6"
+        deleteInvalidPropertyInObject(data, ["_id"])
+        data.id = id
+        const updateEpisodeResult = await this.#service.updateEpisode({id,data})
+        console.log(updateEpisodeResult);
+        //  if(updateEpisodeResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
+        return res.status(httpstatus.OK).json({
+            statusCode: httpstatus.OK,
+            data: {
+                message: CourseMessage.deleteEpisode
+            }
+        });
+    }
+    
     async deleteEpisode(req, res, next) {
         const { id } = await ObjectIdSchema.validateAsync(req.params);
         const { result, address } = await this.#service.deleteEpisode(id)

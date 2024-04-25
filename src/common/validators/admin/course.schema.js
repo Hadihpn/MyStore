@@ -45,10 +45,16 @@ const addEpisodeSchema = Joi.object({
     filename: Joi.string().pattern(/(\.mp4|\.mkv|\.gif)/).error(createHttpError.BadRequest(" فرمت فیلم وارد شده صحیح نمیباشد")),
     fileUploadPath: Joi.allow()
 })
+const editEpisodeSchema = Joi.object({
+    title: Joi.string().min(3).max(100).error(createHttpError.BadRequest("عنوان  وارد شده معتبر نمی باشد")),
+    text: Joi.string().error(createHttpError.BadRequest("متن وارد شده صحیح نمیباشد")),
+    type: Joi.string().regex(/(unlock|lock)/i),
+})
 
 module.exports = {
     addCourseSchema,
     editCourseSchema,
     addChapterSchema,
-    addEpisodeSchema
+    addEpisodeSchema,
+    editEpisodeSchema
 }
