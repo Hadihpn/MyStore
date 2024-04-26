@@ -1,18 +1,16 @@
 /** 
  * @swagger
  *  tags:
+ *      -   name: user(AdminPanel)
+ *          description: User Managment routes
  *      -   name: course(AdminPanel)
- *          description: User routes
+ *          description: course routes
  *      -   name: Indexpage
- *          description: User routes
- *      -   name: Indexpage
- *          description: User routes
- *      -   name: Indexpage
- *          description: User routes
+ *          description: Indexpage routes
  *      -   name: Blog(AdminPanel)
- *          description: User routes
+ *          description: Blog routes
  *      -   name: product(AdminPanel)
- *          description: User routes
+ *          description: product routes
  *      -   name: AdminPanel-Category
- *          description: User routes
+ *          description: Category routes
  */

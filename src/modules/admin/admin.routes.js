@@ -4,6 +4,7 @@ const { CategoryRoutes } = require("./category/category.routes");
 const { CourseRoutes } = require("./course/course.routes");
 const { DeveloperRoutes } = require("./developer/developer.routes");
 const { ProductRoutes } = require("./product/product.routes");
+const UserRoutes = require("./user/user.routes");
 
 const router = require("express").Router();
 
@@ -12,6 +13,7 @@ router.use("/category", CategoryRoutes)
 router.use("/blog", BlogRoutes)
 router.use("/product", ProductRoutes)
 router.use("/course", CourseRoutes)
+router.use("/user", UserRoutes)
 // router.use("/user", userController)
 module.exports = {
     AdminRoutes: router
