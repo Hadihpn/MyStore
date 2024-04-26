@@ -22,5 +22,7 @@ const UserSchema = new Schema({
     Courses: { type: [Types.ObjectId], default: [], ref: "course" }
 }, { timestamps: true, toJSON: { virtuals: true } })
 
+UserSchema.index({userName:"text",email:"text",phone:"text"});
+
 const UserModel = model("user", UserSchema);
 module.exports = { UserModel };

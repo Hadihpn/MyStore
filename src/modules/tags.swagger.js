@@ -1,7 +1,11 @@
 /** 
  * @swagger
  *  tags:
- *      -   name: user(AdminPanel)
+ *      -   name: RoleManagment(AdminPanel)
+ *          description: Role Managment routes
+ *      -   name: PermissionManagment(AdminPanel)
+ *          description: Permisiion Managment routes
+ *      -   name: UserManagment(AdminPanel)
  *          description: User Managment routes
  *      -   name: course(AdminPanel)
  *          description: course routes
