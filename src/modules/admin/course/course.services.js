@@ -32,7 +32,7 @@ class CourseServices {
   //#region  Chapter
   async addChapter(chapterDto) {
     console.log(chapterDto.id)
-    const course = await this.findCourseById(chapterDto?.id)
+    const course = await this.getCourseById(chapterDto?.id)
     if (!course) throw new createHttpError.NotFound("the course does not found")
     //**** chapterDto.id == courseId
     return await this.#model.updateOne(
@@ -81,7 +81,7 @@ class CourseServices {
 
   //#region Episode
   async addEpisode(episodeDto) {
-    const course = await this.findCourseById(episodeDto?.courseId)
+    const course = await this.getCourseById(episodeDto?.courseId)
     if (!course) throw new createHttpError.NotFound("the course does not found")
     //**** chapterDto.id == courseId
     return await this.#model.updateOne(

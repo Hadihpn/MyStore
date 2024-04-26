@@ -77,7 +77,7 @@ function getPublicStoreUrl() {
 
   ).toString()
 }
-async function getTimeOfCourse(chapters = []) {
+ function getTimeOfCourse(chapters = []) {
   let time=0;
   for (const chapter of chapters) {
     for (const episode of chapter.episodes) {

@@ -51,7 +51,7 @@ class CourseController {
         try {
             const { id } = await ObjectIdSchema.validateAsync(req.params);
             const course = await this.#service.getCourseById(id);
-            course.time = await getTimeOfCourse(course.chapters);
+            // course.time = await getTimeOfCourse(course.chapters);
             return res.status(httpstatus.OK).json({
                 statusCode: httpstatus.OK,
                 data: { course }
@@ -180,23 +180,22 @@ class CourseController {
                 "public/",
                 videoAddress
             )
-            console.log(videoUrl);
             req.body.videoAddress = videoUrl;
             // // const videoUrl = `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${videoAddress}`
             // // const videoUrl = `${directory}/${videoAddress}`
             const seconds = await getVideoDurationInSeconds(videoUrl)
             // // const time = convertToNormalTime(seconds)
             // // i prefer store time of video per second . it can be convert to commen format in frontEnd
-            // const time = seconds
-            // const saveEpisodeResult = await this.#service.addEpisode({ courseId, chapterId, title, text, time, videoAddress })
-            // if (saveEpisodeResult.modifiedCount == 0) throw createHttpError.InternalServerError("new Episode does not save")
-            // return res.status(httpstatus.CREATED).json({
-            //     statusCode: httpstatus.CREATED,
-            //     data: {
-            //         message: "new Episode added successfully",
-            //         data: { courseId, chapterId, title, text, filename, fileUploadPath, time },
-            //     }
-            // })
+            const time = seconds
+            const saveEpisodeResult = await this.#service.addEpisode({ courseId, chapterId, title, text, time, videoAddress })
+            if (saveEpisodeResult.modifiedCount == 0) throw createHttpError.InternalServerError("new Episode does not save")
+            return res.status(httpstatus.CREATED).json({
+                statusCode: httpstatus.CREATED,
+                data: {
+                    message: "new Episode added successfully",
+                    data: { courseId, chapterId, title, text, filename, fileUploadPath },
+                }
+            })
         } catch (error) {
             deleteFileInPublic(req.body.videoAddress)
             next(error)
