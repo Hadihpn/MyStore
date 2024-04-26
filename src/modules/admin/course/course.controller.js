@@ -2,7 +2,7 @@ const autoBind = require("auto-bind");
 const CourseServices = require("./course.services");
 const { ObjectIdSchema } = require("../../../common/validators/public.schema");
 const { StatusCodes: httpstatus } = require("http-status-codes");
-const { listOfImagesFormRequest, deleteFileInPublic, deleteInvalidPropertyInObject, removePathBackSlash, convertToNormalTime } = require("../../../common/utils/function");
+const { listOfImagesFormRequest, deleteFileInPublic, deleteInvalidPropertyInObject, removePathBackSlash, convertToNormalTime, getTimeOfCourse } = require("../../../common/utils/function");
 const { addCourseSchema, addChapterSchema, addEpisodeSchema, editEpisodeSchema } = require("../../../common/validators/admin/course.schema");
 const createHttpError = require("http-errors");
 const { CourseMessage } = require("./course.messages");
@@ -50,7 +50,8 @@ class CourseController {
     async getCourseById(req, res, next) {
         try {
             const { id } = await ObjectIdSchema.validateAsync(req.params);
-            const course = await this.#service.findCourseById(id);
+            const course = await this.#service.getCourseById(id);
+            course.time = await getTimeOfCourse(course.chapters);
             return res.status(httpstatus.OK).json({
                 statusCode: httpstatus.OK,
                 data: { course }
@@ -62,11 +63,24 @@ class CourseController {
     async updateCourse(req, res, next) {
         try {
             const { id } = await ObjectIdSchema.validateAsync(req.params);
-            const updateCourse = await this.#service.updateCourse()
+            const course = await this.#service.getCourseById(id);
+            const data = req.body;
+
+            let blackListField = ["time", "chapters", "episodes", "students", "bookmarks", "likes", "dislikes", "comments"];
+            deleteInvalidPropertyInObject(data, blackListField);
+            const result = await this.#service.updateCourse(id, data);
+            if (result.modifiedCount == 0) throw createHttpError.InternalServerError("بروزرسانی انجام نشد")
+            if (req.files) {
+                const uploadPath = req.body.fileUploadPath
+                const image = listOfImagesFormRequest(req.files || [], uploadPath)
+                deleteFileInPublic(course.image.split(","));
+                // req.body.image = image;
+            }
+            // const courseDataBody = addCourseSchema.validateAsync(data)
             return res.status(httpstatus.OK).json({
-                statusCode:httpstatus.OK,
-                data:{
-                    data:{updateCourse}
+                statusCode: httpstatus.OK,
+                data: {
+                    data: "بروزرسانی با موفقیت انجام شد"
                 }
             })
         } catch (error) {
@@ -166,22 +180,23 @@ class CourseController {
                 "public/",
                 videoAddress
             )
+            console.log(videoUrl);
             req.body.videoAddress = videoUrl;
-            // const videoUrl = `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${videoAddress}`
-            // const videoUrl = `${directory}/${videoAddress}`
+            // // const videoUrl = `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${videoAddress}`
+            // // const videoUrl = `${directory}/${videoAddress}`
             const seconds = await getVideoDurationInSeconds(videoUrl)
-            // const time = convertToNormalTime(seconds)
-            // i prefer store time of video per second . it can be convert to commen format in frontEnd
-            const time = seconds
-            const saveEpisodeResult = await this.#service.addEpisode({ courseId, chapterId, title, text, time, videoAddress })
-            if (saveEpisodeResult.modifiedCount == 0) throw createHttpError.InternalServerError("new Episode does not save")
-            return res.status(httpstatus.CREATED).json({
-                statusCode: httpstatus.CREATED,
-                data: {
-                    message: "new Episode added successfully",
-                    data: { courseId, chapterId, title, text, filename, fileUploadPath, time },
-                }
-            })
+            // // const time = convertToNormalTime(seconds)
+            // // i prefer store time of video per second . it can be convert to commen format in frontEnd
+            // const time = seconds
+            // const saveEpisodeResult = await this.#service.addEpisode({ courseId, chapterId, title, text, time, videoAddress })
+            // if (saveEpisodeResult.modifiedCount == 0) throw createHttpError.InternalServerError("new Episode does not save")
+            // return res.status(httpstatus.CREATED).json({
+            //     statusCode: httpstatus.CREATED,
+            //     data: {
+            //         message: "new Episode added successfully",
+            //         data: { courseId, chapterId, title, text, filename, fileUploadPath, time },
+            //     }
+            // })
         } catch (error) {
             deleteFileInPublic(req.body.videoAddress)
             next(error)
@@ -231,9 +246,9 @@ class CourseController {
         const { id } = await ObjectIdSchema.validateAsync(req.params);
         const data = await editEpisodeSchema.validateAsync(req.body)
         deleteInvalidPropertyInObject(data, ["_id"])
-        const updateEpisodeResult = await this.#service.updateEpisode({id,data})
+        const updateEpisodeResult = await this.#service.updateEpisode({ id, data })
         console.log(updateEpisodeResult);
-         if(updateEpisodeResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
+        if (updateEpisodeResult.modifiedCount == 0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
         return res.status(httpstatus.OK).json({
             statusCode: httpstatus.OK,
             data: {
@@ -241,11 +256,11 @@ class CourseController {
             }
         });
     }
-    
+
     async deleteEpisode(req, res, next) {
         const { id } = await ObjectIdSchema.validateAsync(req.params);
         const { result, address } = await this.#service.deleteEpisode(id)
-        if(result.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
+        if (result.modifiedCount == 0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
         console.log(address.split(","));
         deleteFileInPublic(address.split(","))
         return res.status(httpstatus.OK).json({

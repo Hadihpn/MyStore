@@ -31,7 +31,8 @@ class ProductServices {
     return product.images;
   }
   async editProduct(id, data) {
-    return await this.#model.updateOne({ _id: id }, { $set: data });
+    const result =await this.#model.updateOne({ _id: id }, { $set: data })
+    return result;
   }
 }
 

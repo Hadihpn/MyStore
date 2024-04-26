@@ -66,7 +66,7 @@ function convertToNormalTime(seconds) {
   }
   return (houre + ":" + minutes + ":" + second)
 }
-function getPublicStoreUrl(){
+function getPublicStoreUrl() {
   return path.join(
     __dirname,
     "..",
@@ -74,8 +74,17 @@ function getPublicStoreUrl(){
     "..",
     "..",
     "public/",
-    
-).toString()
+
+  ).toString()
+}
+async function getTimeOfCourse(chapters = []) {
+  let time=0;
+  for (const chapter of chapters) {
+    for (const episode of chapter.episodes) {
+      if (episode?.time) time += Number(episode.time);
+    }
+  }
+  return time;
 }
 module.exports = {
   unSupportedString,
@@ -87,5 +96,6 @@ module.exports = {
   copyObject,
   deleteInvalidPropertyInObject,
   convertToNormalTime,
-  getPublicStoreUrl
+  getPublicStoreUrl,
+  getTimeOfCourse
 }

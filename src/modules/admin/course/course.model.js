@@ -50,6 +50,7 @@ function autoPopulate(next) {
         , { path: "category", select: { title: 1 } }])
     next()
 }
+
 CourseSchema.pre("find", autoPopulate).pre("findOne", autoPopulate)
 CourseSchema.index({ title: "text", short_text: "text" })
 CourseSchema.virtual("imageUrl").get(function(){

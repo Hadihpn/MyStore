@@ -13,8 +13,8 @@ class CourseServices {
   async createCourse(courseDto) {
     await this.#model.create(courseDto)
   }
-  async updateCourse(courseDto) {
-    await this.#model.create(courseDto)
+  async updateCourse(id, data) {
+    return await this.#model.updateOne({ _id: id }, { $set: data })
   }
   async findCourse(query) {
     if (!query || query == "") return await this.#model.find()
@@ -23,7 +23,7 @@ class CourseServices {
         { $search: query }
     }).sort({ _id: -1 })
   }
-  async findCourseById(_id) {
+  async getCourseById(_id) {
     const course = await this.#model.findById({ _id })
     return course
   }

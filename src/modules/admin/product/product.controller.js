@@ -59,43 +59,35 @@ class ProductController {
     async editProduct(req, res, next) {
         try {
             const { id } = await ObjectIdSchema.validateAsync(req.params);
-            const datas = copyObject(req.body);
-            const product = await this.#service.getProductById(id);
             const data = req.body;
-            if (req?.body?.fileUploadPath && req?.body?.filename) {
+            const product = await this.#service.getProductById(id);
+
+            // // let nullishData = ["", " ", "0", 0, null, undefined]
+            let blackListField = ["bookmarks", "likes", "dislikes", "comments"]
+
+            deleteInvalidPropertyInObject(data, blackListField);
+
+            const result = await this.#service.editProduct(id, data);
+            // const updatedProduct = await this.#service.getProductById(id)
+            // await editProductSchema.validateAsync(updatedProduct)
+            if (result.modifiedCount == 0) throw createHttpError.InternalServerError("بروزرسانی انجام نشد")
+            if (req.files) {
                 const uploadPath = req.body.fileUploadPath
                 const images = listOfImagesFormRequest(req?.files || [], uploadPath);
-                if (product.images != images) {
-                    deleteFileInPublic(product.images.split(","))
-                    req.body.images = images;
-                } else {
-                    deleteFileInPublic(images.split(","))
-                }
+                deleteFileInPublic(product.images.split(","))
+                // req.body.images = images;
             }
-            // let nullishData = ["", " ", "0", 0, null, undefined]
-            let blackListField = ["bookmarks", "likes", "dislikes", "comments"]
-            // Object.keys(data).forEach(key => {
-            //     if (blackListField.includes(key)) delete data[key];
-            //     if (typeof data[key] == "string") data[key] = data[key].trim();
-            //     if (Array.isArray(data[key]) && data[key].length > 0) { data[key] = data[key].map(item => item.trim()) }
-            //     else if (Array.isArray(data[key]) && data[key].length == 0) { delete data[key] }
-            //     if (nullishData.includes(data[key])) delete data[key];
-            //     product[key] = data[key]
-            // })
-            deleteInvalidPropertyInObject(data, blackListField);
-            const productDataBody = editProductSchema.validate(product)
-            const updateResult = await this.#service.editProduct(id, product);
-            if (updateResult.modifiedCount == 0) throw createHttpError.InternalServerError("بروزرسانی انجام نشد")
             return res.status(201).json({
                 statusCode: 201,
 
                 data: {
                     message: "بلاگ با موفقیت ایجاد شد",
-                    product: productDataBody
+                    product: "productDataBody"
                 },
             })
         } catch (error) {
-            deleteFileInPublic((req.body.images).split(","))
+            // deleteFileInPublic((req.body.images).split(","))
+            console.log(req.body);
             next(error)
         }
     }

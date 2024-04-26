@@ -9,7 +9,7 @@ router.post("/addCourse", setFolderPath("course"), uploadFile.single("image"), s
 router.get("/", courseController.getListOfCourse) //get list of courses
 router.get("/:id", courseController.getCourseById) // get course by id
 //router.get("/:id",courseController.) // get students of course
-router.patch("/updateCourse/:id",setFolderPath("course"), uploadFile.single("image"), stringToArray("tags"),courseController.updateCourse) // edit course
+router.patch("/updateCourse/:id", setFolderPath("course"), uploadFile.single("image"), stringToArray("tags"), courseController.updateCourse) // edit course
 // router.delete("/:id",courseController.) // delete course
 //#endregion
 //#region Chapter Routes
@@ -21,11 +21,11 @@ router.patch("/deleteChapter/:id", courseController.deleteChapter) //delete chap
 //#endregion
 
 //#region Episode Routes
-router.post("/addEpisode",setFolderPath("course"), uploadVideo.single("video"),courseController.addEpisode) // add new episode
+router.post("/addEpisode", setFolderPath("course"), uploadVideo.single("video"), courseController.addEpisode) // add new episode
 // router.get("/:chpaterId", courseController) // get list of Episode of chapter
 // router.get("/:episodeId", courseController.) // get a Episode by id
- router.patch("/editEpisode/:id",courseController.updateEpisode) //edit chapter
- router.delete("/deleteEpisode/:id",courseController.deleteEpisode) //delete chapter
+router.patch("/editEpisode/:id", courseController.updateEpisode) //edit chapter
+router.delete("/deleteEpisode/:id", courseController.deleteEpisode) //delete chapter
 //#endregion
 
 
