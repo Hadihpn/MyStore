@@ -59,9 +59,16 @@ class CourseController {
             next(error)
         }
     }
-    async editCourse(req, res, next) {
+    async updateCourse(req, res, next) {
         try {
             const { id } = await ObjectIdSchema.validateAsync(req.params);
+            const updateCourse = await this.#service.updateCourse()
+            return res.status(httpstatus.OK).json({
+                statusCode:httpstatus.OK,
+                data:{
+                    data:{updateCourse}
+                }
+            })
         } catch (error) {
             next(error)
         }
@@ -223,13 +230,10 @@ class CourseController {
     async updateEpisode(req, res, next) {
         const { id } = await ObjectIdSchema.validateAsync(req.params);
         const data = await editEpisodeSchema.validateAsync(req.body)
-        // data.videoAddress = "uploads/course/2024/3/25/1714051884541.mp4"
-        // data.time="2296.6"
         deleteInvalidPropertyInObject(data, ["_id"])
-        data.id = id
         const updateEpisodeResult = await this.#service.updateEpisode({id,data})
         console.log(updateEpisodeResult);
-        //  if(updateEpisodeResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
+         if(updateEpisodeResult.modifiedCount==0) throw createHttpError.InternalServerError(CourseMessage.unSuccessulEpisodeChange);
         return res.status(httpstatus.OK).json({
             statusCode: httpstatus.OK,
             data: {

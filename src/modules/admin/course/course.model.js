@@ -1,12 +1,20 @@
 const { default: mongoose, Types, model } = require("mongoose");
 const { CommentSchema } = require("../comment/comment.model");
 const { required } = require("@hapi/joi");
+const { getPublicStoreUrl } = require("../../../common/utils/function");
 const Episode = new mongoose.Schema({
     title: { type: String, required: true },
     text: { type: String, required: true },
     time: { type: String, default: "unlock" },
     type: { type: String, default: false },
     videoAddress: { type: String, required:true },
+},{
+    toJSON:{
+        virtuals:true
+    }
+})
+Episode.virtual("videoUrl").get(function(){
+    return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/public/${this.videoAddress}`
 })
 const Chapter = new mongoose.Schema({
     title: { type: String, required: true },
@@ -31,6 +39,10 @@ const CourseSchema = new mongoose.Schema({
     teacher: { type: mongoose.Types.ObjectId, ref: "user", required: true },
     chapters: { type: [Chapter], default: [] },
     students: { type: [Types.ObjectId], default: [], ref: "user" }
+},{
+    toJSON:{
+        virtuals:true
+    }
 })
 
 function autoPopulate(next) {
@@ -40,5 +52,8 @@ function autoPopulate(next) {
 }
 CourseSchema.pre("find", autoPopulate).pre("findOne", autoPopulate)
 CourseSchema.index({ title: "text", short_text: "text" })
+CourseSchema.virtual("imageUrl").get(function(){
+    return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/public/${this.image}`
+})
 const CourseModel = model("Course", CourseSchema);
 module.exports = { CourseModel };

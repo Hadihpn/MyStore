@@ -9,7 +9,7 @@ router.post("/addCourse", setFolderPath("course"), uploadFile.single("image"), s
 router.get("/", courseController.getListOfCourse) //get list of courses
 router.get("/:id", courseController.getCourseById) // get course by id
 //router.get("/:id",courseController.) // get students of course
-// router.patch("/:id",courseController.) // edit course
+router.patch("/updateCourse/:id",setFolderPath("course"), uploadFile.single("image"), stringToArray("tags"),courseController.updateCourse) // edit course
 // router.delete("/:id",courseController.) // delete course
 //#endregion
 //#region Chapter Routes

@@ -104,6 +104,37 @@
  *                      type: string
  *                      format: binary
  *                      description: the index picture of course
+ *          editCourse:
+ *              type: object
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      description: the title of category
+ *                  short_text:
+ *                      type: string
+ *                      description: the summary of text of course
+ *                  text:
+ *                      type: string
+ *                      description: the text of course
+ *                  tags:
+ *                      type: string
+ *                      description: the list of tags for example(tag1#tag2#tag_foo)
+ *                  price:
+ *                      type: string
+ *                      description: the price
+ *                  type:
+ *                      $ref: '#/components/schemas/CourseType'
+ *                      description: the type
+ *                  category:
+ *                      type: string
+ *                      description: the id of category 
+ *                  teacher:
+ *                      type: string
+ *                      description: the id of teacher 
+ *                  image:
+ *                      type: string
+ *                      format: binary
+ *                      description: the index picture of course
  */
 /**
  * @swagger
@@ -235,7 +266,27 @@
  *              201:
  *                  description: created
  */
-
+/**
+ * @swagger
+ *  /admin/course/updateCourse/{id}:
+ *      patch:
+ *          tags: [ course(AdminPanel)]
+ *          summary: create course document
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  type: string
+ *                  required: true
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  multipart/form-data:
+ *                      schema:
+ *                          $ref: '#/components/schemas/editCourse'
+ *          responses:
+ *              201:
+ *                  description: created
+ */
 
 /**
  * @swagger

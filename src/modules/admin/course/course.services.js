@@ -13,6 +13,9 @@ class CourseServices {
   async createCourse(courseDto) {
     await this.#model.create(courseDto)
   }
+  async updateCourse(courseDto) {
+    await this.#model.create(courseDto)
+  }
   async findCourse(query) {
     if (!query || query == "") return await this.#model.find()
     return await this.#model.find({

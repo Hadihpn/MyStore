@@ -25,5 +25,8 @@ BlogSchema.virtual("category_detail", {
     localField: "category",
     foreignField: "_id"
 })
+BlogSchema.virtual("imageUrl").get(function(){
+    return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/public/${this.image}`
+})
 const BlogModel = model("Blog", BlogSchema);
 module.exports = { BlogModel };

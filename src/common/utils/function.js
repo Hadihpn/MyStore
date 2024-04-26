@@ -66,6 +66,17 @@ function convertToNormalTime(seconds) {
   }
   return (houre + ":" + minutes + ":" + second)
 }
+function getPublicStoreUrl(){
+  return path.join(
+    __dirname,
+    "..",
+    "..",
+    "..",
+    "..",
+    "public/",
+    
+).toString()
+}
 module.exports = {
   unSupportedString,
   removePropertyInObject,
@@ -75,5 +86,6 @@ module.exports = {
   listOfImagesFormRequest,
   copyObject,
   deleteInvalidPropertyInObject,
-  convertToNormalTime
+  convertToNormalTime,
+  getPublicStoreUrl
 }
