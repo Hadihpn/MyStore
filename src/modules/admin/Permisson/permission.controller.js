@@ -1,9 +1,10 @@
 const autoBind = require("auto-bind");
 const { StatusCodes: httpstatus } = require("http-status-codes");
-const { deleteInvalidPropertyInObject } = require("../../../common/utils/function");
+const { deleteInvalidPropertyInObject, copyObject } = require("../../../common/utils/function");
 const permissionService = require("./permission.service");
 const { createPermissionSchema } = require("../../../common/validators/admin/permission.schema");
 const createHttpError = require("http-errors");
+const { default: mongoose } = require("mongoose");
 
 class PermissionController {
     #service
@@ -49,7 +50,20 @@ class PermissionController {
     }
     async updatePermission(req, res, next) {
         try {
-
+            const { field  } = req.params
+            let query = mongoose.isValidObjectId(field) ? { _id: field } : { title: field }
+            const data = copyObject(req.body);
+            const permission = await this.#service.getPermissionWithIdOrTitle(query)
+            if (!permission) throw new createHttpError.BadRequest("cannot find any permission ")
+            deleteInvalidPropertyInObject(data, [])
+            const updateResult = await this.#service.updatePermission(query, data)
+            if (!updateResult) throw new createHttpError.BadRequest("cannot update any permission ")
+             return res.status(httpstatus.OK).json({
+                statusCode: httpstatus.OK,
+                data: {
+                    message: "the permission updated successfully",
+                }
+            })
         } catch (error) {
             next(error)
         }

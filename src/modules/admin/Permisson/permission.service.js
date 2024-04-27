@@ -23,9 +23,10 @@ class PermissionService {
         return await this.#model.create(permissionDto)
 
     }
-    async updatePermission() {
-
-
+    async updatePermission(query,data) {
+        return this.#model.updateOne(query, {
+            $set: data
+        })
     }
     async deletePermission() {
         return await this.#model.deleteOne(query)

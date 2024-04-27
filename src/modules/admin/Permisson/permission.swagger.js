@@ -60,13 +60,13 @@
  */
 /**
  * @swagger
- *  /admin/permission/update/{id}:
+ *  /admin/permission/update/{field}:
  *      patch:
  *          tags: [ PermissionManagment(AdminPanel)]
- *          summary: update  permission  by id 
+ *          summary: update  permission  by id or title 
  *          parameters:
  *              -   in: path
- *                  name: id
+ *                  name: field
  *                  type: string
  *                  required: true
  *          requestBody:

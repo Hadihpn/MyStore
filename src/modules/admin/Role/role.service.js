@@ -22,7 +22,6 @@ class RoleService {
         if (role) throw new createHttpError.BadRequest("this role already existed")
     }
     async addRole(roleDto) {
-        console.log(roleDto);
         return await this.#model.create(roleDto)
     }
 
