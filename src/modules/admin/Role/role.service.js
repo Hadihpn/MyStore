@@ -11,8 +11,12 @@ class RoleService {
     async getAllRole(search) {
         return await this.#model.find(search)
     }
-    async existRoleByTitle(title){
-        const role = await this.#model.findOne({title})
+    async getRoleWithIdOrTitle(query){
+        const role = await this.#model.findOne(query)
+        return role;
+    }
+    async existRoleByTitleOrId(query){
+        const role = await this.#model.findOne(query)
         if(role) throw new createHttpError.BadRequest("this role already existed")
     }
     async addRole(roleDto){
@@ -23,8 +27,8 @@ class RoleService {
     async updateRole(){
 
     }
-    async deleteRole(){
-
+    async deleteRole(query){
+        return await this.#model.deleteOne(query)
     }
 }
 module.exports = new RoleService()

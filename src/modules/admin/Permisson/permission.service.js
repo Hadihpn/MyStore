@@ -11,21 +11,24 @@ class PermissionService {
     async getAllPermission(search) {
         return await this.#model.find(search)
     }
-    async existPermissionByTitle(title){
-        const permission = await this.#model.findOne({title})
-        if(permission) throw new createHttpError.BadRequest("this permission already existed")
+    async getPermissionWithIdOrTitle(query) {
+        const permission = await this.#model.findOne(query)
+        return permission;
     }
-    async addPermission(permissionDto){
+    async existPermissionByTitle(title) {
+        const permission = await this.#model.findOne({ title })
+        if (permission) throw new createHttpError.BadRequest("this permission already existed")
+    }
+    async addPermission(permissionDto) {
         return await this.#model.create(permissionDto)
 
     }
-    async updatePermission(){
-        
+    async updatePermission() {
+
 
     }
-    async deletePermission(){
-        
-
+    async deletePermission() {
+        return await this.#model.deleteOne(query)
     }
 }
 module.exports = new PermissionService()

@@ -27,41 +27,54 @@ class PermissionController {
             next(error)
         }
     }
-    async addPermission(req,res,next){
+    async addPermission(req, res, next) {
         try {
-            const permissionDataBody =await createPermissionSchema.validateAsync(req.body);
-            await this.#service.existPermissionByTitle(permissionDataBody.title)
-            const role = await this.#service.addPermission(permissionDataBody)
-            if(!role) throw new createHttpError.InternalServerError("cannot creat permission")
+            const permissionDataBody = await createPermissionSchema.validateAsync(req.body);
+            const permission = await this.#service.getPermissionWithIdOrTitle(permissionDataBody.title)
+            if (permission) throw new createHttpError.BadRequest("this permission already existed")
+            const newPermission = await this.#service.addPermission(permissionDataBody)
+            if (!newPermission) throw new createHttpError.InternalServerError("cannot creat permission")
             return res.status(httpstatus.OK).json({
                 statusCode: httpstatus.OK,
                 data: {
-                    message:"the new permission add successfully",
-                    role
+                    message: "the new permission add successfully",
+                    newPermission
 
                 }
-            }) 
+            })
         } catch (error) {
             next(error)
         }
 
     }
-    async updatePermission(req,res,next){
+    async updatePermission(req, res, next) {
         try {
-            
+
         } catch (error) {
             next(error)
         }
 
     }
-    async deletePermission(req,res,next){
+    async deletePermission(req, res, next) {
         try {
-            
+            const {field} = req.params
+            if (!field) throw new createHttpError.InternalServerError("please enter valid title or id")
+            let query = mongoose.isValidObjectId(field) ? { _id: field } : { title: field }
+            const permission = await this.#service.getRoleWithIdOrTitle(query)
+            if(!permission) throw new createHttpError.BadRequest("cannot find any permission ")
+            const removeResult = await this.#service.deletePermission(query)
+            if(!removeResult) throw new createHttpError.BadRequest("cannot remove any permission ")
+            return res.status(httpstatus.OK).json({
+                statusCode: httpstatus.OK,
+                data: {
+                    message: "the newPermission deleted successfully",
+                }
+            })
         } catch (error) {
             next(error)
         }
 
     }
-    
+
 }
 module.exports = new PermissionController()

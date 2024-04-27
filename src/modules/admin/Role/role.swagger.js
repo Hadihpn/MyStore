@@ -11,7 +11,7 @@
  *              properties:
  *                  title:
  *                      type: string
- *                      description: the title of Role
+ *                      description: the title of role
  *                  permissions:
  *                      type: array
  *                      items: 
@@ -67,7 +67,7 @@
  *  /admin/role/update/{id}:
  *      patch:
  *          tags: [ RoleManagment(AdminPanel)]
- *          summary: update  roRolele  by id 
+ *          summary: update  Role  by id 
  *          parameters:
  *              -   in: path
  *                  name: id
@@ -85,13 +85,13 @@
  */
 /**
  * @swagger
- *  /admin/role/delete/{id}:
+ *  /admin/role/delete/{field}:
  *      delete:
- *          summary: remove role by ID 
+ *          summary: remove role by ID  Or Title
  *          tags: [ RoleManagment(AdminPanel) ]
  *          parameters:
  *              -   in: path
- *                  name: id
+ *                  name: field
  *                  type: string
  *                  required: true
  *          responses:
