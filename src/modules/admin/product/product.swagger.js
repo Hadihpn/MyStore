@@ -56,7 +56,7 @@
  *                          type: string
  *                          format: binary
  *                      description: the index picture of product
-  *          productUpdate:
+ *          productUpdate:
  *              type: object
  *              properties:
  *                  title:

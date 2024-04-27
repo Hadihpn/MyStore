@@ -1,9 +1,9 @@
 const { default: mongoose, Types, model } = require("mongoose");
-const { CommentSchema } = require("../comment/comment.model");
 
 const RoleSchema = new mongoose.Schema({
     title: { type: String, required: true },
     permissions: { type: [Types.ObjectId],ref:"permissions", default:[]},
+    description: { type: String, default:""},
 },{
     toJSON:{
         virtuals:true

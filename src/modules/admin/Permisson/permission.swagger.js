@@ -81,13 +81,13 @@
  */
 /**
  * @swagger
- *  /admin/permission/delete/{id}:
+ *  /admin/permission/delete/{field}:
  *      delete:
- *          summary: remove permission by ID 
- *          tags: [ PermissionManagment(AdminPanel) ]
+ *          summary: remove permission by ID Or Title
+ *          tags: [ PermissionManagment(AdminPanel)]
  *          parameters:
  *              -   in: path
- *                  name: id
+ *                  name: field
  *                  type: string
  *                  required: true
  *          responses:

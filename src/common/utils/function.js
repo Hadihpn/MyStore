@@ -77,8 +77,8 @@ function getPublicStoreUrl() {
 
   ).toString()
 }
- function getTimeOfCourse(chapters = []) {
-  let time=0;
+function getTimeOfCourse(chapters = []) {
+  let time = 0;
   for (const chapter of chapters) {
     for (const episode of chapter.episodes) {
       if (episode?.time) time += Number(episode.time);
@@ -86,6 +86,7 @@ function getPublicStoreUrl() {
   }
   return time;
 }
+
 module.exports = {
   unSupportedString,
   removePropertyInObject,
@@ -97,5 +98,5 @@ module.exports = {
   deleteInvalidPropertyInObject,
   convertToNormalTime,
   getPublicStoreUrl,
-  getTimeOfCourse
+  getTimeOfCourse,
 }

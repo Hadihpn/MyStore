@@ -3,10 +3,10 @@ const roleController = require("./role.controller");
 
 const router = require("express").Router();
 
-router.post("/addRole",stringToArray("permissions"), roleController.addRole)
+router.post("/addRole", stringToArray("permissions"), roleController.addRole)
 router.get("/", roleController.getAllRole)
 // router.get("/:id", productController.getProductById)
-router.patch("/update/:id", roleController.updateRole)
+router.patch("/update/:field", stringToArray("permissions"), roleController.updateRole)
 router.delete("/delete/:field", roleController.deleteRole)
 module.exports = {
     RoleRoutes: router

@@ -12,6 +12,9 @@
  *                  title:
  *                      type: string
  *                      description: the title of role
+ *                  description:
+ *                      type: string
+ *                      description: the description of role
  *                  permissions:
  *                      type: array
  *                      items: 
@@ -23,6 +26,9 @@
  *                  title:
  *                      type: string
  *                      description: the title of Role
+ *                  description:
+ *                      type: string
+ *                      description: the description of Role
  *                  permissions:
  *                      type: array
  *                      items: 
@@ -36,12 +42,12 @@
  *  /admin/role/:
  *      get:
  *          tags: [ RoleManagment(AdminPanel)]
- *          summary: get all Users
+ *          summary: get all Roles
  *          parameters:
  *              -   in: query
  *                  name: search
  *                  type: string
- *                  required: true
+ *                  required: false
  *          responses:
  *              200:
  *                  description: success - get array of products
@@ -64,13 +70,13 @@
  */
 /**
  * @swagger
- *  /admin/role/update/{id}:
+ *  /admin/role/update/{field}:
  *      patch:
  *          tags: [ RoleManagment(AdminPanel)]
  *          summary: update  Role  by id 
  *          parameters:
  *              -   in: path
- *                  name: id
+ *                  name: field
  *                  type: string
  *                  required: true
  *          requestBody:
