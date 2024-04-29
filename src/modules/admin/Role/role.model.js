@@ -2,7 +2,7 @@ const { default: mongoose, Types, model } = require("mongoose");
 
 const RoleSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    permissions: { type: [Types.ObjectId],ref:"permissions", default:[]},
+    permissions: { type: [Types.ObjectId],ref:"Permission", default:[]},
     description: { type: String, default:""},
 },{
     toJSON:{
@@ -10,6 +10,7 @@ const RoleSchema = new mongoose.Schema({
     }
 })
 RoleSchema.index({title:"text"});
+
 // RoleSchema.virtual("imageURl").get(function(){
 //     return this.images.map(image=>`${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/public/${image}`)
 // })

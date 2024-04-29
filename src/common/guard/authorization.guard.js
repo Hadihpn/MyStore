@@ -2,6 +2,8 @@ const createHttpError = require("http-errors");
 const jwt = require("jsonwebtoken");
 const authServices = require("../../modules/client/authentication/auth.services");
 const AuthorizationMessage = require("../messages/authentication.messages");
+const roleController = require("../../modules/admin/Role/role.controller");
+const roleService = require("../../modules/admin/Role/role.service");
 require("dotenv").config();
 
 const Authorization = async (req, res, next) => {
@@ -27,10 +29,17 @@ const Authorization = async (req, res, next) => {
     }
 
 }
-function checkRole(role) {
-    return function (req, res, next) {
+function checkPermission(requiredPermissions = []) {
+    return async function (req, res, next) {
         try {
-            if (!req.user.roles.includes(role)) throw new createHttpError.Forbidden("دسترسی لازم به این بخش را ندارید")
+            const dataBaseQuery = {}
+            const role = req.user.Role;
+            if (role) dataBaseQuery['$text'] = { $search: role }
+            const roles = await roleService.getAllRole(dataBaseQuery)
+            const userPermissions = roles[0].permissions.map(item => item.title.toLower())
+            const hasPermission = requiredPermissions.every(permissions => { return userPermissions.includes(permissions.toLower()) })
+            if (requiredPermissions.length == 0 || hasPermission) return next()
+            throw new createHttpError.Forbidden("دسترسی لازم به این بخش را ندارید")
             return next()
         } catch (error) {
             next(error)
@@ -38,4 +47,4 @@ function checkRole(role) {
     }
 
 }
-module.exports = { Authorization, checkRole }
+module.exports = { Authorization, checkPermission }

@@ -33,7 +33,7 @@ class AuthService {
         };
         // sign up user
         if (!user) {
-            const newUser = await this.#model.create({ phone, otp, Roles: [ROLES.USER] })
+            const newUser = await this.#model.create({ phone, otp, Role: ROLES.USER })
             return newUser;
         }
         //update otp 

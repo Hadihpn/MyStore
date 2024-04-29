@@ -37,7 +37,7 @@
  *              -   in: query
  *                  name: search
  *                  type: string
- *                  required: true
+ *                  required: false
  *          responses:
  *              200:
  *                  description: success - get array of products

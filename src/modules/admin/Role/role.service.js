@@ -10,7 +10,8 @@ class RoleService {
         this.#model = RoleModel;
     }
     async getAllRole(search) {
-        return await this.#model.find(search)
+        console.log(search);
+        return await this.#model.find(search).populate([{path:"permissions",select:{title:1,_id:0}}])
         // return await this.#model.find()
     }
     async getRoleWithIdOrTitle(query) {

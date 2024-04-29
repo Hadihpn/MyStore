@@ -1,4 +1,5 @@
-const {Authorization, checkRole} = require("../../common/guard/authorization.guard");
+const { ROLES } = require("../../common/constant/constantVar");
+const {Authorization, checkRole, checkPermission} = require("../../common/guard/authorization.guard");
 const { PermissionRoutes } = require("./Permisson/permission.routes");
 const {RoleRoutes} = require("./Role/role.routes");
 const {BlogRoutes} = require("./blog/blog.routes");
@@ -17,7 +18,7 @@ router.use("/product", ProductRoutes)
 router.use("/course", CourseRoutes)
 router.use("/userManagment", UserManagmentRoutes)
 router.use("/role",RoleRoutes )
-router.use("/permission", PermissionRoutes)
+router.use("/permission",Authorization,checkPermission(["AdminPermission"]), PermissionRoutes)
 module.exports = {
     AdminRoutes: router
 }

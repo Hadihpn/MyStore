@@ -16,10 +16,8 @@ class RoleController {
     async getAllRole(req, res, next) {
         try {
             const { search } = req.query;
-            console.log(search);
             const dataBaseQuery = {}
             if (search) dataBaseQuery['$text'] = { $search: search }
-            console.log(dataBaseQuery);
             const roles = await this.#service.getAllRole(dataBaseQuery);
             // const roles = await this.#service.getAllRole();
             return res.status(httpstatus.OK).json({
