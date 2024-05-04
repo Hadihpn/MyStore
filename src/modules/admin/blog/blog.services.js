@@ -30,7 +30,7 @@ class BlogServices {
                     "author.accessToken": 0,
                     "author.__v": 0,
                     "author.verifiedMobile": 0,
-                    "author.roles": 0,
+                    "author.role": 0,
                     "author.otp": 0,
                 }
             },

@@ -4,6 +4,7 @@ const authServices = require("../../modules/client/authentication/auth.services"
 const AuthorizationMessage = require("../messages/authentication.messages");
 const roleController = require("../../modules/admin/Role/role.controller");
 const roleService = require("../../modules/admin/Role/role.service");
+const { PERMISSIONS } = require("../constant/constantVar");
 require("dotenv").config();
 
 const Authorization = async (req, res, next) => {
@@ -32,13 +33,15 @@ const Authorization = async (req, res, next) => {
 function checkPermission(requiredPermissions = []) {
     return async function (req, res, next) {
         try {
+            const wantedpermission = requiredPermissions.flat(2);
             const dataBaseQuery = {}
             const role = req.user.Role;
             if (role) dataBaseQuery['$text'] = { $search: role }
             const roles = await roleService.getAllRole(dataBaseQuery)
             const userPermissions = roles[0].permissions.map(item => item.title.toLower())
-            const hasPermission = requiredPermissions.every(permissions => { return userPermissions.includes(permissions.toLower()) })
-            if (requiredPermissions.length == 0 || hasPermission) return next()
+            if(userPermissions.includes(PERMISSIONS.ALL)) return next()
+            const hasPermission = wantedpermission.every(permissions => { return userPermissions.includes(permissions.toLower()) })
+            if (wantedpermission.length == 0 || hasPermission) return next()
             throw new createHttpError.Forbidden("دسترسی لازم به این بخش را ندارید")
             return next()
         } catch (error) {
