@@ -4,9 +4,14 @@ const AuthorType = new GraphQLObjectType({
     name: "authorType",
     fields: {
         _id: { type: GraphQLString },
-        firstName: { type: GraphQLString },
-        lastName: { type: GraphQLString },
+        phone: { type: GraphQLString },
+        userName: { type: GraphQLString },
     }
 })
-
-module.exports = { AuthorType }
+const CategoryType = new GraphQLObjectType({
+    name: "categoryType",
+    fields: {
+        title: { type: GraphQLString },
+    }
+})
+module.exports = { AuthorType ,CategoryType}

@@ -1,0 +1,7 @@
+{blogs{_id,title,author {
+  _id
+  phone
+  userName
+},category {
+  title
+},image,imageURL}}

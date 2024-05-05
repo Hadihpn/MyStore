@@ -9,7 +9,7 @@ class HomeController  {
     async indexPage(req, res, next) {
         try {
             
-            return res.status(200).send("Index Page Store")
+            return res.status(200).send("Index Page Store <a href='/swagger'>swagger</a>")
         } catch (error) {
             next(error)
         }
