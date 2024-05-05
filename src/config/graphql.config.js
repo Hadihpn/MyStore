@@ -1,3 +1,5 @@
+const { graphQLSchema } = require("../graphql/index.graphql")
+
 function graphqlConfig(req, res) {
     return {
         schema: graphQLSchema,
