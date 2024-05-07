@@ -1,0 +1,19 @@
+{
+  category {
+   _id,
+   slug,
+   title,
+   icon,
+   parent,
+   parents,
+   children{
+    _id,
+    title
+   }},
+  }
+  {
+    childOfCategory(parent:"6265654218464648464"){
+      _id,
+      title
+    }
+  }
