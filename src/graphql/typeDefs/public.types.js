@@ -1,17 +1,18 @@
 const { GraphQLObjectType, GraphQLString, GraphQLList } = require("graphql");
 
 const AuthorType = new GraphQLObjectType({
-    name: "authorType",
+    name: "AuthorType",
     fields: {
         _id: { type: GraphQLString },
         phone: { type: GraphQLString },
         userName: { type: GraphQLString },
     }
 })
-const CategoryType = new GraphQLObjectType({
-    name: "categoryType",
+const PublicCategoryType = new GraphQLObjectType({
+    name: "PublicCategoryType",
     fields: {
+        _id: { type: GraphQLString },
         title: { type: GraphQLString },
     }
 })
-module.exports = { AuthorType ,CategoryType}
+module.exports = { AuthorType ,PublicCategoryType}

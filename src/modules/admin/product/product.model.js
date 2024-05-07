@@ -7,7 +7,7 @@ const ProductSchema = new mongoose.Schema({
     text: { type: String, required: true },
     images: { type: [String], required: true },
     tags: { type: [String], required: true },
-    category: { type: mongoose.Types.ObjectId, ref: "category", required: true },
+    category: { type: mongoose.Types.ObjectId, ref: "Category", required: true },
     comments: { type: [CommentSchema], default: [] },
     likes: { type: [mongoose.Types.ObjectId], default: [] },
     dislikes: { type: [mongoose.Types.ObjectId], default: [] },
@@ -31,6 +31,11 @@ const ProductSchema = new mongoose.Schema({
         virtuals:true
     }
 })
+function autoPopulate(next){
+    this.populate([{path:"supplier",select:{phone:1,_id:0,userName:1}},{path:"category",select:{title:1,_id:0}}]);
+    next()
+}
+ProductSchema.pre("find",autoPopulate).pre("findOne", autoPopulate);
 ProductSchema.index({text:"text",title:"text",short_text:"text"});
 ProductSchema.virtual("imageURl").get(function(){
     return this.images.map(image=>`${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/public/${image}`)
