@@ -10,7 +10,7 @@ const BlogResolver = {
         // req?.cookies?.accessToken = context.req.headers
         console.log(context.req.headers.authorization);
         const {req,res} = context
-        AuthorizationInGraphQl(req,res)
+        req.user = await AuthorizationInGraphQl(req,res)
         // return await BlogModel.find({}).populate('author')
         return await blogServices.getListOfBlogs()
     }

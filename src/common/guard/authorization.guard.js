@@ -30,7 +30,7 @@ const Authorization = async (req, res, next) => {
     }
 
 }
-const AuthorizationInGraphQl = async (req, res) => {
+async function AuthorizationInGraphQl (req) {
     try {
         const accessToken = req.headers.authorization;
         console.log("token is :", accessToken)
@@ -40,16 +40,16 @@ const AuthorizationInGraphQl = async (req, res) => {
             const user = await authServices.getUserByPhone(data.phone);
             user.otp = 0
             user.accessToken = ""
-
+            
             if (!user) throw new createHttpError.BadRequest(AuthorizationMessage.NotFoundAccount)
-            req.user = user;
+            return user;
         }
         else {
             throw new createHttpError.Unauthorized(AuthorizationMessage.UnAuthorize);
         }
+
     } catch (error) {
-        // throw new createHttpError.Unauthorized(error.message);
-        console.log(error.message);
+        throw new createHttpError.Unauthorized(AuthorizationMessage.UnAuthorize);
     }
 
 }
