@@ -21,7 +21,7 @@ class CourseServices {
     return await this.#model.find({
       $text:
         { $search: query }
-    }).sort({ _id: -1 })
+    }).populate([{path:'teacher'},{path:"category"}]).sort({ _id: -1 })
   }
   async getCourseById(_id) {
     const course = await this.#model.findById({ _id })
