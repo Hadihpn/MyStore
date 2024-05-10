@@ -7,14 +7,17 @@ class ProductServices {
     autoBind(this);
     this.#model = ProductModel
   }
-  async getProducts(search) {
-    console.log(search);
-    if (!search || search == "") return await this.#model.find()
+  async getProducts(findQuery) {
+    if (!findQuery || findQuery == "" ) return await this.#model.find()
     return await this.#model.find({
       $text: {
-        $search: search
+        $search: findQuery
       }
     })
+  }
+  async getProductsByQuery(findQuery){
+    if (!findQuery || findQuery == "" ) return await this.#model.find()
+    return await this.#model.find(findQuery)
   }
   async createProduct(productDto) {
     await this.#model.create(productDto)
@@ -31,7 +34,7 @@ class ProductServices {
     return product.images;
   }
   async editProduct(id, data) {
-    const result =await this.#model.updateOne({ _id: id }, { $set: data })
+    const result = await this.#model.updateOne({ _id: id }, { $set: data })
     return result;
   }
 }

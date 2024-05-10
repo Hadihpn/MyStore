@@ -16,12 +16,16 @@ class CourseServices {
   async updateCourse(id, data) {
     return await this.#model.updateOne({ _id: id }, { $set: data })
   }
-  async findCourse(query) {
-    if (!query || query == "") return await this.#model.find()
+  async findCourse(findQuery) {
+    if (!findQuery || findQuery == "" ) return await this.#model.find();
     return await this.#model.find({
       $text:
-        { $search: query }
+        { $search: findQuery }
     }).populate([{path:'teacher'},{path:"category"}]).sort({ _id: -1 })
+  }
+  async getCourseByQuery(findQuery){
+    if (!findQuery || findQuery == "" ) return await this.#model.find()
+    return await this.#model.find(findQuery)
   }
   async getCourseById(_id) {
     const course = await this.#model.findById({ _id })
