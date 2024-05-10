@@ -1,5 +1,5 @@
 const { GraphQLObjectType, GraphQLString, GraphQLList } = require("graphql");
-const { PublicCategoryType } = require("./public.types");
+const { PublicCategoryType, AnyType } = require("./public.types");
 
 const CategoryType = new GraphQLObjectType({
     name: "CategoryType",
@@ -10,7 +10,7 @@ const CategoryType = new GraphQLObjectType({
         icon: { type: GraphQLString },
         parent: { type: GraphQLString },
         parents: { type: new GraphQLList(GraphQLString) },
-        children: { type: new GraphQLList(PublicCategoryType) },
+        children: { type: new GraphQLList(AnyType) },
     }
 })
 module.exports ={
