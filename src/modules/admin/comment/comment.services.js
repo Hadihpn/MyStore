@@ -10,5 +10,6 @@ class CommentService {
     async getCommentsOfBlog(blogId){
         
     }
+    
 }
 module.exports = new CommentService();

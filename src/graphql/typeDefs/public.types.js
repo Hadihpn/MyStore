@@ -8,8 +8,8 @@ const AnyType = new GraphQLScalarType({
     parseLiteral: parseLiterals
 
 })
-const AuthorType = new GraphQLObjectType({
-    name: "AuthorType",
+const UserType = new GraphQLObjectType({
+    name: "UserType",
     fields: {
         _id: { type: GraphQLString },
         phone: { type: GraphQLString },
@@ -23,4 +23,13 @@ const PublicCategoryType = new GraphQLObjectType({
         title: { type: GraphQLString },
     }
 })
-module.exports = { AuthorType, PublicCategoryType ,AnyType}
+const ResponseType = new GraphQLObjectType({
+    name: "responseType",
+    fields: {
+        statusCode: { type: GraphQLString },
+        data: { type: AnyType },
+        
+
+    }
+})
+module.exports = { UserType, PublicCategoryType ,AnyType,ResponseType}

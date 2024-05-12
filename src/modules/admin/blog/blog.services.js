@@ -59,10 +59,19 @@ class BlogServices {
         if (!findQuery || findQuery == "" ) return await this.#model.find()
         return await this.#model.find(findQuery).populate([{ path: "category_detail" }, { path: "author_detail" }]);
     }
+    async checkExist(_id) {
+        return await this.#model.exists({_id:_id})
+    }
     async deleteBlogById(_id) {
         const blog = await this.getBlogById(_id)
         await this.#model.deleteOne({ _id });
         return blog.image;
+    }
+    async addBlogComment(blogId, comment) {
+        return await this.#model.updateOne({ _id: blogId },
+             { $push: {
+                comment,user
+             } });
     }
 
 }
