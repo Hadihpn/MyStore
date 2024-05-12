@@ -3,9 +3,12 @@ const { CommentType } = require("../typeDefs/comment.type");
 const blogServices = require("../../modules/admin/blog/blog.services");
 const createHttpError = require("http-errors");
 const { StatusCodes:HttpStatus } = require("http-status-codes");
+const { ResponseType } = require("../typeDefs/public.types");
+const { AuthorizationInGraphQl } = require("../../common/guard/authorization.guard");
+const { text } = require("express");
 
 const CommentForBlogResolver = {
-    type: new GraphQLList(CommentType),
+    type: ResponseType,
     args: {
         comment: { type: GraphQLString },
         blogId: { type: GraphQLString },
@@ -14,13 +17,14 @@ const CommentForBlogResolver = {
     resolve: async (_, args, context) => {
         const { req, res } = context
         const user = await AuthorizationInGraphQl(req, res)
+        console.log(user._id);
         const { comment, blogId, parent } = args;
         const existedBlog = await blogServices.checkExist(blogId);
         if (!existedBlog) throw createHttpError.NotFound("no blog founded  with this id")
-        comment.show = false;
-        comment.openToComment = !parent
-        console.log(comment, blogId, parent);
-        await blogServices.addBlogComment(blogId, { comment, user: user._id })
+            console.log(!parent);
+        const newComment ={user:user._id,text:comment,show:false,openToComment:(!parent),parent:parent}
+        console.log(newComment);
+        await blogServices.addBlogComment(blogId,  newComment)
         return { 
             statusCode:HttpStatus.CREATED,
             data:{

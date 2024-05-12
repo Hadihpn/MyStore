@@ -1,5 +1,5 @@
 const { GraphQLObjectType, GraphQLString, graphql, GraphQLBoolean } = require("graphql");
-const { UserType } = require("./public.types");
+const { UserType, AnyType } = require("./public.types");
 const parentOfCommentType = new GraphQLObjectType({
     name: "parentOfCommentType",
     fields: {
@@ -12,7 +12,7 @@ const parentOfCommentType = new GraphQLObjectType({
     }
 })
 const CommentType = new GraphQLObjectType({
-    name: "CommentType",
+    name: "commentType",
     fields: {
         writer: { type: UserType },
         text: { type: GraphQLString },
@@ -22,6 +22,7 @@ const CommentType = new GraphQLObjectType({
 
     }
 })
+
 module.exports = {
     CommentType
 }
