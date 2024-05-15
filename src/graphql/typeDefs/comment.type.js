@@ -18,7 +18,8 @@ const CommentType = new GraphQLObjectType({
         text: { type: GraphQLString },
         parent: { type: parentOfCommentType },
         show: { type: GraphQLBoolean },
-        openToComment: { type: GraphQLBoolean }
+        openToComment: { type: GraphQLBoolean },
+        createdAt:{ type: GraphQLString },
 
     }
 })

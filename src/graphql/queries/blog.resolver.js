@@ -11,7 +11,6 @@ const BlogResolver = {
     resolve: async (_, args, context) => {
         // req?.cookies?.accessToken = context.req.headers
         const {category} = args;
-        console.log(category);
         const findQuery = category?{category}:"";
         const { req, res } = context
         // req.user = await AuthorizationInGraphQl(req, res)

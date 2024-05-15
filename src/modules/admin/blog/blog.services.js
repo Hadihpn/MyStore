@@ -59,8 +59,8 @@ class BlogServices {
         return await this.#model.findById(_id).populate([{ path: "category_detail", select: { title: 1 } }, { path: "author_detail", select: { phone: 1 } }])
     }
     async getBlogByQurey(findQuery = {}) {
-        if (!findQuery || findQuery == "") return await this.#model.find()
-        return await this.#model.find(findQuery).populate([{ path: "category_detail" }, { path: "author_detail" }]);
+        if (!findQuery || findQuery == "") return await this.#model.find().populate([{ path: "category" }, { path: "author" },{ path: "comments" }]);
+        return await this.#model.find(findQuery).populate([{ path: "category" }, { path: "author" }]);
     }
     async checkExist(_id) {
         return await this.#model.exists({ _id: _id })
@@ -70,7 +70,7 @@ class BlogServices {
         await this.#model.deleteOne({ _id });
         return blog.image;
     }
-    async getBlogCommentById( commentId) {
+    async getBlogCommentById(commentId) {
         const comment = await this.#model.findOne({ "comments._id": commentId }, { "comments.$": 1 });
         const copied = copyObject(comment);
         if (!comment?.comments?.[0]) throw createHttpError.NotFound("cannot find any comment")
@@ -78,12 +78,15 @@ class BlogServices {
 
     }
     async addBlogComment(blogId, comment) {
-        console.log(comment);
         return await this.#model.updateOne({ _id: blogId },
             {
                 $push: {
                     comments: {
-                        comment
+                        user: comment.user,
+                        text: comment.text,
+                        show: comment.show,
+                        openToComment: comment.openToComment,
+                        parent: comment.parent
                     }
                     // comments: {
                     //     text:comment.text,
