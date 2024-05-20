@@ -15,15 +15,16 @@ const UserSchema = new Schema({
     address: { type: [], default: [] },
     discount: { type: Number, default: 0 },
     birthday: { type: String, default: "0" },
-    Role: { type:String, default: "USER" },
+    Role: { type: String, default: "USER" },
     // Role: { type:MongoIDPattern },
+    openToComment: { type: Boolean },
     accessToken: { type: String },
     refreshToken: { type: String },
     verifiedMobile: { type: Boolean, default: false, required: true },
     Courses: { type: [Types.ObjectId], default: [], ref: "course" }
 }, { timestamps: true, toJSON: { virtuals: true } })
 
-UserSchema.index({userName:"text",email:"text",phone:"text"});
+UserSchema.index({ userName: "text", email: "text", phone: "text" });
 
 const UserModel = model("user", UserSchema);
 module.exports = { UserModel };

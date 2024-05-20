@@ -13,21 +13,23 @@ const CommentForBlogResolver = {
     args: {
         comment: { type: GraphQLString },
         blogId: { type: GraphQLString },
-        parent: { type: GraphQLString }
+        replyTo: { type: GraphQLString }
     },
     resolve: async (_, args, context) => {
         const { req, res } = context
         const user = await AuthorizationInGraphQl(req, res)
-        const { comment, blogId, parent } = args;
+        // if (!(user.openToComment)) { throw new createHttpError.BadRequest("you have been prevented to add comment. u had been blocke as our rules") }
+        const { comment, blogId, replyTo } = args;
         const existedBlog = await blogServices.checkExist(blogId);
         if (!existedBlog) throw createHttpError.NotFound("no blog founded  with this id")
-        if (parent && mongoose.isValidObjectId(parent)) {
-            const parentComment = await blogServices.getBlogCommentById(parent)
-            if (!(parentComment.openToComment)) { console.log("asd"); throw new createHttpError.BadRequest("you cannot add comment for this this") }
+        if (replyTo && mongoose.isValidObjectId(replyTo)) {
+            const repliedComment = await blogServices.checkExistRepliedComment(replyTo)
+            if (!(repliedComment)) { throw new createHttpError.BadRequest("it seems you reply to nothing!!!") }
         }
 
 
-        const newComment = { user: user._id, text: comment, show: false, openToComment: (!parent), parent: parent }
+        // const newComment = { user: user._id, text: comment, show: false, openToComment: (!answer), answer: answer }
+        const newComment = { user: user._id, text: comment, show: false, replyTo: replyTo }
         await blogServices.addBlogComment(blogId, newComment)
         return {
             statusCode: HttpStatus.CREATED,

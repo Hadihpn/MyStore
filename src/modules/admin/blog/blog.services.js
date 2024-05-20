@@ -59,7 +59,7 @@ class BlogServices {
         return await this.#model.findById(_id).populate([{ path: "category_detail", select: { title: 1 } }, { path: "author_detail", select: { phone: 1 } }])
     }
     async getBlogByQurey(findQuery = {}) {
-        if (!findQuery || findQuery == "") return await this.#model.find().populate([{ path: "category" }, { path: "author" },{ path: "comments" }]);
+        if (!findQuery || findQuery == "") return await this.#model.find().populate([{ path: "category" }, { path: "author" }, { path: "comments.user" }]);
         return await this.#model.find(findQuery).populate([{ path: "category" }, { path: "author" }]);
     }
     async checkExist(_id) {
@@ -70,12 +70,17 @@ class BlogServices {
         await this.#model.deleteOne({ _id });
         return blog.image;
     }
-    async getBlogCommentById(commentId) {
-        const comment = await this.#model.findOne({ "comments._id": commentId }, { "comments.$": 1 });
-        const copied = copyObject(comment);
-        if (!comment?.comments?.[0]) throw createHttpError.NotFound("cannot find any comment")
-        return comment?.comments?.[0];
+    async getBlogCommentById( commentId) {
+        const blog = await this.#model.findOne({ "comments._id": commentId }, { "comments.$": 1 });
+        const copiedBlog = copyObject(blog);
+        if (!blog?.comments?.[0]) throw createHttpError.NotFound("cannot find any comment")
+          return blog?.comments?.[0];
 
+    }
+    async checkExistRepliedComment(commentId) {
+        const blog = await this.#model.findOne({ "comments._id": commentId }, { "comments.$": 1 });
+        if (blog) return true;
+        return false;
     }
     async addBlogComment(blogId, comment) {
         return await this.#model.updateOne({ _id: blogId },
@@ -85,8 +90,8 @@ class BlogServices {
                         user: comment.user,
                         text: comment.text,
                         show: comment.show,
-                        openToComment: comment.openToComment,
-                        parent: comment.parent
+                        // openToComment: comment.openToComment,
+                        replyTo: comment.replyTo
                     }
                     // comments: {
                     //     text:comment.text,
