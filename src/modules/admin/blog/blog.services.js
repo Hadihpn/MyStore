@@ -59,7 +59,14 @@ class BlogServices {
         return await this.#model.findById(_id).populate([{ path: "category_detail", select: { title: 1 } }, { path: "author_detail", select: { phone: 1 } }])
     }
     async getBlogByQurey(findQuery = {}) {
-        if (!findQuery || findQuery == "") return await this.#model.find().populate([{ path: "category" }, { path: "author" }, { path: "comments.user" }]);
+        if (!findQuery || findQuery == "") return await this.#model.find()
+            .populate([
+                { path: "category" },
+                { path: "author" },
+                { path: "comments.user" },
+                { path: "questions.user" },
+                { path: "questions.answers.user" },
+            ]);
         return await this.#model.find(findQuery).populate([{ path: "category" }, { path: "author" }]);
     }
     async checkExist(_id) {
@@ -70,15 +77,27 @@ class BlogServices {
         await this.#model.deleteOne({ _id });
         return blog.image;
     }
-    async getBlogCommentById( commentId) {
+    async getBlogCommentById(commentId) {
         const blog = await this.#model.findOne({ "comments._id": commentId }, { "comments.$": 1 });
         const copiedBlog = copyObject(blog);
         if (!blog?.comments?.[0]) throw createHttpError.NotFound("cannot find any comment")
-          return blog?.comments?.[0];
+        return blog?.comments?.[0];
+
+    }
+    async getBlogQuestionById(questiontId) {
+        const blog = await this.#model.findOne({ "questions._id": questiontId }, { "questions.$": 1 });
+        const copiedBlog = copyObject(blog);
+        if (!blog?.questions?.[0]) throw createHttpError.NotFound("cannot find any question")
+        return blog?.questions?.[0];
 
     }
     async checkExistRepliedComment(commentId) {
         const blog = await this.#model.findOne({ "comments._id": commentId }, { "comments.$": 1 });
+        if (blog) return true;
+        return false;
+    }
+    async checkExistRepliedQuestion(questionId) {
+        const blog = await this.#model.findOne({ "questions._id": questionId }, { "questions.$": 1 });
         if (blog) return true;
         return false;
     }
@@ -103,6 +122,34 @@ class BlogServices {
                 }
             });
     }
-
+    async addBlogQuestion(blogId, comment) {
+        return await this.#model.updateOne({ _id: blogId },
+            {
+                $push: {
+                    questions: {
+                        user: comment.user,
+                        text: comment.text,
+                        show: comment.show,
+                        // openToComment: comment.openToComment,
+                        replyTo: comment.replyTo
+                    }
+                   
+                }
+            });
+    }
+    async addBlogAnswer(answerTo, question) {
+        return await this.#model.updateOne({ "quesions._id": answerTo },
+            {
+                $push: {
+                    "questions.$.answers": {
+                        user: question.user,
+                        text: question.text,
+                        show: question.show,
+                        openToAnswer: question.openToAnswer,
+                    }
+                   
+                }
+            });
+    }
 }
 module.exports = new BlogServices()

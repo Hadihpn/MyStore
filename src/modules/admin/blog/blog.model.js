@@ -1,5 +1,6 @@
 const { default: mongoose, model, Types } = require("mongoose");
 const { CommentSchema } = require("../comment/comment.model");
+const { QuestionSchema } = require("../PublicModel/public.schema");
 
 const BlogSchema = new mongoose.Schema({
     author: { type: Types.ObjectId, ref: "user", required: true },
@@ -10,6 +11,7 @@ const BlogSchema = new mongoose.Schema({
     tags: { type: [String], required: true, default: [] },
     category: { type: [Types.ObjectId],ref:"Category", required: true, default: [] },
     comments: { type: [CommentSchema], default: [] },
+    questions: { type: [QuestionSchema], default: [] },
     likes: { type: [Types.ObjectId], ref: "users", default: [] },
     disLikes: { type: [Types.ObjectId], ref: "users", default: [] },
     bookmarks: { type: [Types.ObjectId], ref: "users", default: [] },
