@@ -9,6 +9,7 @@ const ProductSchema = new mongoose.Schema({
     tags: { type: [String], required: true },
     category: { type: mongoose.Types.ObjectId, ref: "Category", required: true },
     comments: { type: [CommentSchema], default: [] },
+    questions: { type: [CommentSchema], default: [] },
     likes: { type: [mongoose.Types.ObjectId], default: [] },
     dislikes: { type: [mongoose.Types.ObjectId], default: [] },
     bookmarks: { type: [mongoose.Types.ObjectId], default: [] },

@@ -9,7 +9,7 @@ const CommentSchema = new Schema({
     user: { type: Types.ObjectId, ref: "user", required: true },
     text: { type: String, required: true },
     // parent: { type: [AnswerSchema], default: [] },
-    replyTo: { type: Types.ObjectId, default: [] },
+    replyTo: { type: Types.ObjectId },
     show: { type: Boolean, default: false },
     // openToComment: { type: Boolean, default: true }
 }, { timestamps: { createdAt: true } })

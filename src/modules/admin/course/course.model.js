@@ -2,6 +2,7 @@ const { default: mongoose, Types, model } = require("mongoose");
 const { CommentSchema } = require("../comment/comment.model");
 const { required } = require("@hapi/joi");
 const { getPublicStoreUrl, getTimeOfCourse } = require("../../../common/utils/function");
+const { QuestionSchema } = require("../PublicModel/public.schema");
 const Episode = new mongoose.Schema({
     title: { type: String, required: true },
     text: { type: String, required: true },
@@ -29,6 +30,7 @@ const CourseSchema = new mongoose.Schema({
     tags: { type: [String], required: true },
     category: { type: mongoose.Types.ObjectId, ref: "Category", required: true },
     comments: { type: [CommentSchema], default: [] },
+    questions: { type: [QuestionSchema], default: [] },
     likes: { type: [mongoose.Types.ObjectId], default: [] },
     dislikes: { type: [mongoose.Types.ObjectId], default: [] },
     bookmarks: { type: [mongoose.Types.ObjectId], default: [] },

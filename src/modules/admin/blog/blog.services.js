@@ -102,6 +102,7 @@ class BlogServices {
         return false;
     }
     async addBlogComment(blogId, comment) {
+       
         return await this.#model.updateOne({ _id: blogId },
             {
                 $push: {
@@ -112,13 +113,7 @@ class BlogServices {
                         // openToComment: comment.openToComment,
                         replyTo: comment.replyTo
                     }
-                    // comments: {
-                    //     text:comment.text,
-                    //     user:comment.user,
-                    //     show:comment.show,
-                    //     openToComment:comment.openToComment,
-                    //     parent:comment.parent
-                    // }
+
                 }
             });
     }
@@ -133,12 +128,16 @@ class BlogServices {
                         // openToComment: comment.openToComment,
                         replyTo: comment.replyTo
                     }
-                   
+
                 }
             });
     }
     async addBlogAnswer(answerTo, question) {
-        return await this.#model.updateOne({ "quesions._id": answerTo },
+        return await this.#model.updateOne(
+            {
+                _id: answerTo,
+                "quesions._id": answerTo
+            },
             {
                 $push: {
                     "questions.$.answers": {
@@ -147,7 +146,7 @@ class BlogServices {
                         show: question.show,
                         openToAnswer: question.openToAnswer,
                     }
-                   
+
                 }
             });
     }

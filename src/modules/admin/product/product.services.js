@@ -8,15 +8,15 @@ class ProductServices {
     this.#model = ProductModel
   }
   async getProducts(findQuery) {
-    if (!findQuery || findQuery == "" ) return await this.#model.find()
+    if (!findQuery || findQuery == "") return await this.#model.find()
     return await this.#model.find({
       $text: {
         $search: findQuery
       }
     })
   }
-  async getProductsByQuery(findQuery){
-    if (!findQuery || findQuery == "" ) return await this.#model.find()
+  async getProductsByQuery(findQuery) {
+    if (!findQuery || findQuery == "") return await this.#model.find()
     return await this.#model.find(findQuery)
   }
   async createProduct(productDto) {
@@ -36,6 +36,33 @@ class ProductServices {
   async editProduct(id, data) {
     const result = await this.#model.updateOne({ _id: id }, { $set: data })
     return result;
+  }
+  async checkExist(_id) {
+    return await this.#model.exists({ _id: _id })
+}
+  async checkExistRepliedComment(commentId) {
+    const product = await this.#model.findOne({ "comments._id": commentId }, { "comments.$": 1 });
+    if (product) return true;
+    return false;
+  }
+  async checkExistRepliedQuestion(questionId) {
+    const product = await this.#model.findOne({ "questions._id": questionId }, { "questions.$": 1 });
+    if (product) return true;
+    return false;
+  }
+  async addProductComment(productId, comment) {
+    return await this.#model.updateOne({ _id: productId },
+      {
+        $push: {
+          comments: {
+            user: comment.user,
+            text: comment.text,
+            show: comment.show,
+            replyTo: comment.replyTo
+          }
+
+        }
+      });
   }
 }
 

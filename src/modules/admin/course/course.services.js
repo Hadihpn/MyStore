@@ -31,6 +31,33 @@ class CourseServices {
     const course = await this.#model.findById({ _id })
     return course
   }
+  async checkExist(_id) {
+    return await this.#model.exists({ _id: _id })
+}
+  async checkExistRepliedComment(commentId) {
+    const course = await this.#model.findOne({ "comments._id": commentId }, { "comments.$": 1 });
+    if (course) return true;
+    return false;
+}
+async checkExistRepliedQuestion(questionId) {
+    const course = await this.#model.findOne({ "questions._id": questionId }, { "questions.$": 1 });
+    if (course) return true;
+    return false;
+}
+async addCourseComment(courseId, comment) {
+  return await this.#model.updateOne({ _id: courseId },
+      {
+          $push: {
+              comments: {
+                  user: comment.user,
+                  text: comment.text,
+                  show: comment.show,
+                  // replyTo: comment.replyTo
+              }
+           
+          }
+      });
+}
   //#endregion
 
   //#region  Chapter
