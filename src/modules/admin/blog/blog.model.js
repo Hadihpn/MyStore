@@ -9,9 +9,9 @@ const BlogSchema = new mongoose.Schema({
     text: { type: String, required: true },
     image: { type: String },
     tags: { type: [String], required: true, default: [] },
-    category: { type: [Types.ObjectId],ref:"Category", required: true, default: [] },
-    comments: { type: [CommentSchema], default: [] },
-    questions: { type: [QuestionSchema], default: [] },
+    category: { type: [Types.ObjectId], ref: "Category", required: true, default: [] },
+    comments: { type: [CommentSchema], ref: "user", default: [] },
+    questions: { type: [QuestionSchema], ref: "user", default: [] },
     likes: { type: [Types.ObjectId], ref: "users", default: [] },
     disLikes: { type: [Types.ObjectId], ref: "users", default: [] },
     bookmarks: { type: [Types.ObjectId], ref: "users", default: [] },
@@ -27,7 +27,7 @@ BlogSchema.virtual("category_detail", {
     localField: "category",
     foreignField: "_id"
 })
-BlogSchema.virtual("imageUrl").get(function(){
+BlogSchema.virtual("imageUrl").get(function () {
     return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/public/${this.image}`
 })
 const BlogModel = model("Blog", BlogSchema);

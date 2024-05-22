@@ -8,13 +8,13 @@ const Episode = new mongoose.Schema({
     text: { type: String, required: true },
     time: { type: String, default: "unlock" },
     type: { type: String, default: false },
-    videoAddress: { type: String, required:true },
-},{
-    toJSON:{
-        virtuals:true
+    videoAddress: { type: String, required: true },
+}, {
+    toJSON: {
+        virtuals: true
     }
 })
-Episode.virtual("videoUrl").get(function(){
+Episode.virtual("videoUrl").get(function () {
     return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/public/${this.videoAddress}`
 })
 const Chapter = new mongoose.Schema({
@@ -29,20 +29,20 @@ const CourseSchema = new mongoose.Schema({
     image: { type: String, required: true },
     tags: { type: [String], required: true },
     category: { type: mongoose.Types.ObjectId, ref: "Category", required: true },
-    comments: { type: [CommentSchema], default: [] },
-    questions: { type: [QuestionSchema], default: [] },
-    likes: { type: [mongoose.Types.ObjectId], default: [] },
-    dislikes: { type: [mongoose.Types.ObjectId], default: [] },
-    bookmarks: { type: [mongoose.Types.ObjectId], default: [] },
+    comments: { type: [CommentSchema], ref: "user", default: [] },
+    questions: { type: [QuestionSchema], ref: "user", default: [] },
+    likes: { type: [mongoose.Types.ObjectId], ref: "user", default: [] },
+    dislikes: { type: [mongoose.Types.ObjectId], ref: "user", default: [] },
+    bookmarks: { type: [mongoose.Types.ObjectId], ref: "user", default: [] },
     price: { type: Number, default: 0 },
     discount: { type: Number, default: 0 },
     type: { type: String, default: "free", required: true },//رایگان یا پولی
     teacher: { type: mongoose.Types.ObjectId, ref: "user", required: true },
     chapters: { type: [Chapter], default: [] },
     students: { type: [Types.ObjectId], default: [], ref: "user" }
-},{
-    toJSON:{
-        virtuals:true
+}, {
+    toJSON: {
+        virtuals: true
     }
 })
 
@@ -54,11 +54,11 @@ function autoPopulate(next) {
 
 CourseSchema.pre("find", autoPopulate).pre("findOne", autoPopulate)
 CourseSchema.index({ title: "text", short_text: "text" })
-CourseSchema.virtual("imageUrl").get(function(){
+CourseSchema.virtual("imageUrl").get(function () {
     return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/public/${this.image}`
 })
-CourseSchema.virtual("totalTime").get( function(){
-    return  getTimeOfCourse(this.chapters||[0])
+CourseSchema.virtual("totalTime").get(function () {
+    return getTimeOfCourse(this.chapters || [0])
 })
 const CourseModel = model("Course", CourseSchema);
 module.exports = { CourseModel };

@@ -66,6 +66,8 @@ class BlogServices {
                 { path: "comments.user" },
                 { path: "questions.user" },
                 { path: "questions.answers.user" },
+                { path: "likes" },
+                { path: "dislikes" },
             ]);
         return await this.#model.find(findQuery).populate([{ path: "category" }, { path: "author" }]);
     }
@@ -102,7 +104,7 @@ class BlogServices {
         return false;
     }
     async addBlogComment(blogId, comment) {
-       
+
         return await this.#model.updateOne({ _id: blogId },
             {
                 $push: {
@@ -136,7 +138,7 @@ class BlogServices {
         return await this.#model.updateOne(
             {
                 _id: answerTo,
-                "quesions._id": answerTo
+                "question._id": answerTo
             },
             {
                 $push: {
@@ -150,5 +152,50 @@ class BlogServices {
                 }
             });
     }
+    async likeBlog(blogId, userId) {
+        const likedBlog = await this.getBlogByQurey({ _id: blogId, likes: userId })
+        const disLikedBlog = await this.getBlogByQurey({ _id: blogId, disLikes: userId })
+        let message = "";
+        if (likedBlog ^ disLikedBlog) {
+            await this.#model.updateOne({ _id: blogId },
+                { $pull: { disLikes: userId } }
+            )
+            message = "you like this blog"
+        } else {
+            if (likedBlog) {
+                await this.#model.updateOne({ _id: blogId },
+                    {
+                        $pull: { likes: userId },
+                        $push: { disLikes: userId }
+                    }
+
+                )
+                message = "you disLike this blog"
+            } else {
+                await this.#model.updateOne({ _id: blogId },
+                    {
+                        $pull: { disLikes: userId },
+                        $push: { likes: userId }
+                    }
+
+                )
+                message = "you disLike this blog"
+            }
+        }
+        return await this.#model.updateOne({ _id: blogId },
+            {
+                $push: {
+                    comments: {
+                        user: comment.user,
+                        text: comment.text,
+                        show: comment.show,
+                        // openToComment: comment.openToComment,
+                        replyTo: comment.replyTo
+                    }
+
+                }
+            });
+    }
+
 }
 module.exports = new BlogServices()

@@ -1,0 +1,30 @@
+mutation{
+    CreateCommentForBlog(
+        comment:"salam",
+        blogId:"adsfjdhfjkdjshfnhddsf",
+        replyTo:"56asd14a1sd5ad4as1d"
+    ){
+        stauseCode,
+        data
+    }
+}
+mutation{
+    CreateCommentForProduct(
+        comment:"salam",
+        blogId:"adsfjdhfjkdjshfnhddsf",
+        replyTo:"56asd14a1sd5ad4as1d"
+    ){
+        stauseCode,
+        data
+    }
+}
+mutation{
+    CreateCommentForCourse(
+        comment:"salam",
+        blogId:"adsfjdhfjkdjshfnhddsf",
+        replyTo:"56asd14a1sd5ad4as1d"
+    ){
+        stauseCode,
+        data
+    }
+}
