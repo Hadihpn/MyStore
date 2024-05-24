@@ -9,10 +9,10 @@ const BlogResolver = {
         category: { type: GraphQLString }
     },
     resolve: async (_, args, context) => {
-        // req?.cookies?.accessToken = context.req.headers
-        const {category} = args;
-        const findQuery = category?{category}:"";
+        // const { req, res } = context
         // req.user = await AuthorizationInGraphQl(req, res)
+        const { category } = args;
+        const findQuery = category ? { category } : "";
         const x = await blogServices.getBlogByQurey(findQuery)
         return x;
     }

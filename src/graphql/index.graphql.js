@@ -7,6 +7,7 @@ const { LikeAndDislikeBlogResolver, LikeAndDislikeProductResolver, LikeAndDislik
 const { QuestionForBlogResolver } = require("./mutations/question.resolver")
 const { BookmarkBlogResolver, BookmarkProductResolver, BookmarkCourseResolver } = require("./mutations/bookmark.resolver")
 const { CourseResolver } = require("./queries/course.resolver")
+const { BookmarkedBlogResolver, BookmarkedProductResolver, BookmarkedCourseResolver } = require("./queries/userProfile.resolver")
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
@@ -33,7 +34,11 @@ const RootMutation = new GraphQLObjectType({
         LikeCourse: LikeAndDislikeCourseResolver,
         BoomarkBlog: BookmarkBlogResolver,
         BookmarkProduct: BookmarkProductResolver,
-        BookmarkCourse: BookmarkCourseResolver
+        BookmarkCourse: BookmarkCourseResolver,
+        UserBookmarkedBlog: BookmarkedBlogResolver,
+        UserBookmarkedProduct:BookmarkProductResolver,
+        UserBookmarkedCourse:BookmarkedCourseResolver
+
     }
 })
 const graphQLSchema = new GraphQLSchema({
