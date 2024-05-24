@@ -16,7 +16,9 @@ const RootQuery = new GraphQLObjectType({
         category: CategoryResolver,
         childOfCategory: CategoryChildResolver,
         course: CourseResolver,
-
+        UserBookmarkedBlog: BookmarkedBlogResolver,
+        UserBookmarkedProduct:BookmarkProductResolver,
+        UserBookmarkedCourse:BookmarkedCourseResolver
     }
 })
 
@@ -35,9 +37,7 @@ const RootMutation = new GraphQLObjectType({
         BoomarkBlog: BookmarkBlogResolver,
         BookmarkProduct: BookmarkProductResolver,
         BookmarkCourse: BookmarkCourseResolver,
-        UserBookmarkedBlog: BookmarkedBlogResolver,
-        UserBookmarkedProduct:BookmarkProductResolver,
-        UserBookmarkedCourse:BookmarkedCourseResolver
+        
 
     }
 })
@@ -47,5 +47,6 @@ const graphQLSchema = new GraphQLSchema({
 })
 
 module.exports = {
-    graphQLSchema
+    graphQLSchema,
+    
 }

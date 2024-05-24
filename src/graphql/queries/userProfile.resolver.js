@@ -8,8 +8,8 @@ const courseServices = require("../../modules/admin/course/course.services")
 const BookmarkedBlogResolver = {
     type: new GraphQLList(BlogType),
     resolve: async (_, args, context) => {
-        // const { req, res } = context
-        // req.user = await AuthorizationInGraphQl(req, res)
+        const { req, res } = context
+        const user = await AuthorizationInGraphQl(req, res)
         const blog = await blogServices.getBlogByQurey({ bookmarks: user._id })
         return blog;
     }
