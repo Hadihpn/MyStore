@@ -12,9 +12,9 @@ const BlogResolver = {
         // req?.cookies?.accessToken = context.req.headers
         const {category} = args;
         const findQuery = category?{category}:"";
-        const { req, res } = context
         // req.user = await AuthorizationInGraphQl(req, res)
-        return await blogServices.getBlogByQurey(findQuery)
+        const x = await blogServices.getBlogByQurey(findQuery)
+        return x;
     }
 }
 

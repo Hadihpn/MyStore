@@ -38,7 +38,8 @@ const CourseType = new GraphQLObjectType({
         discount: { type: GraphQLString },
         type: { type: GraphQLString },
         status: { type: GraphQLString },
-        chapters:{type:new GraphQLList(ChapterType)}
+        chapters:{type:new GraphQLList(ChapterType)},
+        
 
     }
 })

@@ -68,8 +68,12 @@ class BlogServices {
                 { path: "questions.answers.user" },
                 { path: "likes" },
                 { path: "dislikes" },
+                { path: "bookmarks" },
             ]);
-        return await this.#model.find(findQuery).populate([{ path: "category" }, { path: "author" }]);
+            const x = await this.#model.find(findQuery).populate([
+            ])
+            console.log(x[0].category[0]);
+        return x;
     }
     async checkExist(_id) {
         return await this.#model.exists({ _id: _id })
@@ -187,24 +191,25 @@ class BlogServices {
     }
     async bookmarkBlog(blogId, userId) {
         const bookmarkedBlog = await this.getBlogByQurey({ _id: blogId, bookmarks: userId })
+        console.log(bookmarkedBlog);
+        console.log(bookmarkedBlog[0]);
         let message = "";
-        if (bookmarkedBlog) {
+        if (bookmarkedBlog[0]) {
             await this.#model.updateOne({ _id: blogId },
                 { $pull: { bookmarks: userId } }
             )
-            message = "the blog added to bookmark"
+            message = "the blog removed from bookmark"
         }
         else {
             await this.#model.updateOne({ _id: blogId },
                 {
                     $push: { bookmarks: userId }
                 }
-
             )
-            message = "the blog removed from bookmark"
+            message = "the blog added to bookmark"
 
         }
-         return message
+        return message
     }
 
 }

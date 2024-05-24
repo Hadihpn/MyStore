@@ -6,7 +6,7 @@ const blogServices = require("../../modules/admin/blog/blog.services");
 const productServices = require("../../modules/admin/product/product.services");
 const courseServices = require("../../modules/admin/course/course.services");
 
-const LikeAndDislikeBlog = {
+const LikeAndDislikeBlogResolver = {
     type: ResponseType,
     args: {
         blogId: { type: GraphQLString }
@@ -15,7 +15,8 @@ const LikeAndDislikeBlog = {
         const { req, res } = context
         const user = await AuthorizationInGraphQl(req, res)
         const { blogId } = args;
-        const responsMsg = await blogServices.likeAndDisLikeBlog({ _id: blogId, likes: user._id })
+        const userId = user._id
+        const responsMsg = await blogServices.likeAndDisLikeBlog(blogId, userId)
         return {
             statusCode: HttpStatus.CREATED,
             data: {
@@ -24,7 +25,7 @@ const LikeAndDislikeBlog = {
         }
     }
 }
-const LikeAndDislikeProduct = {
+const LikeAndDislikeProductResolver = {
     type: ResponseType,
     args: {
         productId: { type: GraphQLString }
@@ -33,7 +34,8 @@ const LikeAndDislikeProduct = {
         const { req, res } = context
         const user = await AuthorizationInGraphQl(req, res)
         const { productId } = args;
-        const responsMsg = await productServices.likeAndDisLikProduct({ _id: productId, likes: user._id })
+        const userId = user._id
+        const responsMsg = await productServices.likeAndDisLikProduct(productId, userId)
         return {
             statusCode: HttpStatus.CREATED,
             data: {
@@ -42,7 +44,7 @@ const LikeAndDislikeProduct = {
         }
     }
 }
-const LikeAndDislikeCourse = {
+const LikeAndDislikeCourseResolver = {
     type: ResponseType,
     args: {
         courseId: { type: GraphQLString }
@@ -59,4 +61,10 @@ const LikeAndDislikeCourse = {
             }
         }
     }
+}
+
+module.exports = {
+    LikeAndDislikeBlogResolver,
+    LikeAndDislikeProductResolver,
+    LikeAndDislikeCourseResolver
 }

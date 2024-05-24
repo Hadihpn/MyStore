@@ -33,7 +33,7 @@ const ProductSchema = new mongoose.Schema({
     }
 })
 function autoPopulate(next){
-    this.populate([{path:"supplier",select:{phone:1,_id:0,userName:1}},{path:"category",select:{title:1,_id:0}}]);
+    this.populate([{path:"supplier",select:{phone:1,_id:0,userName:1}},{path:"category",select:{title:1}}]);
     next()
 }
 ProductSchema.pre("find",autoPopulate).pre("findOne", autoPopulate);

@@ -12,9 +12,9 @@ const BlogSchema = new mongoose.Schema({
     category: { type: [Types.ObjectId], ref: "Category", required: true, default: [] },
     comments: { type: [CommentSchema], ref: "user", default: [] },
     questions: { type: [QuestionSchema], ref: "user", default: [] },
-    likes: { type: [Types.ObjectId], ref: "users", default: [] },
-    disLikes: { type: [Types.ObjectId], ref: "users", default: [] },
-    bookmarks: { type: [Types.ObjectId], ref: "users", default: [] },
+    likes: { type: [Types.ObjectId], ref: "user", default: [] },
+    disLikes: { type: [Types.ObjectId], ref: "user", default: [] },
+    bookmarks: { type: [Types.ObjectId], ref: "user", default: [] },
 }, { versionKey: false, id: false, toJSON: { virtuals: true } })
 
 BlogSchema.virtual("author_detail", {
@@ -30,5 +30,10 @@ BlogSchema.virtual("category_detail", {
 BlogSchema.virtual("imageUrl").get(function () {
     return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/public/${this.image}`
 })
+function autoPopulate(next){
+    this.populate([{path:"author"},{path:"category"},{path:"bookmarks"}]);
+    next()
+}
+BlogSchema.pre("find",autoPopulate).pre("findOne", autoPopulate);
 const BlogModel = model("Blog", BlogSchema);
 module.exports = { BlogModel };

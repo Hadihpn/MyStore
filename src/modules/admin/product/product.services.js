@@ -16,8 +16,10 @@ class ProductServices {
     })
   }
   async getProductsByQuery(findQuery) {
-    if (!findQuery || findQuery == "") return await this.#model.find()
-    return await this.#model.find(findQuery)
+    if (!findQuery || findQuery == "") return await this.#model.find().populate([{path:"Category"}])
+      const x = await this.#model.find(findQuery).populate([{path:"category"}]);
+    console.log(x);
+      return x
   }
   async createProduct(productDto) {
     await this.#model.create(productDto)

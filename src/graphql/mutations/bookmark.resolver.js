@@ -6,7 +6,7 @@ const blogServices = require("../../modules/admin/blog/blog.services");
 const productServices = require("../../modules/admin/product/product.services");
 const courseServices = require("../../modules/admin/course/course.services");
 
-const bookmarkBlog = {
+const BookmarkBlogResolver = {
     type: ResponseType,
     args: {
         blogId: { type: GraphQLString }
@@ -15,7 +15,8 @@ const bookmarkBlog = {
         const { req, res } = context
         const user = await AuthorizationInGraphQl(req, res)
         const { blogId } = args;
-        const responsMsg = await blogServices.bookmarkBlog({ _id: blogId, likes: user._id })
+        const userId = user._id
+        const responsMsg = await blogServices.bookmarkBlog( blogId, userId)
         return {
             statusCode: HttpStatus.CREATED,
             data: {
@@ -24,7 +25,7 @@ const bookmarkBlog = {
         }
     }
 }
-const bookmarkProduct = {
+const BookmarkProductResolver = {
     type: ResponseType,
     args: {
         productId: { type: GraphQLString }
@@ -33,7 +34,8 @@ const bookmarkProduct = {
         const { req, res } = context
         const user = await AuthorizationInGraphQl(req, res)
         const { productId } = args;
-        const responsMsg = await productServices.bookmarkProduct({ _id: productId, likes: user._id })
+        const userId = user._id
+        const responsMsg = await productServices.bookmarkProduct(productId, userId)
         return {
             statusCode: HttpStatus.CREATED,
             data: {
@@ -42,7 +44,7 @@ const bookmarkProduct = {
         }
     }
 }
-const bookmarkCourse = {
+const BookmarkCourseResolver = {
     type: ResponseType,
     args: {
         courseId: { type: GraphQLString }
@@ -51,7 +53,8 @@ const bookmarkCourse = {
         const { req, res } = context
         const user = await AuthorizationInGraphQl(req, res)
         const { courseId } = args;
-        const responsMsg = await courseServices.bookmarkCourse({ _id: courseId, likes: user._id })
+        const userId = user._id
+        const responsMsg = await courseServices.bookmarkCourse( courseId, userId )
         return {
             statusCode: HttpStatus.CREATED,
             data: {
@@ -59,4 +62,10 @@ const bookmarkCourse = {
             }
         }
     }
+}
+
+module.exports = {
+    BookmarkBlogResolver,
+    BookmarkCourseResolver,
+    BookmarkProductResolver
 }
