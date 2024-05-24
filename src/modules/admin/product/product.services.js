@@ -64,6 +64,60 @@ class ProductServices {
         }
       });
   }
+  async likeAndDisLikProduct(productId, userId) {
+    const likedProduct = await this.getProductsByQuery({ _id: productId, likes: userId })
+    const disLikedProduct = await this.getProductsByQuery({ _id: productId, disLikes: userId })
+    let message = "";
+    if (likedCourse[0] && disLikedCourse[0]) {
+        await this.#model.updateOne({ _id: productId },
+            { $pull: { disLikes: userId } }
+        )
+        message = "you like this Product"
+    }
+    else {
+        if (likedBlog[0]) {
+            await this.#model.updateOne({ _id: productId },
+                {
+                    $pull: { likes: userId },
+                    $push: { disLikes: userId }
+                }
+  
+            )
+            message = "you disLike this Product"
+        } else {
+            await this.#model.updateOne({ _id: productId },
+                {
+                    $pull: { disLikes: userId },
+                    $push: { likes: userId }
+                }
+  
+            )
+            message = "you Like this Product"
+        }
+        return message
+    }
+  }
+  async bookmarkProduct(productId, userId) {
+    const bookmarkedProduct = await this.getProductsByQuery({ _id: productId, bookmarks: userId })
+    let message = "";
+    if (bookmarkedProduct) {
+        await this.#model.updateOne({ _id: productId },
+            { $pull: { bookmarks: userId } }
+        )
+        message = "the Product added to bookmark"
+    }
+    else {
+        await this.#model.updateOne({ _id: productId },
+            {
+                $push: { bookmarks: userId }
+            }
+  
+        )
+        message = "the Product removed from bookmark"
+  
+    }
+     return message
+  }
 }
 
 module.exports = new ProductServices();

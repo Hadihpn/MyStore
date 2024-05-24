@@ -152,16 +152,17 @@ class BlogServices {
                 }
             });
     }
-    async likeBlog(blogId, userId) {
+    async likeAndDisLikeBlog(blogId, userId) {
         const likedBlog = await this.getBlogByQurey({ _id: blogId, likes: userId })
         const disLikedBlog = await this.getBlogByQurey({ _id: blogId, disLikes: userId })
         let message = "";
-        if (likedBlog ^ disLikedBlog) {
+        if (likedBlog && disLikedBlog) {
             await this.#model.updateOne({ _id: blogId },
                 { $pull: { disLikes: userId } }
             )
             message = "you like this blog"
-        } else {
+        }
+        else {
             if (likedBlog) {
                 await this.#model.updateOne({ _id: blogId },
                     {
@@ -179,22 +180,31 @@ class BlogServices {
                     }
 
                 )
-                message = "you disLike this blog"
+                message = "you Like this blog"
             }
+            return message
         }
-        return await this.#model.updateOne({ _id: blogId },
-            {
-                $push: {
-                    comments: {
-                        user: comment.user,
-                        text: comment.text,
-                        show: comment.show,
-                        // openToComment: comment.openToComment,
-                        replyTo: comment.replyTo
-                    }
-
+    }
+    async bookmarkBlog(blogId, userId) {
+        const bookmarkedBlog = await this.getBlogByQurey({ _id: blogId, bookmarks: userId })
+        let message = "";
+        if (bookmarkedBlog) {
+            await this.#model.updateOne({ _id: blogId },
+                { $pull: { bookmarks: userId } }
+            )
+            message = "the blog added to bookmark"
+        }
+        else {
+            await this.#model.updateOne({ _id: blogId },
+                {
+                    $push: { bookmarks: userId }
                 }
-            });
+
+            )
+            message = "the blog removed from bookmark"
+
+        }
+         return message
     }
 
 }

@@ -58,6 +58,60 @@ async addCourseComment(courseId, comment) {
           }
       });
 }
+async likeAndDisLikCourse(courseId, userId) {
+  const likedCourse = await this.getCourseByQuery({ _id: courseId, likes: userId })
+  const disLikedCourse = await this.getCourseByQuery({ _id: courseId, disLikes: userId })
+  let message = "";
+  if (likedCourse && disLikedCourse) {
+      await this.#model.updateOne({ _id: courseId },
+          { $pull: { disLikes: userId } }
+      )
+      message = "you like this course"
+  }
+  else {
+      if (likedBlog) {
+          await this.#model.updateOne({ _id: courseId },
+              {
+                  $pull: { likes: userId },
+                  $push: { disLikes: userId }
+              }
+
+          )
+          message = "you disLike this course"
+      } else {
+          await this.#model.updateOne({ _id: courseId },
+              {
+                  $pull: { disLikes: userId },
+                  $push: { likes: userId }
+              }
+
+          )
+          message = "you Like this course"
+      }
+      return message
+  }
+}
+async bookmarkCourse(courseId, userId) {
+  const bookmarkedCourse = await this.getCourseById({ _id: courseId, bookmarks: userId })
+  let message = "";
+  if (bookmarkedCourse) {
+      await this.#model.updateOne({ _id: courseId },
+          { $pull: { bookmarks: userId } }
+      )
+      message = "the Course added to bookmark"
+  }
+  else {
+      await this.#model.updateOne({ _id: courseId },
+          {
+              $push: { bookmarks: userId }
+          }
+
+      )
+      message = "the Course removed from bookmark"
+
+  }
+   return message
+}
   //#endregion
 
   //#region  Chapter
