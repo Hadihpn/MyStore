@@ -1,5 +1,6 @@
 const autoBind = require("auto-bind");
 const { UserModel } = require("../../client/user/user.model");
+const { copyObject } = require("../../../common/utils/function");
 
 class UserService {
     #model
@@ -17,11 +18,12 @@ class UserService {
     }
     //#region Basket
     async addProductToBasket(userId, productId) {
-        const product = await UserModel.findOne({
+        const basketProduct = await UserModel.findOne({
             _id: userId,
             "basket.products.productId": productId
         })
-        if (product) {
+        const product = copyObject(basketProduct)
+        if (product?.basket?.products?.[0]) {
             await UserModel.updateOne({
                 _id: userId,
                 "basket.products.productId": productId
@@ -38,6 +40,35 @@ class UserService {
             }, {
                 $push: {
                     productId,
+                    count: 1
+                }
+            })
+            return "the item added to basket successfully"
+        }
+    }
+    async addCourseToBasket(userId, coursetId) {
+        const basketCourse = await UserModel.findOne({
+            _id: userId,
+            "basket.courses.courseId": courseId
+        })
+        const course = copyObject(basketCourse)
+        if (course?.basket?.courses?.[0]) {
+            await UserModel.updateOne({
+                _id: userId,
+                "basket.courses.courseId": courseId
+            }, {
+                $inc: {
+                    "basket.courses.$.count": 1
+                }
+            })
+            return "another item added successfully"
+        } else {
+            await UserModel.updateOne({
+                _id: userId,
+                "basket.courses.courseId": courseId
+            }, {
+                $push: {
+                    courseId,
                     count: 1
                 }
             })

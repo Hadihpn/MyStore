@@ -19,9 +19,9 @@ const AddProductToBasket = {
         const user = await AuthorizationInGraphQl(req, res)
         const { productId } = args;
         const userId = user._id
-        if(!(isValidObjectId(userId)|| isValidObjectId(productId))) throw new createHttpError.BadRequest("userId or productId is not valid")
+        if (!(isValidObjectId(userId) || isValidObjectId(productId))) throw new createHttpError.BadRequest("userId or productId is not valid")
         await productServices.checkExist(productId)
-        const responsMsg = await userService.addProductToBasket(userId,productId)
+        const responsMsg = await userService.addProductToBasket(userId, productId)
         return {
             statusCode: HttpStatus.CREATED,
             data: {
@@ -40,8 +40,9 @@ const AddCourseToBasket = {
         const user = await AuthorizationInGraphQl(req, res)
         const { courseId } = args;
         const userId = user._id
+        if (!(isValidObjectId(userId) || isValidObjectId(courseId))) throw new createHttpError.BadRequest("userId or productId is not valid")
         await courseServices.checkExist(courseId)
-        const responsMsg = await productServices.bookmarkProduct(productId, userId)
+        const responsMsg = await userService.addCourseToBasket(userId, courseId)
         return {
             statusCode: HttpStatus.CREATED,
             data: {
