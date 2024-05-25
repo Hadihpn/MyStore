@@ -12,8 +12,8 @@ const CourseSchema = new Schema({
     count: { type: Number, default: 1 }
 })
 const BasketSchema = new Schema({
-    course: { type: [CourseSchema] },
-    product: { type: [ProductSchema] }
+    courses: { type: [CourseSchema] },
+    products: { type: [ProductSchema] }
 })
 const UserSchema = new Schema({
     firstName: { type: String, },

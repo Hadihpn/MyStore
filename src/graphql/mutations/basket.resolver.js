@@ -5,20 +5,23 @@ const { StatusCodes: HttpStatus } = require("http-status-codes");
 const blogServices = require("../../modules/admin/blog/blog.services");
 const productServices = require("../../modules/admin/product/product.services");
 const courseServices = require("../../modules/admin/course/course.services");
+const userService = require("../../modules/admin/user/user.service");
+const { isValidObjectId } = require("mongoose");
+const createHttpError = require("http-errors");
 
 const AddProductToBasket = {
     type: ResponseType,
     args: {
-        productId: { type: GraphQLString },
-        count: { type: GraphQLInt }
+        productId: { type: GraphQLString }
     },
     resolve: async (_, args, context) => {
         const { req, res } = context
         const user = await AuthorizationInGraphQl(req, res)
-        const { productId, count } = args;
+        const { productId } = args;
         const userId = user._id
+        if(!(isValidObjectId(userId)|| isValidObjectId(productId))) throw new createHttpError.BadRequest("userId or productId is not valid")
         await productServices.checkExist(productId)
-        const responsMsg = await blogServices.bookmarkBlog(blogId, userId)
+        const responsMsg = await userService.addProductToBasket(userId,productId)
         return {
             statusCode: HttpStatus.CREATED,
             data: {
@@ -31,12 +34,11 @@ const AddCourseToBasket = {
     type: ResponseType,
     args: {
         courseID: { type: GraphQLString },
-        count: { type: GraphQLInt }
     },
     resolve: async (_, args, context) => {
         const { req, res } = context
         const user = await AuthorizationInGraphQl(req, res)
-        const { courseId, count } = args;
+        const { courseId } = args;
         const userId = user._id
         await courseServices.checkExist(courseId)
         const responsMsg = await productServices.bookmarkProduct(productId, userId)
