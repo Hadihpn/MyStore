@@ -22,6 +22,7 @@ class UserService {
             _id: userId,
             "basket.products.productId": productId
         })
+        console.log(basketProduct);
         const product = copyObject(basketProduct)
         if (product?.basket?.products?.[0]) {
             await UserModel.updateOne({
@@ -35,13 +36,15 @@ class UserService {
             return "another item added successfully"
         } else {
             await UserModel.updateOne({
-                _id: userId,
-                "basket.products.productId": productId
+                _id: userId
             }, {
                 $push: {
-                    productId,
-                    count: 1
+                    "basket.products": {
+                        productId,
+                        count: 1
+                    }
                 }
+
             })
             return "the item added to basket successfully"
         }
@@ -68,11 +71,75 @@ class UserService {
                 "basket.courses.courseId": courseId
             }, {
                 $push: {
-                    courseId,
-                    count: 1
+                    "basket.courses": {
+                        courseId,
+                        count: 1
+                    }
                 }
             })
             return "the item added to basket successfully"
+        }
+    }
+    async removeProductFromBasket(userId, productId) {
+        console.log(productId);
+        const basketProduct = await UserModel.findOne({
+            _id: userId,
+            "basket.products.productId": productId
+        })
+        console.log(basketProduct);
+        const product = copyObject(basketProduct)
+        if (product?.basket?.products?.[0].count > 1) {
+            await UserModel.updateOne({
+                _id: userId,
+                "basket.products.productId": productId
+            }, {
+                $inc: {
+                    "basket.products.$.count": -1
+                }
+            })
+            return "another item decreased successfully"
+        } else {
+            await UserModel.updateOne({
+                _id: userId,
+                "basket.products.productId": productId
+            }, {
+                $pull: {
+                    "basket.products": {
+                        productId
+                    },
+                }
+            })
+            return "the item removed from basket successfully"
+        }
+    }
+    async removeCourseFromBasket(userId, courseId) {
+        const basketProduct = await UserModel.findOne({
+            _id: userId,
+            "basket.courses.courseId": courseId
+        })
+        const product = copyObject(basketProduct)
+        if (product?.basket?.courses?.[0].count > 1) {
+            await UserModel.updateOne({
+                _id: userId,
+                "basket.courses.courseId": courseId
+            }, {
+                $inc: {
+                    "basket.courses.$.count": -1
+                }
+            })
+            return "another item decreased successfully"
+        } else {
+            await UserModel.updateOne({
+                _id: userId,
+                "basket.courses.courseId": courseId
+            }, {
+                $pull: {
+                    "basket.courses": {
+                        courseId,
+                    }
+                }
+            })
+            return "the item removed to basket successfully"
         }
     }
     //#endregion

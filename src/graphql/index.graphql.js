@@ -8,6 +8,8 @@ const { QuestionForBlogResolver } = require("./mutations/question.resolver")
 const { BookmarkBlogResolver, BookmarkProductResolver, BookmarkCourseResolver } = require("./mutations/bookmark.resolver")
 const { CourseResolver } = require("./queries/course.resolver")
 const { BookmarkedBlogResolver, BookmarkedProductResolver, BookmarkedCourseResolver } = require("./queries/userProfile.resolver")
+const { AddCourseToBasket, AddProductToBasket, RemoveProductFromBasket, RemoveCourseFromBasket,  } = require("./mutations/basket.resolver")
+const { removeProductFromBasket } = require("../modules/admin/user/user.service")
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
@@ -37,6 +39,10 @@ const RootMutation = new GraphQLObjectType({
         BoomarkBlog: BookmarkBlogResolver,
         BookmarkProduct: BookmarkProductResolver,
         BookmarkCourse: BookmarkCourseResolver,
+        AddCourseToBasket,
+        AddProductToBasket,
+        RemoveProductFromBasket,
+        RemoveCourseFromBasket
         
 
     }

@@ -20,7 +20,8 @@ const AddProductToBasket = {
         const { productId } = args;
         const userId = user._id
         if (!(isValidObjectId(userId) || isValidObjectId(productId))) throw new createHttpError.BadRequest("userId or productId is not valid")
-        await productServices.checkExist(productId)
+        const productStatus = await productServices.checkExist(productId)
+        if (!productStatus) throw createHttpError.BadRequest()
         const responsMsg = await userService.addProductToBasket(userId, productId)
         return {
             statusCode: HttpStatus.CREATED,
@@ -41,7 +42,8 @@ const AddCourseToBasket = {
         const { courseId } = args;
         const userId = user._id
         if (!(isValidObjectId(userId) || isValidObjectId(courseId))) throw new createHttpError.BadRequest("userId or productId is not valid")
-        await courseServices.checkExist(courseId)
+        const courseStatus = await productServices.checkExist(productId)
+        if (!courseStatus) throw createHttpError.BadRequest()
         const responsMsg = await userService.addCourseToBasket(userId, courseId)
         return {
             statusCode: HttpStatus.CREATED,
@@ -51,7 +53,7 @@ const AddCourseToBasket = {
         }
     }
 }
-const RemoveProductToBasket = {
+const RemoveProductFromBasket = {
     type: ResponseType,
     args: {
         productId: { type: GraphQLString }
@@ -61,8 +63,9 @@ const RemoveProductToBasket = {
         const user = await AuthorizationInGraphQl(req, res)
         const { productId } = args;
         const userId = user._id
-        await productServices.checkExist(productId)
-        const responsMsg = await blogServices.bookmarkBlog(blogId, userId)
+        const productStatus = await productServices.checkExist(productId)
+        if (!productStatus) throw createHttpError.BadRequest("there is not any product with this id")
+        const responsMsg = await userService.removeProductFromBasket(userId, productId)
         return {
             statusCode: HttpStatus.CREATED,
             data: {
@@ -71,7 +74,7 @@ const RemoveProductToBasket = {
         }
     }
 }
-const RemoveCourseToBasket = {
+const RemoveCourseFromBasket = {
     type: ResponseType,
     args: {
         courseID: { type: GraphQLString },
@@ -81,8 +84,9 @@ const RemoveCourseToBasket = {
         const user = await AuthorizationInGraphQl(req, res)
         const { courseId } = args;
         const userId = user._id
-        await courseServices.checkExist(courseId)
-        const responsMsg = await productServices.bookmarkProduct(productId, userId)
+        const courseStatus = await productServices.checkExist(productId)
+        if (!courseStatus) throw createHttpError.BadRequest()
+        const responsMsg = await userService.removeCourseFromBasket(productId, userId)
         return {
             statusCode: HttpStatus.CREATED,
             data: {
@@ -97,7 +101,7 @@ const RemoveCourseToBasket = {
 module.exports = {
     AddProductToBasket,
     AddCourseToBasket,
-    RemoveProductToBasket,
-    RemoveCourseToBasket,
+    RemoveProductFromBasket,
+    RemoveCourseFromBasket,
 
 }
