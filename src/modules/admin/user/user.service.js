@@ -1,7 +1,8 @@
 const autoBind = require("auto-bind");
 const { UserModel } = require("../../client/user/user.model");
-const { copyObject } = require("../../../common/utils/function");
+const { copyObject, calculateDiscount } = require("../../../common/utils/function");
 const createHttpError = require("http-errors");
+const { disconnect } = require("mongoose");
 
 class UserService {
     #model
@@ -149,37 +150,70 @@ class UserService {
                     as: "courseDetail"
                 },
             },
-            // {
-            //     $unwind: "$productDetail"
-            // },
-            // {
-            //     $unwind: "$courseDetail"
-            // },
             {
                 $addFields: {
                     "productDetail.basketDetail": {
                         $function: {
                             body: function (productDetail, products) {
-                               return productDetail.map(function (product) {
+                                productDetail.map(function (product) {
+                                    const count = products.find(item => item.productId.valueOf() === product._id.valueOf()).count
+                                    const totalPrice = count * product.price
                                     return {
                                         ...product,
-                                        basketCount: products.find(item => item.productId.valueOf() === product._id.valueOf()).count,
-                                        totalPrice: products.find(item => item.productId.valueOf() === product._id.valueOf()).count * product.price
+                                        basketCount: count,
+                                        totalPrice,
+                                        finalPrice: ((totalPrice * (100 - product.discount)) / 100)
                                     }
                                 })
                             },
                             args: ["$productDetail", "$basket.products"],
                             lang: "js"
                         }
+                    },
+                    "courseDetail.basketDetail": {
+                        $function: {
+                            body: function (courseDetail) {
+                                return courseDetail.map(function (course) {
+                                    const totalPrice = course.price
+                                    return {
+                                        ...course,
+                                        totalPrice,
+                                        finalPrice: ((totalPrice * (100 - course.discount)) / 100)
+                                    }
+                                })
+                            },
+                            args: ["$courseDetail"],
+                            lang: "js"
+                        }
+                    },
+                    "payDetail": {
+                        $function: {
+                            body: function (courseDetail, productDetail, products) {
+                                const courseAmount = courseDetail.reduce(function (total, course) {
+                                    return total + ((course.price * (100 - course.discount)) / 100)
+                                }, 0);
+                                const productAmount = productDetail.reduce(function (total, product) {
+                                    const count = products.find(item => item.productId.valueOf() == product._id.valueOf()).count
+                                    const totalPrice = count * product.price;
+                                    return total + ((totalPrice * (100 - product.discount)) / 100)
+                                }, 0);
+                                const courseIds = courseDetail.map(course => course._id.valueOf());
+                                const productIds = productDetail.map(product => product._id.valueOf());
+                                return {
+                                    courseAmount,
+                                    productAmount,
+                                    paymentAmount: courseAmount + productAmount,
+                                    courseIds,
+                                    productIds
+                                }
+
+                            },
+                            args: ["$courseDetail","$productDetail","$basket.products"],
+                            lang: "js"
+                        }
                     }
-                }
-            },
-            // {
-            //     $unwind: "$productDetail.basketDetail"
-            // },
-            // {
-            //     $project: { productDetail: 1, courseDetail: 1, _id: 0 }
-            // }
+                },
+            }
         ])
         return details
     }

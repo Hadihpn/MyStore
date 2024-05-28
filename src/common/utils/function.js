@@ -86,6 +86,9 @@ function getTimeOfCourse(chapters = []) {
   }
   return time;
 }
+function calculateDiscount(price, discount) {
+  return ((Number(price) * (100 - Number(discount))) / 100)
+}
 
 module.exports = {
   unSupportedString,
@@ -99,4 +102,5 @@ module.exports = {
   convertToNormalTime,
   getPublicStoreUrl,
   getTimeOfCourse,
+  calculateDiscount
 }
