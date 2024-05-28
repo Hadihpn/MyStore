@@ -1,6 +1,7 @@
 const autoBind = require("auto-bind");
 const { UserModel } = require("../../client/user/user.model");
 const { copyObject } = require("../../../common/utils/function");
+const createHttpError = require("http-errors");
 
 class UserService {
     #model
@@ -56,15 +57,7 @@ class UserService {
         })
         const course = copyObject(basketCourse)
         if (course?.basket?.courses?.[0]) {
-            await UserModel.updateOne({
-                _id: userId,
-                "basket.courses.courseId": courseId
-            }, {
-                $inc: {
-                    "basket.courses.$.count": 1
-                }
-            })
-            return "another item added successfully"
+            throw new createHttpError.BadRequest("you already purchase this course")
         } else {
             await UserModel.updateOne({
                 _id: userId,
@@ -123,16 +116,6 @@ class UserService {
                 _id: userId,
                 "basket.courses.courseId": courseId
             }, {
-                $inc: {
-                    "basket.courses.$.count": -1
-                }
-            })
-            return "another item decreased successfully"
-        } else {
-            await UserModel.updateOne({
-                _id: userId,
-                "basket.courses.courseId": courseId
-            }, {
                 $pull: {
                     "basket.courses": {
                         courseId,
@@ -141,6 +124,64 @@ class UserService {
             })
             return "the item removed to basket successfully"
         }
+    }
+
+    async getUserBasketDetail(userId) {
+        const details = await this.#model.aggregate([
+            {
+                $match: { _id: userId }
+            }, {
+                $project: { basket: 1 }
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "basket.products.productId",
+                    foreignField: "_id",
+                    as: "productDetail"
+                },
+            },
+            {
+                $lookup: {
+                    from: "courses",
+                    localField: "basket.courses.courseId",
+                    foreignField: "_id",
+                    as: "courseDetail"
+                },
+            },
+            // {
+            //     $unwind: "$productDetail"
+            // },
+            // {
+            //     $unwind: "$courseDetail"
+            // },
+            {
+                $addFields: {
+                    "productDetail.basketDetail": {
+                        $function: {
+                            body: function (productDetail, products) {
+                               return productDetail.map(function (product) {
+                                    return {
+                                        ...product,
+                                        basketCount: products.find(item => item.productId.valueOf() === product._id.valueOf()).count,
+                                        totalPrice: products.find(item => item.productId.valueOf() === product._id.valueOf()).count * product.price
+                                    }
+                                })
+                            },
+                            args: ["$productDetail", "$basket.products"],
+                            lang: "js"
+                        }
+                    }
+                }
+            },
+            // {
+            //     $unwind: "$productDetail.basketDetail"
+            // },
+            // {
+            //     $project: { productDetail: 1, courseDetail: 1, _id: 0 }
+            // }
+        ])
+        return details
     }
     //#endregion
 }
