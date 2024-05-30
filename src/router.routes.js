@@ -7,6 +7,7 @@ const { ClientRoutes } = require("./modules/client/client.routes");
 const { AdminRoutes } = require("./modules/admin/admin.routes");
 const { graphqlHTTP } = require('express-graphql');
 const { graphqlConfig } = require("./config/graphql.config");
+const { ApiRoutes } = require("./modules/api/api.routes");
 (async () => {
     redisClient.set("key", "value")
     const value = await redisClient.get("key")
@@ -15,6 +16,7 @@ const router = require("express").Router();
 router.use("/", HomeRoutes);
 router.use("/client", ClientRoutes);
 router.use("/admin", AdminRoutes);
+router.use("/api", ApiRoutes);
 router.use("/graphql", graphqlHTTP(graphqlConfig));
 module.exports = {
     AllRoutes: router
