@@ -2,7 +2,7 @@ const autoBind = require("auto-bind");
 const { UserModel } = require("../../client/user/user.model");
 const { copyObject, calculateDiscount } = require("../../../common/utils/function");
 const createHttpError = require("http-errors");
-const { disconnect } = require("mongoose");
+const { disconnect, default: mongoose } = require("mongoose");
 
 class UserService {
     #model
@@ -208,7 +208,7 @@ class UserService {
                                 }
 
                             },
-                            args: ["$courseDetail","$productDetail","$basket.products"],
+                            args: ["$courseDetail", "$productDetail", "$basket.products"],
                             lang: "js"
                         }
                     }
@@ -216,6 +216,20 @@ class UserService {
             }
         ])
         return details
+    }
+    async updateBasketItemAfteVerifyPayment(userId, courses = [], products = []) {
+        await this.#model.updateOne({ _id: userId }, {
+            $push: {
+                Courses:courses.map(mongoose.Types.ObjectId),
+                Products:products.map(mongoose.Types.ObjectId)
+            },
+            $set:{
+                basket:{
+                    courses:[],
+                    products:[]
+                }
+            }
+        })
     }
     //#endregion
 }

@@ -8,9 +8,11 @@ const PaymentSchema = new mongoose.Schema({
     description: { type: String, default: "to buying" },
     invoiceNmber: { type: String },
     user: { type: Types.ObjectId, ref: "user" },
-    basket:{type:Object,default:{}}
+    basket: { type: Object, default: {} },
+    refId: { type: String, default: undefined },
+    cardHash: { type: String, default: undefined }
 }, {
-    timestamps:true,
+    timestamps: true,
     toJSON: {
         virtuals: true
     }
