@@ -1,3 +1,5 @@
+const { setFolderPath } = require("../../../../common/middleware/setMulterUploadpath");
+const { uploadFile } = require("../../../../common/utils/multer");
 const namespaceController = require("./namespace.controller");
 
 const router = require("express").Router();
@@ -8,7 +10,7 @@ router.get("/", namespaceController.getNamespaces)
 
 //#endregion
 //#region Room
-router.post("/room/add/:namespaceId", namespaceController.addRoom)
+router.post("/room/add",setFolderPath("chatRoom"),uploadFile.single("image"), namespaceController.addRoom)
 router.get("/room", namespaceController.getRooms)
 
 //#endregion
