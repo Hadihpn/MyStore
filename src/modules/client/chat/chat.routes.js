@@ -3,8 +3,8 @@ const { NameSpaceRoutes } = require("./namespace/namespace.routes");
 
 const router = require("express").Router();
 
-router.use("/chat",ChatboxRoutes)
-router.post("/namespace",NameSpaceRoutes)
+router.use("/Chatbox",ChatboxRoutes)
+router.use("/namespace",NameSpaceRoutes)
 module.exports = {
     ChatRoutes:router
 }

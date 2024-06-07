@@ -1,4 +1,4 @@
-const { default: mongoose, Schema, Types } = require("mongoose")
+const { default: mongoose, Schema, Types ,model} = require("mongoose")
 
 const MessageSchema = new Schema({
     sender: { type: Types.ObjectId, ref: "user", required: true },

@@ -8,7 +8,7 @@ const { AdminRoutes } = require("./modules/admin/admin.routes");
 const { graphqlHTTP } = require('express-graphql');
 const { graphqlConfig } = require("./config/graphql.config");
 const { ApiRoutes } = require("./modules/api/api.routes");
-const { ChatRoutes } = require("./modules/client/chat/chat.routes");
+const clientRoutes = require("./modules/client/client.routes");
 (async () => {
     redisClient.set("key", "value")
     const value = await redisClient.get("key")
@@ -19,7 +19,7 @@ router.use("/client", ClientRoutes);
 router.use("/admin", AdminRoutes);
 router.use("/api", ApiRoutes);
 router.use("/graphql", graphqlHTTP(graphqlConfig));
-router.use("/support",ChatRoutes)
+router.use("/support",ClientRoutes)
 module.exports = {
     AllRoutes: router
 }

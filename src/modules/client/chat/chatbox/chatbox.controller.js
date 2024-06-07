@@ -1,4 +1,4 @@
-class ChatController {
+class ChatBoxController {
 
     renderChatRoom(req, res, next) {
         try {
@@ -9,4 +9,4 @@ class ChatController {
     }
 
 }
-module.exports = new ChatController()
+module.exports = new ChatBoxController()
