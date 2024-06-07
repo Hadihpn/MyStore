@@ -7,7 +7,7 @@ const { unSupportedString, RandomeNumberGenerator } = require("../../../common/u
 const { expiresOTP, yearPerSecond, ROLES } = require("../../../common/constant/constantVar");
 const jwt = require("jsonwebtoken");
 const { log } = require("console");
-const redisClient = require("../../../common/utils/init_redis");
+const redisClient = require("../../../common/utils/initRedis");
 const { rejects } = require("assert");
 const { resolve } = require("path");
 

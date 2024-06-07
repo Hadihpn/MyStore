@@ -1,4 +1,4 @@
-const redisClient = require("./common/utils/init_redis");
+const redisClient = require("./common/utils/initRedis");
 const { CategoryRoutes } = require("./modules/admin/category/category.routes");
 const { HomeRoutes } = require("./modules/api/home/index.routes");
 const { DeveloperRoutes } = require("./modules/admin/developer/developer.routes");

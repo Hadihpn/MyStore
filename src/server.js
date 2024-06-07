@@ -9,6 +9,8 @@ const { AllRoutes } = require("./router.routes");
 const cookieParser = require("cookie-parser");
 const ExpressEjsLayout = require("express-ejs-layouts");
 const expressEjsLayouts = require("express-ejs-layouts");
+const { initialSocket } = require("./common/utils/initialSocket");
+const { socketHandler } = require("./socket.io");
 module.exports = class Application {
     #app = express()
     #DB_URI
@@ -39,7 +41,10 @@ module.exports = class Application {
         // const crypto = require("crypto");
         // const key = crypto.randomBytes(32).toString("hex").toUpperCase();
         // console.log(key);
-        http.createServer(this.#app).listen(this.#PORT, () => {
+        const server = http.createServer(this.#app);
+        const io = initialSocket(server);
+        socketHandler(io);
+        server.listen(this.#PORT, () => {
             console.log(`server :http://127.0.0.1:${this.#PORT}`);
         })
     }
@@ -57,7 +62,7 @@ module.exports = class Application {
         })
     }
     initRedis(){
-        require("./common/utils/init_redis")
+        require("./common/utils/initRedis")
     }
     initTemplateEngine(){
         this.#app.use(expressEjsLayouts)
