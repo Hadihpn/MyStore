@@ -11,11 +11,11 @@
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "auto-bind": "^3.0.0",
-    "axios": "^1.7.2",
+    "axios": "^1.7.2",                 
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
-    "ejs": "^3.1.9",
+    "ejs": "^3.1.10",
     "express": "^4.18.3",
     "express-ejs-layouts": "^2.5.1",
     "express-graphql": "^0.12.0",
@@ -35,8 +35,10 @@
     "node-fetch": "^3.3.2",
     "redis": "^4.6.13",
     "slugify": "^1.6.6",
+    "socket.io": "^3.1.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
-    "utf8": "^3.0.0"
+    "utf8": "^3.0.0",
+    "ws": "^8.17.0"
   }
 }

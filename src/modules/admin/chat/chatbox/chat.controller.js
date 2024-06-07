@@ -1,8 +1,8 @@
 class ChatController {
 
-    renderChatRoom(req,res,next){
+    renderChatRoom(req, res, next) {
         try {
-            return res.render("chat.ejs")         
+            return res.render("chat.ejs")
         } catch (error) {
             next(error)
         }
