@@ -12,7 +12,7 @@ class PaymentController {
     #service
     #userService
     constructor() {
-        autoBind()
+        autoBind(this)
         this.#service = paymentService
         this.#userService = userService
     }

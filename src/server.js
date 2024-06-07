@@ -7,6 +7,8 @@ const createError = require("http-errors");
 const SwaggerConfig = require("./config/swagger.config");
 const { AllRoutes } = require("./router.routes");
 const cookieParser = require("cookie-parser");
+const ExpressEjsLayout = require("express-ejs-layouts");
+const expressEjsLayouts = require("express-ejs-layouts");
 module.exports = class Application {
     #app = express()
     #DB_URI
@@ -15,6 +17,7 @@ module.exports = class Application {
         this.#PORT = PORT;
         this.#DB_URI = DB_URI;
         this.configApplication();
+        this.initTemplateEngine()
         this.connectToMongoDB();
         this.initRedis();
         this.createServer();
@@ -55,6 +58,14 @@ module.exports = class Application {
     }
     initRedis(){
         require("./common/utils/init_redis")
+    }
+    initTemplateEngine(){
+        this.#app.use(expressEjsLayouts)
+        this.#app.set("view engine","ejs")
+        this.#app.set("views","resource/views");
+        this.#app.set("layout extractStyles",true)
+        this.#app.set("layout extractScripts",true)
+        this.#app.set("layout","./layouts/main")
     }
     createRoutes() {
         this.#app.use(AllRoutes);

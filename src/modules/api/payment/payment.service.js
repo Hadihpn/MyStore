@@ -4,7 +4,7 @@ const { PaymentModel } = require("./payment.model")
 class PaymentService {
     #model
     constructor() {
-        autoBind()
+        autoBind(this)
         this.#model = PaymentModel;
     }
     async getPaymentByAuthority(authority, verify) {
