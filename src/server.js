@@ -31,13 +31,15 @@ module.exports = class Application {
         this.#app.use(morgan("dev"))
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({ extended: true }));
-        this.#app.use(express.static(path.join(__dirname + "..", "public")));
+        this.#app.use(express.static(path.join(__dirname + "/..", "/public")));
+        // this.#app.use(express.static( "../public"));
         this.#app.use(cookieParser(process.env.COOKIE_SECRET_KEY))
         SwaggerConfig(this.#app);
-        
+
     }
     createServer() {
         const http = require("http");
+
         // const crypto = require("crypto");
         // const key = crypto.randomBytes(32).toString("hex").toUpperCase();
         // console.log(key);
@@ -61,16 +63,16 @@ module.exports = class Application {
             console.log("mongoose disconnected")
         })
     }
-    initRedis(){
+    initRedis() {
         require("./common/utils/initRedis")
     }
-    initTemplateEngine(){
+    initTemplateEngine() {
         this.#app.use(expressEjsLayouts)
-        this.#app.set("view engine","ejs")
-        this.#app.set("views","resource/views");
-        this.#app.set("layout extractStyles",true)
-        this.#app.set("layout extractScripts",true)
-        this.#app.set("layout","./layouts/main")
+        this.#app.set("view engine", "ejs")
+        this.#app.set("views", "resource/views");
+        this.#app.set("layout extractStyles", true)
+        this.#app.set("layout extractScripts", true)
+        this.#app.set("layout", "./layouts/main")
     }
     createRoutes() {
         this.#app.use(AllRoutes);
@@ -94,5 +96,5 @@ module.exports = class Application {
             })
         })
     }
-    
+
 }

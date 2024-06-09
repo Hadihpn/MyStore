@@ -14,7 +14,7 @@ class NamespaceService {
             endPoint:endPoint })
     }
     async getNameSpaces(title, endPoint) {
-        return await this.#model.find({}, { rooms: 0 })
+        return await this.#model.find({})
     }
     async getNamespaceWithEndPoint(endpoint){
         return await this.#model.findOne({endPoint:endpoint})
