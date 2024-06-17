@@ -13,6 +13,9 @@ class NamespaceService {
             title: title, 
             endPoint:endPoint })
     }
+    async getfirstNameSpaces(title, endPoint) {
+        return await this.#model.find({})[0]
+    }
     async getNameSpaces(title, endPoint) {
         return await this.#model.find({})
     }

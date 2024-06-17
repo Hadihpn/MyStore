@@ -1,3 +1,4 @@
+const { array } = require("@hapi/joi")
 const namespaceController = require("../modules/client/chat/namespace/namespace.controller")
 const namespaceService = require("../modules/client/chat/namespace/namespace.service")
 
@@ -12,10 +13,18 @@ class NameSpaceSocketHandler {
             socket.emit("namespacesList", namespacesList);
         })
     }
-    async createNamespacesConnection() {
+    async createfirstNamespacesConnection() {
+        const namespace = await namespaceService.getNameSpaces()
+        this.#io.of(`/${namespace.endPoint}`).on("connection", async socket => {
+            socket.emit("roomList", namespace.rooms)
+            await getCountOfOnlineUser(namespace.endPoint,Array.from(namespace.rooms)[0])
+        })
+    }
+    async getNamespacesConnection() {
         const namespacesList = await namespaceService.getNameSpaces()
         this.#io.of(`/${namespacesList[0].endPoint}`).on("connection", async socket => {
-            socket.emit("roomList", namespacesList[0].rooms)})
+            socket.emit("roomList", namespacesList[0].rooms)
+        })
         // for (const namespace of namespacesList) {
         //     this.#io.of(`/${namespace.endPoint}`).on("connection", async socket => {
         //         socket.emit("roomList", namespace.rooms)
