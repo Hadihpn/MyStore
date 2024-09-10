@@ -44,8 +44,8 @@ module.exports = class Application {
         // const key = crypto.randomBytes(32).toString("hex").toUpperCase();
         // console.log(key);
         const server = http.createServer(this.#app);
-        const io = initialSocket(server);
-        socketHandler(io);
+        // const io = initialSocket(server);
+        // socketHandler(io);
         server.listen(this.#PORT, () => {
             console.log(`server :http://127.0.0.1:${this.#PORT}`);
         })
