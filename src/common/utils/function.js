@@ -89,6 +89,9 @@ function getTimeOfCourse(chapters = []) {
 function calculateDiscount(price, discount) {
   return ((Number(price) * (100 - Number(discount))) / 100)
 }
+function invoiceNumberGenerator(){
+  return moment.format("YYYMMDDHHmmssSSS")+String(process.hrtime()[1]).padStart(9,0)
+}
 
 module.exports = {
   unSupportedString,
@@ -102,5 +105,6 @@ module.exports = {
   convertToNormalTime,
   getPublicStoreUrl,
   getTimeOfCourse,
-  calculateDiscount
+  calculateDiscount,
+  invoiceNumberGenerator
 }

@@ -3,7 +3,7 @@ const userService = require("../../admin/user/user.service");
 const paymentService = require("./payment.service")
 const axios = require("axios");
 const { PaymentModel } = require("./payment.model");
-const { invoiceNumberGenerator } = require("../../../../../../Chapter04/myDivar/src/common/utils/function");
+const { invoiceNumberGenerator } = require("../../../common/utils/function");
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const autoBind = require("auto-bind");
 const { StatusCodes } = require("http-status-codes");
