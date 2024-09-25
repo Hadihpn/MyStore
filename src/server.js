@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const createError = require("http-errors");
 const SwaggerConfig = require("./config/swagger.config");
 const { AllRoutes } = require("./router.routes");
+const session = require("session")
 const cookieParser = require("cookie-parser");
 const ExpressEjsLayout = require("express-ejs-layouts");
 const expressEjsLayouts = require("express-ejs-layouts");
@@ -73,6 +74,17 @@ module.exports = class Application {
         this.#app.set("layout extractStyles", true)
         this.#app.set("layout extractScripts", true)
         this.#app.set("layout", "./layouts/main")
+    }
+    initClientSession(){
+        this.#app.use(cookieParser(COOKIE_PARSER_SECRET_KEY))
+        this.#app.use(session({
+            secret:COOKIE_PARSER_SECRET_KEY,
+            resave:true,
+            saveUninitialized:true,
+            cookie:{
+                secure:true
+            }
+        }))
     }
     createRoutes() {
         this.#app.use(AllRoutes);
