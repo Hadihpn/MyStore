@@ -12,6 +12,7 @@ const ExpressEjsLayout = require("express-ejs-layouts");
 const expressEjsLayouts = require("express-ejs-layouts");
 const { initialSocket } = require("./common/utils/initialSocket");
 const { socketHandler } = require("./socket.io");
+const { clientHelper } = require("./common/utils/client");
 module.exports = class Application {
     #app = express()
     #DB_URI
@@ -74,6 +75,10 @@ module.exports = class Application {
         this.#app.set("layout extractStyles", true)
         this.#app.set("layout extractScripts", true)
         this.#app.set("layout", "./layouts/main")
+        this.#app.use((req,res,next)=>{
+            this.#app.locals =clientHelper;
+            next()
+        })
     }
     initClientSession(){
         this.#app.use(cookieParser(COOKIE_PARSER_SECRET_KEY))

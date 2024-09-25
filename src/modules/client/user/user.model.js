@@ -30,7 +30,7 @@ const UserSchema = new Schema({
     Role: { type: String, default: "USER" },
     // Role: { type:MongoIDPattern },
     openToComment: { type: Boolean },
-    accessToken: { type: String },
+    accessToken: { type: String ,default:undefined},
     refreshToken: { type: String },
     verifiedMobile: { type: Boolean, default: false, required: true },
     Courses: { type: [Types.ObjectId], default: [], ref: "course" },
