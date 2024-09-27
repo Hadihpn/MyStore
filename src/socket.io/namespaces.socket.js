@@ -17,10 +17,12 @@ class NameSpaceSocketHandler {
   }
   async createNamespacesConnection() {
     const namespacesList = await namespaceService.getNameSpaces();
+    await this.getCountOfOnlineUser(namespacesList[0].endPoint,namespacesList[0].rooms[0])
     this.#io
       .of(`/${namespacesList[0].endPoint}`)
       .on("connection", async (socket) => {
         socket.emit("roomList", namespacesList[0].rooms);
+      
       });
     for (const namespace of namespacesList) {
       this.#io.of(`/${namespace.endPoint}`).on("connection", async (socket) => {
@@ -56,13 +58,15 @@ class NameSpaceSocketHandler {
   }
   getNewMessage(socket) {
     socket.on("newMessage", async (data) => {
-      const { message, roomName, endPoint } = data;
+      const { message, roomName, endPoint,sender } = data;
+      console.log(data);
+      
       await ConversationModel.updateOne(
         { endPoint, "rooms.name": roomName },
         {
           $push: {
             "rooms.$.messages": {
-                sender:"66ef13d5127f264720f0554c",
+                sender,
                 message,
                 dateTime:Date.now()
             },

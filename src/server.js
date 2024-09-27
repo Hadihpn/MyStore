@@ -76,7 +76,7 @@ module.exports = class Application {
         this.#app.set("layout extractScripts", true)
         this.#app.set("layout", "./layouts/main")
         this.#app.use((req,res,next)=>{
-            this.#app.locals =clientHelper;
+            this.#app.locals =clientHelper(req,res);
             next()
         })
     }
