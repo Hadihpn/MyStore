@@ -42,7 +42,9 @@ class NamespaceService {
     }
     async getRoomWithName(name){
         return await this.#model.findOne({"rooms.name":name})
+        
     }
+    
     //#endregion
 
     //#region Message

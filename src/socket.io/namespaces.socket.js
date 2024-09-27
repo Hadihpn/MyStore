@@ -26,16 +26,20 @@ class NameSpaceSocketHandler {
       });
     for (const namespace of namespacesList) {
       this.#io.of(`/${namespace.endPoint}`).on("connection", async (socket) => {
+        const conversation = await namespaceService.getNamespaceWithEndPoint(namespace.endPoint)
         socket.emit("roomList", namespace.rooms);
         socket.on("JoinRoom", async (roomName) => {
           const lastRoom = Array.from(socket.rooms)[1];
           if (lastRoom) {
             socket.leave(lastRoom);
+            await this.getCountOfOnlineUser(namespace.endPoint, roomName);
+
           }
           socket.join(roomName);
           // console.log(namespace.endPoint, roomName);
           await this.getCountOfOnlineUser(namespace.endPoint, roomName);
-          const roomInfo = await namespaceService.getRoomWithName(roomName);
+          const roomInfo =conversation.rooms.find(item => item.name == roomName)
+          
           socket.emit("roomInfo", roomInfo);
           this.getNewMessage(socket);
           socket.on("discsonnect", async () => {
@@ -73,6 +77,7 @@ class NameSpaceSocketHandler {
           },
         }
       );
+      this.#io.emit("confirmMessage",data)
     });
   }
 }

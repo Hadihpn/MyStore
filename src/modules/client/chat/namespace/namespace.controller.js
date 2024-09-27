@@ -55,7 +55,7 @@ class NamespaceController {
             if (!endPoint) throw new createHttpError.BadRequest("there is not any namespace with this name")
             const room = await this.#service.getRoomWithName(name)
             if (room) throw new createHttpError.BadRequest("this room name had been created before")
-            const uploadPath = req.body.fileUploadPath
+            const uploadPath = fileUploadPath
             const image = listOfImagesFormRequest(req.file || [], uploadPath)
             const conversation = await this.#service.addRoom(namespace, name, description, image);
             return res.status(HttpStatus.CREATED).json({
